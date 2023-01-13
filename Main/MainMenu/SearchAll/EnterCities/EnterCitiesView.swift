@@ -8,40 +8,36 @@
 import SwiftUI
 
 struct EnterCitiesView: View {
-    enum IsWhere: Identifiable {
-        case whereFrom
-        case whereTo
-        
-        var id: Self{self}
-    }
+    @EnvironmentObject var model: MainModel
     
     @State private var isWhere: IsWhere?
-    
-    @EnvironmentObject var model: MainModel
     @State private var changeCity = false
     
     var body: some View {
-        
         HStack {
             VStack(alignment: .leading) {
                 Button {
                     isWhere = .whereFrom
                 } label: {
                     HStack {
-                        Text(model.departure.stationName)
+                        Text(model.departure.stationName.isEmpty ? "Введите место отправления" : model.departure.stationName)
+                            .foregroundColor(model.departure.stationName.isEmpty ? .gray.opacity(0.5) : .white)
                             .autocapitalization(.none)
                         Spacer()
                     }
                 }
-                
                 Divider()
-                TextField("", text: $model.arrival.stationName)
-                    .autocapitalization(.none)
-                    .onTapGesture {
-                        isWhere = .whereTo
+                Button {
+                    isWhere = .whereTo
+                } label: {
+                    HStack {
+                        Text(model.arrival.stationName.isEmpty ? "Введите место прибытия" : model.arrival.stationName)
+                            .foregroundColor(model.arrival.stationName.isEmpty ? .gray.opacity(0.5) : .white)
+                            .autocapitalization(.none)
+                        Spacer()
                     }
+                }
             }
-            
             Button {
                 withAnimation(.linear(duration: 0.3)) {
                     changeCity.toggle()
@@ -52,13 +48,22 @@ struct EnterCitiesView: View {
                     .padding()
             }
         }
-        .sheet(item: $isWhere, content: {isWhere in
+        .sheet(item: $isWhere) {isWhere in
             if isWhere == .whereFrom {
                 SearchCityView(isWhere: isWhere)
             } else if isWhere == .whereTo {
                 SearchCityView(isWhere: isWhere)
             }
-        })
+        }
+    }
+}
+
+extension EnterCitiesView {
+    enum IsWhere: Identifiable {
+        case whereFrom
+        case whereTo
+        
+        var id: Self{self}
     }
 }
 

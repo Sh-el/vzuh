@@ -12,6 +12,7 @@ struct AddPassengersView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var isAddChild = false
+    @State private var isShow = false
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -27,6 +28,7 @@ struct AddPassengersView: View {
                 addChildButtonView
                 Spacer()
                 doneButtonView
+                    .zIndex(2)
             }
             .foregroundColor(.black)
             .padding()
@@ -34,10 +36,9 @@ struct AddPassengersView: View {
                 AddChildView()
                     .presentationDetents([.fraction(0.3)])
             }
-            
             if model.resultAddPassengers.error != .everythingOk {
                 AddPassengersAlertView()
-                
+                    .zIndex(1)
             }
         }
     }
@@ -46,7 +47,7 @@ struct AddPassengersView: View {
 extension AddPassengersView {
     var addChildButtonView: some View {
         Button {
-            isAddChild = true
+         isAddChild = true
         } label: {
             Text("+ Добавить ребенка")
         }

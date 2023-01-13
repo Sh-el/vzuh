@@ -15,9 +15,7 @@ struct AddPassengersAlertView: View {
             Text(model.resultAddPassengers.error.rawValue)
             Spacer()
             Button {
-                withAnimation(.linear(duration: 0.3)) {
                     model.resultAddPassengers.error = .everythingOk
-                }
             } label: {
                 Text("X")
             }
@@ -27,12 +25,9 @@ struct AddPassengersAlertView: View {
         .foregroundColor(.black)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                withAnimation(.linear(duration: 0.3)) {
-                    model.resultAddPassengers.error = .everythingOk
-                }
+                model.resultAddPassengers.error = .everythingOk
             }
         }
-        .transition(.move(edge: .bottom))
     }
 }
 

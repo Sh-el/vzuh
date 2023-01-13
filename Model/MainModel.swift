@@ -10,12 +10,14 @@ import Combine
 
 class MainModel: ObservableObject {
     typealias TrainScheduleResult = Result<TrainSchedule, Error>
-    typealias Station = Routes.Station
+    
+    private var dataTrain: DataTrainProtocol
     
     @Published var backgroundMain = "day_snow"
     @Published var imagesBackground: [String] = []
     @Published var buttonsMain: [ButtonsMain] = []
   
+    //Input
     @Published var departure = Station()
     @Published var arrival = Station()
     
@@ -27,7 +29,6 @@ class MainModel: ObservableObject {
     @Published var resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: false)
     
     //Output
-    
     @Published var trainSchedule: TrainScheduleResult?
     
     func addAdult() {
@@ -86,7 +87,6 @@ class MainModel: ObservableObject {
         }
         guard areFewerKidsThanAdults(child) else {
             resultAddPassengers = ResultAddPassengers(error: .lotsBabies, isMaxPassengers: false)
-            print(".lotsBabies")
             return
         }
         arr.append(child)
@@ -107,21 +107,19 @@ class MainModel: ObservableObject {
         }
     }
     
-    private var trainApi  = TrainApi()
-    
     func getTrainSchedule() {
         Publishers.Zip($departure, $arrival)
             .filter{!$0.0.stationId.isEmpty && !$0.1.stationId.isEmpty}
-            .flatMap{self.trainApi.fetchTrainSchedule(from: $0.0.stationId, to: $0.1.stationId)}
+            .flatMap{self.dataTrain.fetchTrainSchedule(from: $0.0.stationId, to: $0.1.stationId)}
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
-            .print()
             .assign(to: &$trainSchedule)
         
     }
   
-    init() {
+    init(dataTrain: DataTrainProtocol = TrainApi()) {
+        self.dataTrain = dataTrain
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
  

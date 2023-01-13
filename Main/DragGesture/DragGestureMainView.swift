@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct DragGestureMainView: View {
-    @State var startingOffsetY: CGFloat = UIScreen.main.bounds.height * 0.77
-    @State var currentDragOffsetY: CGFloat = 0
-    @State var endingOffsetY: CGFloat = 0
+    @State var startingOffsetY: CGFloat
+    @State private var currentDragOffsetY: CGFloat = 0
+    @State private var endingOffsetY: CGFloat = 0
+    @State private var isDisabled = true
     
     var body: some View {
         VStack {
@@ -18,14 +19,16 @@ struct DragGestureMainView: View {
                 .frame(width: 50, height: 5)
                 .cornerRadius(20)
                 .foregroundColor(.gray)
-                .padding(.vertical, 10)
+                .padding(.vertical, 15)
             ScrollView(showsIndicators: false) {
                 VStack {
                     PromoView()
                     SignUpView()
                     FAQView()
                 }
+                .padding(.bottom, 70)
             }
+            .scrollDisabled(isDisabled)
         }
         .frame(maxWidth: .infinity)
         .background(Color(hue: 0.523, saturation: 0.109, brightness: 0.963))
@@ -34,6 +37,24 @@ struct DragGestureMainView: View {
         .offset(y: currentDragOffsetY)
         .offset(y: endingOffsetY)
         .gesture(gesture)
+        .edgesIgnoringSafeArea(.bottom)
+    }
+}
+
+extension DragGestureMainView {
+    private var gesture1: some Gesture {
+        DragGesture()
+            .onChanged {value in
+                withAnimation(.spring()) {
+                    currentDragOffsetY = value.translation.height
+                }
+            }
+            .onEnded {value in
+                withAnimation(.spring()) {
+                    isDisabled = true
+                }
+                
+            }
     }
 }
 
@@ -45,12 +66,14 @@ extension DragGestureMainView {
                     currentDragOffsetY = value.translation.height
                 }
             }
-            .onEnded {value in
+            .onEnded {_ in
                 withAnimation(.spring()) {
                     if currentDragOffsetY < -150 {
-                        endingOffsetY = -startingOffsetY + 10
+                        endingOffsetY = -startingOffsetY + 40
+                        isDisabled = false
                     } else if endingOffsetY != 0 && currentDragOffsetY > 150 {
                         endingOffsetY = 0
+                        isDisabled = true
                     }
                     currentDragOffsetY = 0
                 }
@@ -60,6 +83,6 @@ extension DragGestureMainView {
 
 struct DragGestureMain_Previews: PreviewProvider {
     static var previews: some View {
-        DragGestureMainView()
+        DragGestureMainView(startingOffsetY: 0)
     }
 }

@@ -12,20 +12,20 @@ struct MainMenuView: View {
     @State private var selectedTab = ButtonsMain.all
     
     var body: some View {
-        VStack {
-            Spacer()
-            ButtonsMainMenuView(selectedTab: $selectedTab)
+ 
             TabView(selection: $selectedTab) {
-                SelectedView(selectedTab: selectedTab)
-                    .foregroundColor(.white)
+                VStack(alignment: .leading) {
+                    Spacer()
+                    ButtonsMainMenuView(selectedTab: $selectedTab)
+                        .padding(.bottom, 10)
+                    SelectedView(selectedTab: selectedTab)
+                        .foregroundColor(.white)
+                }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .frame(height: 200)
-            NavigationLink(destination: SearchAllResultView()) {
-                searchButton
-            }
-        }
+  
     }
+    
     var searchButton: some View {
         Text("Найти")
             .font(.title)
@@ -37,7 +37,7 @@ struct MainMenuView: View {
             .background(.blue)
             .cornerRadius(5)
             .padding(.horizontal, 10)
-            .padding(.bottom, 90)
+//            .padding(.bottom, 90)
     }
 
 }

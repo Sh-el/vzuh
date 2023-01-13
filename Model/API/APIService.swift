@@ -1,13 +1,18 @@
-import Foundation
+import SwiftUI
 import Combine
 
-struct API {
-    enum RequestError: Error {
-        case addressUnreachable
-        case invalidRequest
-        case decodingError
-        case timeOut
-    }
+protocol APIServiceProtocol {
+    func get<T: Decodable>(url: URL) -> AnyPublisher<T, Error>
+}
+
+enum RequestError: Error {
+    case addressUnreachable
+    case invalidRequest
+    case decodingError
+    case timeOut
+}
+
+struct APIService: APIServiceProtocol {
     
     static private func fetch(url: String) -> AnyPublisher<URL, Error> {
         Just(url)
@@ -52,10 +57,10 @@ struct API {
             .eraseToAnyPublisher()
     }
     
-    static func getData<T: Decodable>(url: URL) -> AnyPublisher<T, Error> {
+    func get<T: Decodable>(url: URL) -> AnyPublisher<T, Error> {
         Just(url)
-            .flatMap(fetchData)
-            .flatMap(decode)
+            .flatMap(APIService.fetchData)
+            .flatMap(APIService.decode)
             .eraseToAnyPublisher()
     }
 }

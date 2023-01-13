@@ -11,33 +11,37 @@ struct MainView: View {
     @EnvironmentObject var model: MainModel
     @State private var isTopButtons: TopButtons?
     
+    let startingOffsetYDragGesture = UIScreen.main.bounds.height * 0.75
+    let offsetYMainMenu = -UIScreen.main.bounds.height * (1 - 0.75)
+    
     var body: some View {
         NavigationView {
-            ZStack {
+            ZStack(alignment: .top) {
                 backgroundMain
-                VStack(alignment: .leading) {
-                    topButtons
-                    Spacer()
-                    MainMenuView()
-//                    NavigationLink(destination: Text("Search")) {
-//                        searchButton
-//                    }
-                }
-                DragGestureMainView()
+                MainMenuView()
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 10)
+                    .offset(y: offsetYMainMenu)
+                    .ignoresSafeArea()
+                topButtons
+                DragGestureMainView(startingOffsetY: startingOffsetYDragGesture)
+                    .ignoresSafeArea()
+                
             }
-            .sheet(item: $isTopButtons, content: {topButton in
+            .sheet(item: $isTopButtons) {topButton in
                 if topButton == .changeBackground {
                     ChangeBackgroundView()
                 } else if topButton == .notifications {
                     NotificationsView()
                 }
-            })
+            }
         }
         .tabItem{
             Image(systemName: "magnifyingglass")
             Text("Search")
         }
         .tag(1)
+        
     }
 }
 
@@ -48,7 +52,6 @@ extension MainView {
             Spacer()
             Button {
                 isTopButtons = .changeBackground
-                print("cb")
             } label: {
                 Image(systemName: "camera")
             }
@@ -105,6 +108,7 @@ extension MainView {
         var id: Self{self}
     }
 }
+
 
 struct MainView_Previews: PreviewProvider {
     static let model = MainModel()

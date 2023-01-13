@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchAllResultView: View {
     @EnvironmentObject var model: MainModel
-    @EnvironmentObject var geocoding: Geocoding
+    @EnvironmentObject var geocoding: Searching
     
     var body: some View {
         VStack {
@@ -21,15 +21,13 @@ struct SearchAllResultView: View {
                         ForEach(trainSchedule.trips, id: \.id) {value in
                             VStack {
                                 HStack {
-
                                     Text(geocoding.stationName(value.departureStation))
                                     Text(geocoding.stationName(value.arrivalStation))
                                 }
-
-                                ForEach(value.categories, id: \.type) {type in
+                                ForEach(value.categories, id: \.type) {categories in
                                     HStack {
-                                        Text(type.type.rawValue)
-                                        Text(String(type.price))
+                                        Text(categories.type.rawValue)
+                                        Text(String(categories.price))
                                         Spacer()
                                     }
                                 }

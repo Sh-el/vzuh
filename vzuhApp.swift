@@ -10,13 +10,13 @@ import SwiftUI
 @main
 struct vzuhApp: App {
     @StateObject var model = MainModel()
-    @StateObject var geocoding = Geocoding()
+    @StateObject var searching = Searching()
     
     var body: some Scene {
         WindowGroup {
             WelcomeView()
                 .environmentObject(model)
-                .environmentObject(geocoding)
+                .environmentObject(searching)
         }
     }
 }

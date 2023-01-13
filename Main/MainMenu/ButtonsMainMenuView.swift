@@ -34,7 +34,6 @@ struct ButtonsMainMenuView: View {
             }
             .font(.title2)
             .fontWeight(.bold)
-            .padding()
             
             
 //            HStack {
