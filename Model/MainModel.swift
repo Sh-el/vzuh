@@ -9,32 +9,74 @@ import SwiftUI
 import Combine
 
 class MainModel: ObservableObject {
-    typealias TrainScheduleResult = Result<TrainSchedule, Error>
+    typealias TrainScheduleResultArray = Result<[TrainSchedule], Error>
     
     private var dataTrain: DataTrainProtocol
     
     @Published var backgroundMain = "day_snow"
     @Published var imagesBackground: [String] = []
     @Published var buttonsMain: [ButtonsMain] = []
-  
-    //Input
-    @Published var departure = Station()
-    @Published var arrival = Station()
     
-    @Published var dateThere = Date.now
+    @Published var departure: Location?
+    @Published var arrival: Location?
+    
+    @Published var dateDeparture = Date.now
     @Published var dateBack: Date = Date.now
     
     @Published var adultPassengers: Int = 1
     @Published var children: [Child] = []
     @Published var resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: false)
     
-    //Output
-    @Published var trainSchedule: TrainScheduleResult?
+    @Published var trainSchedule: TrainScheduleResultArray?
+    
+    
+    func numberPassengers() -> Int {
+        let numberAdult = adultPassengers
+        let numberChildren = children.count
+        return numberAdult + numberChildren
+    }
+    
+    private var isPssengersCountValid: AnyPublisher<Bool, Never> {
+        Publishers.CombineLatest($adultPassengers, $children)
+            .map{$0 + $1.count < Const.maxNumberPassengers}
+            .eraseToAnyPublisher()
+    }
+    
+    private var isMaxPassengers: AnyPublisher<Bool, Never> {
+        Publishers.CombineLatest($adultPassengers, $children)
+            .map{$0 + $1.count + 1 == Const.maxNumberPassengers}
+            .eraseToAnyPublisher()
+    }
+    
+    private var isFewPassengers: AnyPublisher<Bool, Never> {
+        Publishers.CombineLatest($adultPassengers, $children)
+            .map{$0 + $1.filter{$0.age == .zero || $0.age == .one}.count <= 1}
+            .eraseToAnyPublisher()
+    }
+    
+    //    func addAdult1() {
+    //        Publishers.CombineLatest($adultPassengers, $children)
+    //            .map{$0 + $1.count > Const.maxNumberPassengers ? ResultAddPassengers(error: .lotsPassengers, isMaxPassengers: true) : }
+    //
+    //
+    //
+    //        guard numberChildren + adultPassengers < Const.maxNumberPassengers else {
+    //            resultAddPassengers = ResultAddPassengers(error: .lotsPassengers, isMaxPassengers: true)
+    //            return
+    //        }
+    //
+    //        numberAdult = numberAdult + 1
+    //        adultPassengers = numberAdult
+    //        if numberChildren + numberAdult == Const.maxNumberPassengers {
+    //            resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: true)
+    //        } else {
+    //            resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: false)
+    //        }
+    //    }
     
     func addAdult() {
         var numberAdult = adultPassengers
-        let arr = children
-        let numberChildren = arr.count
+        let numberChildren = children.count
         guard numberChildren + adultPassengers < Const.maxNumberPassengers else {
             resultAddPassengers = ResultAddPassengers(error: .lotsPassengers, isMaxPassengers: true)
             return
@@ -42,7 +84,7 @@ class MainModel: ObservableObject {
         
         numberAdult = numberAdult + 1
         adultPassengers = numberAdult
-        if arr.count + numberAdult == Const.maxNumberPassengers {
+        if numberChildren + numberAdult == Const.maxNumberPassengers {
             resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: true)
         } else {
             resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: false)
@@ -107,31 +149,43 @@ class MainModel: ObservableObject {
         }
     }
     
+    private func validTrainRoutes(_ departure: Location, _ arrival: Location) -> AnyPublisher<[Route], Never> {
+        Publishers.Zip(Just(departure), Just(arrival))
+            .map{(Set($0.0.routes), Set($0.1.routes))}
+            .map{Array($0.0.intersection($0.1)).filter{$0.departureStationName.contains(departure.name)}}
+            .eraseToAnyPublisher()
+    }
+    
     func getTrainSchedule() {
         Publishers.Zip($departure, $arrival)
-            .filter{!$0.0.stationId.isEmpty && !$0.1.stationId.isEmpty}
-            .flatMap{self.dataTrain.fetchTrainSchedule(from: $0.0.stationId, to: $0.1.stationId)}
+            .filter{$0.0 != nil && $0.1 != nil}
+            .filter{!($0.0?.name.isEmpty)! && !($0.1?.name.isEmpty)!}
+            .flatMap{self.validTrainRoutes($0.0!, $0.1!)}
+            .flatMap{self.dataTrain.fetchTrainSchedule($0)}
+            .filter{!$0.url.isEmpty}
+            .scan([], {$0 + [$1]})
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedule)
-        
     }
-  
+    
     init(dataTrain: DataTrainProtocol = TrainApi()) {
         self.dataTrain = dataTrain
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
- 
     }
     
     private struct Const {
         static let maxNumberPassengers = 4
+        
         static let imagesBackground = ["day_snow",
                                        "snow_mountain",
                                        "day_clearsky",
                                        "day_cloudy",
-                                       "night_clearsky"]
+                                       "night_clearsky",
+                                       "tokyo-station"]
+        
         static let buttonsMain = [ButtonsMain.all,
                                   ButtonsMain.hotels,
                                   ButtonsMain.airplane,
@@ -139,6 +193,8 @@ class MainModel: ObservableObject {
                                   ButtonsMain.bus]
     }
 }
+
+
 
 extension Publisher {
     func asResult() -> AnyPublisher<Result<Output, Failure>?, Never> {
@@ -202,4 +258,41 @@ struct Child: Hashable, Identifiable {
     }
     
     var age: AgeChild
+}
+
+
+struct ResultAddPassengers {
+    enum Error: String {
+        case fewAdults = "Взрослых не может быть меньше, чем детей младше двух лет!"
+        case lotsPassengers = "Можно выбрать не больше, чем четыре пассажира!"
+        case fewPassengers = "Можно выбрать не менее одного взрослого пассажира!"
+        case lotsBabies = "Детей до двух лет должно быть не больше, чем взрослых!"
+        case everythingOk
+    }
+    
+    var error: Error
+    let isMaxPassengers: Bool
+}
+
+enum ButtonsMain {
+    case all
+    case hotels
+    case airplane
+    case train
+    case bus
+    
+    var imageName: String {
+        switch self {
+        case .all:
+            return "globe"
+        case .hotels:
+            return "bed.double"
+        case .airplane:
+            return "airplane"
+        case .train:
+            return "tram"
+        case .bus:
+            return "bus"
+        }
+    }
 }

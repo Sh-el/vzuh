@@ -10,29 +10,35 @@ import SwiftUI
 struct EnterCitiesView: View {
     @EnvironmentObject var model: MainModel
     
-    @State private var isWhere: IsWhere?
+    @State private var isWhere: IsPlace?
     @State private var changeCity = false
     
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Button {
-                    isWhere = .whereFrom
+                    isWhere = .departure
                 } label: {
                     HStack {
-                        Text(model.departure.stationName.isEmpty ? "Введите место отправления" : model.departure.stationName)
-                            .foregroundColor(model.departure.stationName.isEmpty ? .gray.opacity(0.5) : .white)
+                        Text(model.departure?.name ?? "Введите место отправления")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .lineLimit(1)
+                            .foregroundColor(.white)
                             .autocapitalization(.none)
                         Spacer()
                     }
                 }
                 Divider()
                 Button {
-                    isWhere = .whereTo
+                    isWhere = .arrival
                 } label: {
                     HStack {
-                        Text(model.arrival.stationName.isEmpty ? "Введите место прибытия" : model.arrival.stationName)
-                            .foregroundColor(model.arrival.stationName.isEmpty ? .gray.opacity(0.5) : .white)
+                        Text(model.arrival?.name ?? "Введите место прибытия")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .lineLimit(1)
+                            .foregroundColor(.white)
                             .autocapitalization(.none)
                         Spacer()
                     }
@@ -49,9 +55,9 @@ struct EnterCitiesView: View {
             }
         }
         .sheet(item: $isWhere) {isWhere in
-            if isWhere == .whereFrom {
+            if isWhere == .departure {
                 SearchCityView(isWhere: isWhere)
-            } else if isWhere == .whereTo {
+            } else if isWhere == .arrival {
                 SearchCityView(isWhere: isWhere)
             }
         }
@@ -59,9 +65,9 @@ struct EnterCitiesView: View {
 }
 
 extension EnterCitiesView {
-    enum IsWhere: Identifiable {
-        case whereFrom
-        case whereTo
+    enum IsPlace: Identifiable {
+        case departure
+        case arrival
         
         var id: Self{self}
     }

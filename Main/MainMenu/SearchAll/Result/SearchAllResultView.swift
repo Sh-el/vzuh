@@ -9,41 +9,40 @@ import SwiftUI
 
 struct SearchAllResultView: View {
     @EnvironmentObject var model: MainModel
-    @EnvironmentObject var geocoding: Searching
+    @EnvironmentObject var searching: SearchingCities
     
     var body: some View {
-        VStack {
-            switch model.trainSchedule {
-            case .success(let trainSchedule):
-                ScrollView {
-                    VStack {
-                        Text(trainSchedule.url)
-                        ForEach(trainSchedule.trips, id: \.id) {value in
-                            VStack {
-                                HStack {
-                                    Text(geocoding.stationName(value.departureStation))
-                                    Text(geocoding.stationName(value.arrivalStation))
-                                }
-                                ForEach(value.categories, id: \.type) {categories in
-                                    HStack {
-                                        Text(categories.type.rawValue)
-                                        Text(String(categories.price))
-                                        Spacer()
-                                    }
-                                }
+        ScrollView {
+            LazyVStack {
+                Text(model.departure?.name ?? "")
+                Text(model.departure?.routes.count.description ?? "")
+
+                switch model.trainSchedule {
+                case .success(let schedule):
+                    LazyVStack {
+                    ForEach(schedule, id: \.url) {value in
+                        
+                            Text(value.url)
+                        
+                        LazyVStack {
+                            ForEach(value.trips, id: \.id) {trip in
+                                Text(trip.categories.description)
                             }
-                            .padding()
+                        }
                         }
                     }
+                case .none:
+                    Text("loading")
+                case .some(.failure(_)):
+                    Text("error")
                 }
-            case .none:
-                Text("loading")
-            case .some(.failure(_)):
-                Text("error")
+                
+
+                
             }
+
         }
-        .onAppear {
-            model.trainSchedule = nil
+        .onAppear{
             model.getTrainSchedule()
         }
     }
@@ -51,8 +50,10 @@ struct SearchAllResultView: View {
 
 struct SearchAllResultView_Previews: PreviewProvider {
     static let model = MainModel()
+    static let searching = SearchingCities()
     static var previews: some View {
         SearchAllResultView()
             .environmentObject(model)
+            .environmentObject(searching)
     }
 }

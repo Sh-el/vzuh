@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct vzuhApp: App {
     @StateObject var model = MainModel()
-    @StateObject var searching = Searching()
+    @StateObject var searching = SearchingCities()
     
     var body: some Scene {
         WindowGroup {

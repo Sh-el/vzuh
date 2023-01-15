@@ -13,11 +13,15 @@ struct PassengersView: View {
     @State private var isPassengersChoice = false
     
     var body: some View {
-        HStack {
-            Text(model.adultPassengers == 1 ? "\(model.adultPassengers) пассажир" : "\(model.adultPassengers) пассажира")
-        }
-        .onTapGesture {
+        Button {
             isPassengersChoice.toggle()
+        } label: {
+            HStack {
+                Text(model.numberPassengers() == 1 ? "\(model.numberPassengers()) пассажир" : "\(model.numberPassengers()) пассажира")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                Spacer()
+            }
         }
         .sheet(isPresented: $isPassengersChoice) {
             AddPassengersView()

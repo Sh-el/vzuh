@@ -28,7 +28,6 @@ struct AddPassengersView: View {
                 addChildButtonView
                 Spacer()
                 doneButtonView
-                    .zIndex(2)
             }
             .foregroundColor(.black)
             .padding()
@@ -38,7 +37,6 @@ struct AddPassengersView: View {
             }
             if model.resultAddPassengers.error != .everythingOk {
                 AddPassengersAlertView()
-                    .zIndex(1)
             }
         }
     }
@@ -65,13 +63,13 @@ extension AddPassengersView {
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(.blue)
+                .cornerRadius(5)
+                .padding(.horizontal, 10)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 10)
-        .frame(maxWidth: .infinity)
-        .background(Color.blue.opacity(0.8))
-        .cornerRadius(5)
-        .padding(.horizontal, 10)
     }
 }
 

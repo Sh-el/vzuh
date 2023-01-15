@@ -8,16 +8,16 @@
 import SwiftUI
 import Combine
 
-typealias AutocompleteCity = [AutocompleteCityElemnt]
+typealias AutocompleteCities = [AutocompleteCityElemnt]
 
 protocol DataAutocompleteProtocol {
-    func getAutocompleteCity(city: String) -> AnyPublisher<AutocompleteCity, Error>
+    func getAutocompleteCity(city: String) -> AnyPublisher<AutocompleteCities, Error>
 }
 
 struct Autocomplete: DataAutocompleteProtocol {
     private let apiService: APIServiceProtocol
     
-    func getAutocompleteCity(city: String) -> AnyPublisher<AutocompleteCity, Error> {
+    func getAutocompleteCity(city: String) -> AnyPublisher<AutocompleteCities, Error> {
         guard let url = Endpoint.places(city: city).absoluteURL else {
             return  Fail(error: RequestError.addressUnreachable)
                 .eraseToAnyPublisher()

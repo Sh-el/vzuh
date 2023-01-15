@@ -9,26 +9,29 @@ import SwiftUI
 import Combine
 
 struct TrainSchedule: Codable {
-    let trips: [Trip]
-    let url: String
+    var trips: [Trip] = []
+    var url: String = ""
 }
 // MARK: - Trip
 extension TrainSchedule {
     struct Trip: Codable, Identifiable {
         let id = UUID()
-        
         let arrivalStation, arrivalTime: String
-        let categories: [Category]
+        
         let departureStation, departureTime: String
+        let numberForURL, runArrivalStation, runDepartureStation, trainNumber: String
         let firm: Bool
         let name: String?
-        let numberForURL, runArrivalStation, runDepartureStation, trainNumber: String
         let travelTimeInSeconds: String
         
+        let categories: [Category]
+        
         enum CodingKeys: String, CodingKey {
-            case arrivalStation, arrivalTime, categories, departureStation, departureTime, firm, name
+            case arrivalStation, arrivalTime, departureStation, departureTime, firm, name
             case numberForURL = "numberForUrl"
-            case runArrivalStation, runDepartureStation, trainNumber, travelTimeInSeconds
+            case runArrivalStation, runDepartureStation, trainNumber , travelTimeInSeconds
+            
+            case categories
         }
     }
 }
@@ -43,28 +46,60 @@ extension TrainSchedule {
         case coupe = "coupe"
         case lux = "lux"
         case plazcard = "plazcard"
+        case sedentary = "sedentary"
         case soft = "soft"
     }
 }
 
 protocol DataTrainProtocol {
-    func fetchTrainSchedule(from: String, to: String) -> AnyPublisher<TrainSchedule, Error>
+    func fetchTrainSchedule(_ location: [Route]) -> AnyPublisher<TrainSchedule, Error>
 }
 
 struct TrainApi: DataTrainProtocol {
-    private let apiService: APIServiceProtocol
-    
-    func fetchTrainSchedule(from: String, to: String) -> AnyPublisher<TrainSchedule, Error> {
-        guard let url = EndpointTrain.search(term: from, term2: to).absoluteURL else {
-            return  Fail(error: RequestError.addressUnreachable)
-                .eraseToAnyPublisher()
-        }
-        return apiService.get(url: url)
+    private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
+        URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .mapError{error -> Error in
+                return RequestError.invalidRequest
+            }
+            .map(\.data)
+            .timeout(.seconds(5.0),
+                     scheduler: DispatchQueue.main,
+                     customError: {RequestError.timeOut})
             .eraseToAnyPublisher()
     }
     
-    init(apiService: APIServiceProtocol = APIService()) {
-        self.apiService = apiService
+    private func decode(_ data: Data) -> AnyPublisher<TrainSchedule, Never> {
+        Just(data)
+            .tryMap{data -> TrainSchedule in
+                do {
+                    let decoder = JSONDecoder()
+                    return try decoder.decode(TrainSchedule.self, from: data)
+                }
+                catch {
+                    throw RequestError.decodingError
+                }
+            }
+            .replaceError(with: TrainSchedule())
+            .map{$0}
+            .eraseToAnyPublisher()
+    }
+    
+    func fetchTrainSchedule(_ location: [Route]) -> AnyPublisher<TrainSchedule, Error> {
+        location
+            .publisher
+//          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
+            .tryMap {
+                guard let url = EndpointTrain.search(term: $0.departureStationId, term2: $0.arrivalStationId).absoluteURL
+                else {
+                    throw RequestError.addressUnreachable
+                }
+                return url
+            }
+            .flatMap(fetchData)
+            .flatMap(decode)
+            .eraseToAnyPublisher()
     }
 }
 
@@ -106,9 +141,7 @@ extension TrainApi {
                     URLQueryItem(name: "term2", value: term2)
                 ]
             default:
-                urlComponents.queryItems = [
-                    URLQueryItem(name: "", value: "")
-                ]
+                urlComponents.queryItems = [URLQueryItem(name: "", value: "")]
             }
             return urlComponents.url
         }

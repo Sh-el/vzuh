@@ -13,19 +13,20 @@ struct Station: Hashable, Identifiable {
     var stationName: String = ""
 }
 
-struct Rout: Hashable, Identifiable {
-    var id = UUID()
-    var stationId: String = ""
-    var stationName: String = ""
+struct Route: Hashable, Identifiable {
+    let id = UUID()
+    var departureStationId: String = ""
+    var departureStationName: String = ""
     var arrivalStationId: String = ""
     var arrivalStationName: String = ""
 }
 
 protocol DataTrainStationsProtocol {
     func getTrainStationsName() -> [String : String]
+    func getTrainRoutes() -> [Route]
 }
 
-struct TrainRoutes: DataTrainStationsProtocol {
+struct TrainStation: DataTrainStationsProtocol {
     let inputFile: String
  
     func getTrainStationsName() -> [String : String] {
@@ -38,12 +39,11 @@ struct TrainRoutes: DataTrainStationsProtocol {
                 lines.dropFirst().forEach {line in
                     let data = line.components(separatedBy: ";")
                     if data.count == 4 {
-                        if resultsDict[data[1]] == nil {
-                            resultsDict[data[1]] = data[0]
+                        if resultsDict[data[0]] == nil {
+                            resultsDict[data[0]] = data[1]
                         }
                     }
                 }
-                print("readCSV")
                 return resultsDict
             } catch {
                 print("error: \(error)")
@@ -54,30 +54,32 @@ struct TrainRoutes: DataTrainStationsProtocol {
         return [:]
     }
     
-    func getTrainRutes() -> [String : String] {
+    func getTrainRoutes() -> [Route] {
         if let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) {
             do {
                 let fileContent = try String(contentsOfFile: filepath)
                 let lines = fileContent.components(separatedBy: "\n")
-                var resultsDict: [String: String] = [:]
+                var resultsArr: [Route] = []
                 
                 lines.dropFirst().forEach {line in
                     let data = line.components(separatedBy: ";")
                     if data.count == 4 {
-                        if resultsDict[data[1]] == nil {
-                            resultsDict[data[1]] = data[0]
-                        }
+                        var routElement = Route()
+                        routElement.departureStationId = data[0]
+                        routElement.departureStationName = data[1]
+                        routElement.arrivalStationId = data[2]
+                        routElement.arrivalStationName = data[3]
+                        resultsArr.append(routElement)
                     }
                 }
-                print("readCSV")
-                return resultsDict
+                return resultsArr
             } catch {
                 print("error: \(error)")
             }
         } else {
             print("\(inputFile) could not be found")
         }
-        return [:]
+        return []
     }
     
 }

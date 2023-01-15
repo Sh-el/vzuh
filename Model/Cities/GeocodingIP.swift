@@ -23,14 +23,13 @@ struct IP: Codable {
 }
 
 protocol DataGeocodingIPProtocol {
-    func getIP() -> AnyPublisher<IP, Error>
     func getCity() -> AnyPublisher<GeocodingCity, Error>
 }
 
 struct GeocodingIP: DataGeocodingIPProtocol {
     private let apiService: APIServiceProtocol
     
-    func getIP() -> AnyPublisher<IP, Error> {
+    private func getIP() -> AnyPublisher<IP, Error> {
         guard let url = EndpointIP.ip.absoluteURL else {
             return  Fail(error: RequestError.addressUnreachable)
                 .eraseToAnyPublisher()

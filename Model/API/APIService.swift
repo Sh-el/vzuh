@@ -41,18 +41,16 @@ struct APIService: APIServiceProtocol {
     }
     
     static private func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T, Error> {
-        let decoder = JSONDecoder()
-        
-        let dataTaskPublisher = Just(data)
+        Just(data)
             .tryMap{data -> T in
                 do {
+                    let decoder = JSONDecoder()
                     return try decoder.decode(T.self, from: data)
                 }
                 catch {
                     throw RequestError.decodingError
                 }
             }
-        return dataTaskPublisher
             .map{$0}
             .eraseToAnyPublisher()
     }

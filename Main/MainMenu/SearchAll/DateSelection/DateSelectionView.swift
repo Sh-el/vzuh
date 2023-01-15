@@ -9,19 +9,22 @@ import SwiftUI
 
 struct DateSelectionView: View {
     @EnvironmentObject var model: MainModel
-    @State private var isWhen: IsWhen?
+    @State private var isTime: IsTime?
     @State private var isDateBackShow = false
     
     var body: some View {
         HStack {
-            Text(model.dateThere.dateToString)
+            Text(model.dateDeparture.dateToString)
+                .fontWeight(.semibold)
                 .onTapGesture {
-                    isWhen = .dateThere
+                    isTime = .dateDeparture
                 }
             Spacer()
-            Text(isDateBackShow ? model.dateBack.dateToString : "Back")
+            Text(isDateBackShow ? model.dateBack.dateToString : "Обратно")
+                .fontWeight(.semibold)
+                .foregroundColor(isDateBackShow ? .white : .gray.opacity(0.7))
                 .onTapGesture {
-                    isWhen = .dateBack
+                    isTime = .dateBack
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         isDateBackShow = true
                     }
@@ -36,7 +39,7 @@ struct DateSelectionView: View {
                 }
             }
         }
-        .sheet(item: $isWhen) {DatePick(isWhen: $0)}
+        .sheet(item: $isTime) {DatePick(isTime: $0)}
     }
 }
 
@@ -49,8 +52,8 @@ extension Date {
 }
 
 extension DateSelectionView {
-    enum IsWhen: Identifiable {
-        case dateThere
+    enum IsTime: Identifiable {
+        case dateDeparture
         case dateBack
         
         var id: Self{self}

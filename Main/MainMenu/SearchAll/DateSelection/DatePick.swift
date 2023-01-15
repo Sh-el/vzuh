@@ -9,16 +9,20 @@ import SwiftUI
 
 struct DatePick: View {
     @EnvironmentObject var model: MainModel
-    let isWhen: DateSelectionView.IsWhen?
+    let isTime: DateSelectionView.IsTime?
     
     var body: some View {
         VStack {
-            Text(isWhen == .dateThere ? model.departure.stationName + "-" + model.arrival.stationName :
-                    model.arrival.stationName + "-" + model.departure.stationName)
-            .font(.largeTitle)
+            if isTime == .dateDeparture {
+                Text((model.departure?.name ?? "") + " - " + (model.arrival?.name ?? ""))
+                    .font(.largeTitle)
+            } else {
+                Text((model.arrival?.name ?? "") + " - " + (model.departure?.name ?? ""))
+                    .font(.largeTitle)
+            }
             DatePicker("",
-                       selection: isWhen == .dateThere ?
-                       $model.dateThere: $model.dateBack,
+                       selection: isTime == .dateDeparture ?
+                       $model.dateDeparture: $model.dateBack,
                        in: Date.now...,
                        displayedComponents: [.date])
             .datePickerStyle(.graphical)
@@ -27,10 +31,10 @@ struct DatePick: View {
         .foregroundColor(.black)
         .padding()
         .onDisappear{
-            if isWhen == .dateThere && model.dateBack < model.dateThere {
-                model.dateBack = model.dateThere
-            } else if isWhen == .dateBack && model.dateThere > model.dateBack {
-                model.dateThere = model.dateBack
+            if isTime == .dateDeparture && model.dateBack < model.dateDeparture {
+                model.dateBack = model.dateDeparture
+            } else if isTime == .dateBack && model.dateDeparture > model.dateBack {
+                model.dateDeparture = model.dateBack
             }
         }
     }
@@ -39,7 +43,7 @@ struct DatePick: View {
 struct DatePick_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
-        DatePick(isWhen: .dateThere)
+        DatePick(isTime: .dateDeparture)
             .environmentObject(model)
     }
 }
