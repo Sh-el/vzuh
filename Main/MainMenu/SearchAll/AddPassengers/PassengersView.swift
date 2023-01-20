@@ -25,7 +25,7 @@ struct PassengersView: View {
         }
         .sheet(isPresented: $isPassengersChoice) {
             AddPassengersView()
-            .presentationDetents([.fraction(0.35)])
+            .presentationDetents([.fraction(0.4)])
         }
     }
 }

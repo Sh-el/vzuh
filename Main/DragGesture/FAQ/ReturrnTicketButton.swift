@@ -12,8 +12,8 @@ struct ReturrnTicketButton: View {
     
     var body: some View {
         ButtonBottom(image: "arrow.triangle.2.circlepath",
-                        textHeader: "Вернуть или обменять билет",
-                        text: "Правила возврата и обмена")
+                     textHeader: "Вернуть или обменять билет",
+                     text: "Правила возврата и обмена")
         .onTapGesture {
             isMoreDetail.toggle()
         }
@@ -21,7 +21,7 @@ struct ReturrnTicketButton: View {
             Text("More detail")
         }
     }
-        
+    
 }
 
 struct FAQReturrnTicketButton_Previews: PreviewProvider {

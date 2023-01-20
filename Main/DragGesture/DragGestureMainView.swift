@@ -26,7 +26,7 @@ struct DragGestureMainView: View {
                     SignUpView()
                     FAQView()
                 }
-                .padding(.bottom, 70)
+                .padding(.bottom, 90)
             }
             .scrollDisabled(isDisabled)
         }

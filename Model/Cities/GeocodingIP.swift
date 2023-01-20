@@ -22,11 +22,11 @@ struct IP: Codable {
     let ip: String
 }
 
-protocol DataGeocodingIPProtocol {
+protocol GeocodingIPProtocol {
     func getCity() -> AnyPublisher<GeocodingCity, Error>
 }
 
-struct GeocodingIP: DataGeocodingIPProtocol {
+struct GeocodingIP: GeocodingIPProtocol {
     private let apiService: APIServiceProtocol
     
     private func getIP() -> AnyPublisher<IP, Error> {
@@ -131,8 +131,4 @@ extension GeocodingIP {
     }
 }
 
-extension GeocodingIP {
-    enum RequestError: Error {
-        case addressUnreachable
-    }
-}
+

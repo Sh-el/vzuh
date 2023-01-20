@@ -8,54 +8,11 @@
 import SwiftUI
 import Combine
 
-struct TrainSchedule: Codable {
-    var trips: [Trip] = []
-    var url: String = ""
-}
-// MARK: - Trip
-extension TrainSchedule {
-    struct Trip: Codable, Identifiable {
-        let id = UUID()
-        let arrivalStation, arrivalTime: String
-        
-        let departureStation, departureTime: String
-        let numberForURL, runArrivalStation, runDepartureStation, trainNumber: String
-        let firm: Bool
-        let name: String?
-        let travelTimeInSeconds: String
-        
-        let categories: [Category]
-        
-        enum CodingKeys: String, CodingKey {
-            case arrivalStation, arrivalTime, departureStation, departureTime, firm, name
-            case numberForURL = "numberForUrl"
-            case runArrivalStation, runDepartureStation, trainNumber , travelTimeInSeconds
-            
-            case categories
-        }
-    }
-}
-// MARK: - Category
-extension TrainSchedule {
-    struct Category: Codable {
-        let price: Int
-        let type: TypeEnum
-    }
-    
-    enum TypeEnum: String, Codable {
-        case coupe = "coupe"
-        case lux = "lux"
-        case plazcard = "plazcard"
-        case sedentary = "sedentary"
-        case soft = "soft"
-    }
+protocol TrainAPIProtocol {
+    func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<TrainSchedule, Error>
 }
 
-protocol DataTrainProtocol {
-    func fetchTrainSchedule(_ location: [Route]) -> AnyPublisher<TrainSchedule, Error>
-}
-
-struct TrainApi: DataTrainProtocol {
+struct TrainApi: TrainAPIProtocol {
     private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
         URLSession
             .shared
@@ -86,7 +43,7 @@ struct TrainApi: DataTrainProtocol {
             .eraseToAnyPublisher()
     }
     
-    func fetchTrainSchedule(_ location: [Route]) -> AnyPublisher<TrainSchedule, Error> {
+    func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<TrainSchedule, Error> {
         location
             .publisher
 //          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())

@@ -8,18 +8,44 @@
 import SwiftUI
 
 struct SearchAllView: View {
-        
+    @EnvironmentObject var model: MainModel
+    let selectedTab: ButtonsMain
+    
     var body: some View {
         VStack(alignment: .leading) {
-            EnterCitiesView()
+            EnterCitiesView(selectedTab: selectedTab)
             Divider()
             DateSelectionView()
             Divider()
             PassengersView()
             Divider()
-            NavigationLink(destination: SearchAllResultView()) {
-                searchButton
+            
+            switch selectedTab {
+            case .all:
+                NavigationLink(destination: AllResultsView()) {
+                    searchButton
+                        
+                }
+                .disabled(model.departure?.name == model.arrival?.name)
+                
+            case .hotels:
+                NavigationLink(destination: AllResultsView()) {
+                    searchButton
+                }
+            case .airplane:
+                NavigationLink(destination: AllResultsView()) {
+                    searchButton
+                }
+            case .train:
+                NavigationLink(destination: AllResultsView()) {
+                    searchButton
+                }
+            case .bus:
+                NavigationLink(destination: AllResultsView()) {
+                    searchButton
+                }
             }
+            
         }
     }
     
@@ -41,7 +67,7 @@ struct AllFindView_Previews: PreviewProvider {
     static let model = MainModel()
     
     static var previews: some View {
-        SearchAllView()
+        SearchAllView(selectedTab: .all)
             .environmentObject(model)
     }
 }

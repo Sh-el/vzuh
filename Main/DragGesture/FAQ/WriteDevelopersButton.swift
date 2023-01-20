@@ -12,8 +12,8 @@ struct WriteDevelopersButton: View {
     
     var body: some View {
         ButtonBottom(image: "wrench.and.screwdriver",
-                        textHeader: "Написать разработчикам",
-                        text: "Поделитесь своим мнением")
+                     textHeader: "Написать разработчикам",
+                     text: "Поделитесь своим мнением")
         .onTapGesture {
             isMoreDetail.toggle()
         }

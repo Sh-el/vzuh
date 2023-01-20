@@ -9,11 +9,11 @@ import SwiftUI
 
 struct DatePick: View {
     @EnvironmentObject var model: MainModel
-    let isTime: DateSelectionView.IsTime?
+    let dateTrip: DateSelectionView.DateTrip?
     
     var body: some View {
         VStack {
-            if isTime == .dateDeparture {
+            if dateTrip == .dateDeparture {
                 Text((model.departure?.name ?? "") + " - " + (model.arrival?.name ?? ""))
                     .font(.largeTitle)
             } else {
@@ -21,7 +21,7 @@ struct DatePick: View {
                     .font(.largeTitle)
             }
             DatePicker("",
-                       selection: isTime == .dateDeparture ?
+                       selection: dateTrip == .dateDeparture ?
                        $model.dateDeparture: $model.dateBack,
                        in: Date.now...,
                        displayedComponents: [.date])
@@ -31,9 +31,9 @@ struct DatePick: View {
         .foregroundColor(.black)
         .padding()
         .onDisappear{
-            if isTime == .dateDeparture && model.dateBack < model.dateDeparture {
+            if dateTrip == .dateDeparture && model.dateBack < model.dateDeparture {
                 model.dateBack = model.dateDeparture
-            } else if isTime == .dateBack && model.dateDeparture > model.dateBack {
+            } else if dateTrip == .dateBack && model.dateDeparture > model.dateBack {
                 model.dateDeparture = model.dateBack
             }
         }
@@ -43,7 +43,7 @@ struct DatePick: View {
 struct DatePick_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
-        DatePick(isTime: .dateDeparture)
+        DatePick(dateTrip: .dateDeparture)
             .environmentObject(model)
     }
 }

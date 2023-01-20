@@ -12,8 +12,8 @@ struct WhereCanGoButton: View {
     
     var body: some View {
         ButtonBottom(image: "balloon.fill",
-                        textHeader: "Куда можно поехать ",
-                        text: "Страны и регионы, открытые для россиян")
+                     textHeader: "Куда можно поехать ",
+                     text: "Страны и регионы, открытые для россиян")
         .onTapGesture {
             isMoreDetail.toggle()
         }

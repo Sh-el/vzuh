@@ -14,7 +14,6 @@ struct AskChatButton: View {
                 .font(.largeTitle)
                 .foregroundColor(.blue)
                 .padding()
-            
             Text("Спросить в чате")
                 .font(.headline)
                 .fontWeight(.bold)

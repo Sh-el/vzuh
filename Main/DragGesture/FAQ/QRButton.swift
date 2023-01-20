@@ -12,8 +12,8 @@ struct QRButton: View {
     
     var body: some View {
         ButtonBottom(image: "qrcode",
-                        textHeader: "QR-коды и ограничения",
-                        text: "Самое важное о поездках в пандемию")
+                     textHeader: "QR-коды и ограничения",
+                     text: "Самое важное о поездках в пандемию")
         .onTapGesture {
             isMoreDetail.toggle()
         }

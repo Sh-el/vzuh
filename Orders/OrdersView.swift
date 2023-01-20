@@ -10,19 +10,45 @@ import SwiftUI
 struct OrdersView: View {
     var body: some View {
         ZStack {
+            Image("day_snow")
+                .resizable()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
             VStack {
-                Text("You can use gradients as the TabView's background color.")
-                    .padding()
-                    .frame(maxHeight: .infinity)
-                
-               
+                Image(systemName: "banknote")
+                    .font(.largeTitle)
+                    .padding(.bottom, 2)
+                Text("Пока здесь пусто")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom, 2)
+                Text("Войдите, чтобы сохранить заказ в своем профиле на Вжух. Предыдущие заказы из профиля.")
+                    .lineLimit(3)
+                Button {
+                    
+                } label: {
+                    enterButton
+                }
+
             }
-            .font(.title2)
+            
         }
         .tabItem{
             Image(systemName: "dollarsign.square")
-            Text("Orders")
+            Text("Заказы")
         }
+    }
+    
+    var enterButton: some View {
+        Text("Войти")
+            .font(.title)
+            .fontWeight(.bold)
+            .foregroundColor(.white)
+            .padding(.horizontal, 15)
+            .padding(.vertical, 10)
+            .background(.blue)
+            .cornerRadius(5)
+            .padding(.horizontal, 10)
     }
 }
 

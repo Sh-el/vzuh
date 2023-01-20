@@ -38,7 +38,7 @@ struct MainView: View {
         }
         .tabItem{
             Image(systemName: "magnifyingglass")
-            Text("Search")
+            Text("Поиск")
         }
         .tag(1)
         

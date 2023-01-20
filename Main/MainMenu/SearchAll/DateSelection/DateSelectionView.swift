@@ -9,50 +9,50 @@ import SwiftUI
 
 struct DateSelectionView: View {
     @EnvironmentObject var model: MainModel
-    @State private var isTime: IsTime?
-    @State private var isDateBackShow = false
+    @State private var dateTrip: DateTrip?
     
     var body: some View {
         HStack {
             Text(model.dateDeparture.dateToString)
                 .fontWeight(.semibold)
                 .onTapGesture {
-                    isTime = .dateDeparture
+                    dateTrip = .dateDeparture
                 }
             Spacer()
-            Text(isDateBackShow ? model.dateBack.dateToString : "Обратно")
+            Text(model.isDateBack ? model.dateBack.dateToString : "Обратно")
                 .fontWeight(.semibold)
-                .foregroundColor(isDateBackShow ? .white : .gray.opacity(0.7))
+                .foregroundColor(model.isDateBack ? .white : .gray.opacity(0.7))
                 .onTapGesture {
-                    isTime = .dateBack
+                    dateTrip = .dateBack
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        isDateBackShow = true
+                        model.isDateBack = true
                     }
                 }
             Spacer()
-            if isDateBackShow {
+            if model.isDateBack {
                 Button {
-                    isDateBackShow = false
+                    model.isDateBack = false
                 } label: {
                     Text("X")
                         .padding(.trailing, 20)
                 }
             }
         }
-        .sheet(item: $isTime) {DatePick(isTime: $0)}
+        .sheet(item: $dateTrip) {DatePick(dateTrip: $0)}
     }
 }
 
 extension Date {
     var dateToString: String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
         formatter.dateFormat = "d MMM, E"
         return formatter.string(from: self)
     }
 }
 
 extension DateSelectionView {
-    enum IsTime: Identifiable {
+    enum DateTrip: Identifiable {
         case dateDeparture
         case dateBack
         

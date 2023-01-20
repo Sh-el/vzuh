@@ -11,13 +11,12 @@ struct WelcomeView: View {
     
     var body: some View {
         TabView {
-            
             MainView()
             OrdersView()
             HelpView()
             ProfileView()
         }
-        .accentColor(.purple)
+//        .accentColor(.purple)
     }
 }
 

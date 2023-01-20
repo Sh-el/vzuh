@@ -35,6 +35,7 @@ struct AddChildView: View {
                 } label: {
                     Text("Ok")
                 }
+                .padding()
             }
             .foregroundColor(.black)
         }

@@ -64,7 +64,7 @@ struct ButtonsMainMenuView: View {
     private struct Const {
         static let colorSelcted = Color.white
         static let colorDefault = Color.black
-        static let opacity: CGFloat = 2/3
+        static let opacity: CGFloat = 0.7
         
 //        enum ButtonsMain: Identifiable, CaseIterable {
 //            case all

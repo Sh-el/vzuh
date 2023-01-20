@@ -12,7 +12,7 @@ struct FoundCitiesView: View {
     @EnvironmentObject var searching: SearchingCities
     @Environment(\.dismiss) private var dismiss
     
-    let isWhere: EnterCitiesView.IsPlace?
+    let place: EnterCitiesView.Place?
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -64,17 +64,14 @@ struct FoundCitiesView: View {
                                 }
                                 .padding(.vertical, 5)
                                 .onTapGesture {
-                                    if isWhere == .departure {
+                                    if place == .departure {
                                         model.departure = searching.getLocation(city)
-                                        print("Dep")
-                                    } else if isWhere == .arrival {
+                                    } else if place == .arrival {
                                         model.arrival = searching.getLocation(city)
-                                        print("Arr")
                                     }
                                     dismiss()
                                 }
                             }
-                            
                         }
                     case .none:
                         EmptyView()
@@ -91,7 +88,7 @@ struct MainCitiesView_Previews: PreviewProvider {
     static let model = MainModel()
     static let searching = SearchingCities()
     static var previews: some View {
-        FoundCitiesView(isWhere: .departure)
+        FoundCitiesView(place: .departure)
             .environmentObject(model)
             .environmentObject(searching)
     }
