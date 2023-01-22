@@ -74,9 +74,12 @@ struct AllResultsView: View {
         .actionSheet(isPresented: $showingOptions) {sortActionSheet}
         .onAppear {
             model.trainSchedule = nil
-            model.getTrainSchedule()
+            model.isSearch = true
+            print("onappear")
         }
         .onDisappear{
+            model.isSearch = false
+            print("onDisappear")
         }
     }
 }

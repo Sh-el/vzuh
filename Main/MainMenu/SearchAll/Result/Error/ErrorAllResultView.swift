@@ -16,6 +16,7 @@ struct ErrorAllResultView: View {
             Text(".addressUnreachable")
         case .invalidRequest:
             NoScheduleView()
+                
         case .decodingError:
             Text(".decodingError")
         case .timeOut:

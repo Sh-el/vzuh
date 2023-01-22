@@ -24,10 +24,8 @@ struct SearchAllView: View {
             case .all:
                 NavigationLink(destination: AllResultsView()) {
                     searchButton
-                        
                 }
                 .disabled(model.departure?.name == model.arrival?.name)
-                
             case .hotels:
                 NavigationLink(destination: AllResultsView()) {
                     searchButton
@@ -45,7 +43,6 @@ struct SearchAllView: View {
                     searchButton
                 }
             }
-            
         }
     }
     

@@ -26,7 +26,6 @@ struct MainView: View {
                 topButtons
                 DragGestureMainView(startingOffsetY: startingOffsetYDragGesture)
                     .ignoresSafeArea()
-                
             }
             .sheet(item: $isTopButtons) {topButton in
                 if topButton == .changeBackground {
@@ -41,7 +40,6 @@ struct MainView: View {
             Text("Поиск")
         }
         .tag(1)
-        
     }
 }
 

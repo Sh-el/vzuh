@@ -42,7 +42,6 @@ struct ChangeBackgroundView: View {
                     dismiss()
                 } label: {
                     Text("X")
-                        
                 }
             }
             .fontWeight(.bold)

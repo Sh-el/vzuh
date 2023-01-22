@@ -77,9 +77,9 @@ struct EnterCitiesView: View {
                     }
                     Button {
                         withAnimation(.linear(duration: 0.3)) {
- 
+                            model.changeCity()
                         }
-                        model.changeCity()
+                        
                     } label: {
                         Image(systemName: "arrow.up.arrow.down")
                             .padding()

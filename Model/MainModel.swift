@@ -24,8 +24,6 @@ class MainModel: ObservableObject {
     @Published var children: [Child] = []
     @Published var resultAddPassengers = ResultAddPassengers(error: .everythingOk, isMaxPassengers: false)
     
-    
-    
     //Train
     typealias TrainScheduleResultArray = Result<[TrainSchedule.Trip], Error>
     
@@ -36,23 +34,6 @@ class MainModel: ObservableObject {
     @Published var trainSchedule: TrainScheduleResultArray?
     @Published var isSearch = false
   
-    func getTrainSchedule() {
-        Publishers.Zip($departure, $arrival)
-            .print("isSearch" + isSearch.description)
-            .filter{$0.0 != nil && $0.1 != nil}
-            .filter{!($0.0?.name.isEmpty)! && !($0.1?.name.isEmpty)!}
-            .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
-            .flatMap(self.trainAPI.getTrainSchedule)
-            .map{$0.trips.map{$0}}
-            .scan([], {$0 + [$1]})
-            .map{$0.flatMap{$0}}
-            .map{Array(Set($0))}
-            .asResult()
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$trainSchedule)
-    }
-    
     func trainMinPrice(schedule: [TrainSchedule.Trip]) -> TrainSchedule.Trip? {
         dataTrainSchedule.minPrice(schedule)
     }
@@ -220,20 +201,20 @@ class MainModel: ObservableObject {
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
         
-//        Publishers.Zip($departure, $arrival)
-//            .filter{$0.0 != nil && $0.1 != nil}
-//            .filter{!($0.0?.name.isEmpty)! && !($0.1?.name.isEmpty)!}
-//            .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
-//            .flatMap(self.trainAPI.getTrainSchedule)
-//            .map{$0.trips.map{$0}}
-//            .scan([], {$0 + [$1]})
-//            .map{$0.flatMap{$0}}
-//            .map{Array(Set($0))}
-//            .asResult()
-//            .eraseToAnyPublisher()
-//            .receive(on: DispatchQueue.main)
-//            .assign(to: &$trainSchedule)
+        Publishers.CombineLatest3($departure, $arrival, $isSearch)
+            .filter{$0.2}
+            .filter{$0.0 != nil && $0.1 != nil}
+            .filter{!($0.0?.name.isEmpty)! && !($0.1?.name.isEmpty)!}
+            .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
+            .flatMap{self.trainAPI.getTrainSchedule($0)}
+            .asResult()
+            .print()
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$trainSchedule)
     }
+    
+   
     
     private struct Const {
         static let maxNumberPassengers = 4
