@@ -47,12 +47,13 @@ struct SignUpView: View {
                     Text("Войти")
                         .font(.title3)
                         .foregroundColor(.black)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(.blue.opacity(0.2))
+                        .cornerRadius(5)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                .background(.blue.opacity(0.2))
-                .cornerRadius(5)
+                
                 .padding(.horizontal, 10)
                 .padding(.bottom, 10)
             }

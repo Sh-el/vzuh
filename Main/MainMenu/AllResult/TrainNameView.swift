@@ -13,7 +13,7 @@ struct TrainNameView: View {
     var body: some View {
         HStack {
             Text(trip.name?.trimmingCharacters(in: .whitespaces) ?? "")
-            Text(trip.trainNumber)
+            Text(trip.trainNumber.trimmingCharacters(in: .whitespaces))
         }
         .padding(5)
         .background(.blue.opacity(0.15))

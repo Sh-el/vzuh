@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DragGestureMainView: View {
+struct DragSheetView: View {
     @State var startingOffsetY: CGFloat
     @State private var currentDragOffsetY: CGFloat = 0
     @State private var endingOffsetY: CGFloat = 0
@@ -41,7 +41,7 @@ struct DragGestureMainView: View {
     }
 }
 
-extension DragGestureMainView {
+extension DragSheetView {
     private var gesture1: some Gesture {
         DragGesture()
             .onChanged {value in
@@ -58,7 +58,7 @@ extension DragGestureMainView {
     }
 }
 
-extension DragGestureMainView {
+extension DragSheetView {
     private var gesture: some Gesture {
         DragGesture()
             .onChanged {value in
@@ -83,6 +83,6 @@ extension DragGestureMainView {
 
 struct DragGestureMain_Previews: PreviewProvider {
     static var previews: some View {
-        DragGestureMainView(startingOffsetY: 0)
+        DragSheetView(startingOffsetY: 0)
     }
 }

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct SearchAllView: View {
+struct SearchView: View {
     @EnvironmentObject var model: MainModel
-    let selectedTab: ButtonsMain
+    let selectedTab: MainMenuTab
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -27,19 +27,19 @@ struct SearchAllView: View {
                 }
                 .disabled(model.departure?.name == model.arrival?.name)
             case .hotels:
-                NavigationLink(destination: AllResultsView()) {
+                NavigationLink(destination: HotelsResultView()) {
                     searchButton
                 }
-            case .airplane:
-                NavigationLink(destination: AllResultsView()) {
+            case .flights:
+                NavigationLink(destination: FlightsResultView()) {
                     searchButton
                 }
             case .train:
-                NavigationLink(destination: AllResultsView()) {
+                NavigationLink(destination: TrainsResultView()) {
                     searchButton
                 }
             case .bus:
-                NavigationLink(destination: AllResultsView()) {
+                NavigationLink(destination: BusResultView()) {
                     searchButton
                 }
             }
@@ -64,7 +64,7 @@ struct AllFindView_Previews: PreviewProvider {
     static let model = MainModel()
     
     static var previews: some View {
-        SearchAllView(selectedTab: .all)
+        SearchView(selectedTab: .all)
             .environmentObject(model)
     }
 }

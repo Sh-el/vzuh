@@ -7,25 +7,18 @@
 
 import SwiftUI
 
-struct AirplaneFindView: View {
+struct FlightsResultView: View {
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Airplane")
-            Divider()
-            Text("Airplane")
-            Divider()
-            Text("Airplane")
-            Divider()
-            Text("Airplane")
-            Divider()
+            Text("FlightsResult")
         }
-        .foregroundColor(.white)
+        .foregroundColor(.black)
         .padding()
     }
 }
 
 struct AirplaneFindView_Previews: PreviewProvider {
     static var previews: some View {
-        AirplaneFindView()
+        FlightsResultView()
     }
 }

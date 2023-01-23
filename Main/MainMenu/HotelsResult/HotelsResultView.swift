@@ -7,25 +7,18 @@
 
 import SwiftUI
 
-struct HotelFindView: View {
+struct HotelsResultView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Hotel")
-            Divider()
-            Text("Hotel")
-            Divider()
-            Text("Hotel")
-            Divider()
-            Text("Hotel")
-            Divider()
         }
-        .foregroundColor(.white)
+        .foregroundColor(.black)
         .padding()
     }
 }
 
 struct HotelFindView_Previews: PreviewProvider {
     static var previews: some View {
-        HotelFindView()
+        HotelsResultView()
     }
 }

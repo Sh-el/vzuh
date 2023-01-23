@@ -11,9 +11,6 @@ struct MainView: View {
     @EnvironmentObject var model: MainModel
     @State private var isTopButtons: TopButtons?
     
-    let startingOffsetYDragGesture = UIScreen.main.bounds.height * 0.75
-    let offsetYMainMenu = -UIScreen.main.bounds.height * (1 - 0.75)
-    
     var body: some View {
         NavigationView {
             ZStack(alignment: .top) {
@@ -21,10 +18,10 @@ struct MainView: View {
                 MainMenuView()
                     .padding(.horizontal, 10)
                     .padding(.bottom, 10)
-                    .offset(y: offsetYMainMenu)
+                    .offset(y: Const.offsetYMainMenu)
                     .ignoresSafeArea()
-                topButtons
-                DragGestureMainView(startingOffsetY: startingOffsetYDragGesture)
+                topButtonsView
+                DragSheetView(startingOffsetY: Const.startingOffsetYDragGesture)
                     .ignoresSafeArea()
             }
             .sheet(item: $isTopButtons) {topButton in
@@ -44,7 +41,7 @@ struct MainView: View {
 }
 
 extension MainView {
-    var topButtons: some View {
+    var topButtonsView: some View {
         HStack {
             Text("vzuh")
             Spacer()
@@ -64,6 +61,15 @@ extension MainView {
         .fontWeight(.bold)
         .foregroundColor(.white)
         .padding()
+    }
+}
+
+extension MainView {
+    enum TopButtons: Identifiable {
+        case changeBackground
+        case notifications
+        
+        var id: Self{self}
     }
 }
 
@@ -95,18 +101,10 @@ extension MainView {
 extension MainView {
     struct Const {
         static let gradient = LinearGradient(colors: [.blue.opacity(0.4), .blue.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        static let startingOffsetYDragGesture = UIScreen.main.bounds.height * 0.75
+        static let offsetYMainMenu = -UIScreen.main.bounds.height * (1 - 0.75)
     }
 }
-
-extension MainView {
-    enum TopButtons: Identifiable {
-        case changeBackground
-        case notifications
-        
-        var id: Self{self}
-    }
-}
-
 
 struct MainView_Previews: PreviewProvider {
     static let model = MainModel()

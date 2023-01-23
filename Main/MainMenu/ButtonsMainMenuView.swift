@@ -9,8 +9,7 @@ import SwiftUI
 
 struct ButtonsMainMenuView: View {
     @EnvironmentObject var model: MainModel
-    @Binding var selectedTab: ButtonsMain
-//    @State private var selected: Const.ButtonsMain = .all
+    @Binding var selectedTab: MainMenuTab
     
     var body: some View {
         VStack {
@@ -97,7 +96,7 @@ struct ButtonsMainMenuView: View {
 struct ButtonsMainView_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
-        ButtonsMainMenuView(selectedTab: .constant(ButtonsMain.all))
+        ButtonsMainMenuView(selectedTab: .constant(MainMenuTab.all))
             .environmentObject(model)
     }
 }

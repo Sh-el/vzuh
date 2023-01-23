@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    
     var body: some View {
         TabView {
             MainView()
@@ -16,7 +15,6 @@ struct WelcomeView: View {
             HelpView()
             ProfileView()
         }
-//        .accentColor(.purple)
     }
 }
 

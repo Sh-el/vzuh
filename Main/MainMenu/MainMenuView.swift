@@ -9,22 +9,19 @@ import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var model: MainModel
-    @State private var selectedTab = ButtonsMain.all
     
     var body: some View {
-            TabView(selection: $selectedTab) {
-                VStack(alignment: .leading) {
-                    Spacer()
-                    ButtonsMainMenuView(selectedTab: $selectedTab)
-                        .padding(.bottom, 10)
-                    SearchAllView(selectedTab: selectedTab)
-                        .foregroundColor(.white)
-                }
+        TabView(selection: $model.mainMenuTabSelected) {
+            VStack(alignment: .leading) {
+                Spacer()
+                ButtonsMainMenuView(selectedTab: $model.mainMenuTabSelected)
+                    .padding(.bottom, 10)
+                SearchView(selectedTab: model.mainMenuTabSelected)
+                    .foregroundColor(.white)
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-  
+        }
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
     }
-  
 }
 
 struct MainMenuView_Previews: PreviewProvider {

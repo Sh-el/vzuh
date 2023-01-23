@@ -9,9 +9,8 @@ import SwiftUI
 import Combine
 
 class MainModel: ObservableObject {
-    @Published var backgroundMain = "day_snow"
-    @Published var imagesBackground: [String] = []
-    @Published var buttonsMain: [ButtonsMain] = []
+    @Published var mainMenuTabSelected: MainMenuTab = .all
+    @Published var isSearch = false
     
     @Published var departure: Location?
     @Published var arrival: Location?
@@ -32,10 +31,16 @@ class MainModel: ObservableObject {
     private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     
     @Published var trainSchedule: TrainScheduleResultArray?
-    @Published var isSearch = false
-  
+    
     func trainMinPrice(schedule: [TrainSchedule.Trip]) -> TrainSchedule.Trip? {
         dataTrainSchedule.minPrice(schedule)
+    }
+    
+    func getTrips(_ value: (Location?, Location?)) ->  AnyPublisher<[TrainSchedule.Trip], Error>{
+        Just(value)
+            .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
+            .flatMap{self.trainAPI.getTrainSchedule($0)}
+            .eraseToAnyPublisher()
     }
     
     func sortTrainSchedule(by sort: TrainSchedule.Sort) {
@@ -63,16 +68,14 @@ class MainModel: ObservableObject {
                 }
             }
             .asResult()
+            .print()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedule)
     }
     
     func changeCity() {
-        let arr = arrival
-        let dep = departure
-        departure = arr
-        arrival = dep
+        (arrival, departure) = (departure, arrival)
     }
     
     func numberPassengers() -> Int {
@@ -200,21 +203,24 @@ class MainModel: ObservableObject {
         self.trainStationsAndRoutes = trainStationsAndRoutes
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
-        
-        Publishers.CombineLatest3($departure, $arrival, $isSearch)
-            .filter{$0.2}
+       
+        Publishers.CombineLatest4($departure, $arrival, $mainMenuTabSelected, $isSearch)
+            .filter{$0.3}
+            .filter{$0.2 == .all}
             .filter{$0.0 != nil && $0.1 != nil}
             .filter{!($0.0?.name.isEmpty)! && !($0.1?.name.isEmpty)!}
-            .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
-            .flatMap{self.trainAPI.getTrainSchedule($0)}
-            .asResult()
+            .map{($0.0, $0.1)}
+            .flatMap{self.getTrips($0).asResult()}
             .print()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedule)
+
     }
     
-   
+    @Published var backgroundMain = "day_snow"
+    @Published var imagesBackground: [String] = []
+    @Published var buttonsMain: [MainMenuTab] = []
     
     private struct Const {
         static let maxNumberPassengers = 4
@@ -226,10 +232,10 @@ class MainModel: ObservableObject {
                                        "night_clearsky",
                                        "tokyo-station"]
         
-        static let buttonsMain = [ButtonsMain.all,
-                                  ButtonsMain.airplane,
-                                  ButtonsMain.train,
-                                  ButtonsMain.bus]
+        static let buttonsMain = [MainMenuTab.all,
+                                  MainMenuTab.flights,
+                                  MainMenuTab.train,
+                                  MainMenuTab.bus]
     }
 }
 
@@ -310,10 +316,10 @@ struct ResultAddPassengers {
     let isMaxPassengers: Bool
 }
 
-enum ButtonsMain {
+enum MainMenuTab {
     case all
     case hotels
-    case airplane
+    case flights
     case train
     case bus
     
@@ -323,7 +329,7 @@ enum ButtonsMain {
             return "globe"
         case .hotels:
             return "bed.double"
-        case .airplane:
+        case .flights:
             return "airplane"
         case .train:
             return "tram"
