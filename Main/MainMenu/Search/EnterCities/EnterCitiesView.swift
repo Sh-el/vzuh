@@ -11,7 +11,6 @@ struct EnterCitiesView: View {
     @EnvironmentObject var model: MainModel
     
     @State private var place: Place?
-    let selectedTab: MainMenuTab
     
     var body: some View {
         VStack {
@@ -71,7 +70,7 @@ extension EnterCitiesView {
 struct EnterCitiesView_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
-        EnterCitiesView(selectedTab: .all)
+        EnterCitiesView()
             .environmentObject(model)
     }
 }

@@ -14,7 +14,7 @@ enum RequestError: Error {
 
 struct APIService: APIServiceProtocol {
     
-    static private func fetch(url: String) -> AnyPublisher<URL, Error> {
+    private func fetchURL(url: String) -> AnyPublisher<URL, Error> {
         Just(url)
             .tryMap {
                 guard let url = URL(string: $0)
@@ -26,7 +26,7 @@ struct APIService: APIServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    static private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
+    private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
         URLSession
             .shared
             .dataTaskPublisher(for: url)
@@ -40,7 +40,7 @@ struct APIService: APIServiceProtocol {
             .eraseToAnyPublisher()
     }
     
-    static private func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T, Error> {
+    private func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T, Error> {
         Just(data)
             .tryMap{data -> T in
                 do {
@@ -57,8 +57,8 @@ struct APIService: APIServiceProtocol {
     
     func get<T: Decodable>(url: URL) -> AnyPublisher<T, Error> {
         Just(url)
-            .flatMap(APIService.fetchData)
-            .flatMap(APIService.decode)
+            .flatMap(fetchData)
+            .flatMap(decode)
             .eraseToAnyPublisher()
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DepArrView: View {
     @EnvironmentObject var model: MainModel
-//    @EnvironmentObject var searching: SearchingCities
+    @EnvironmentObject var searching: SearchingCities
     let trip: TrainSchedule.Trip
     
     var body: some View {
@@ -18,9 +18,9 @@ struct DepArrView: View {
                 Text(trip.departureTime.dropLast(3))
                     .font(.title)
                     .fontWeight(.bold)
-//                Text(searching.stationName(trip.departureStation))
-//                    .font(.callout)
-//                    .foregroundColor(.gray)
+                Text(searching.stationName(trip.departureStation))
+                    .font(.callout)
+                    .foregroundColor(.gray)
                 Spacer()
             }
             Spacer()
@@ -28,9 +28,9 @@ struct DepArrView: View {
                 Text(trip.arrivalTime.dropLast(3))
                     .font(.title)
                     .fontWeight(.bold)
-//                Text(searching.stationName(trip.arrivalStation))
-//                    .font(.callout)
-//                    .foregroundColor(.gray)
+                Text(searching.stationName(trip.arrivalStation))
+                    .font(.callout)
+                    .foregroundColor(.gray)
                 Spacer()
             }
             Spacer()

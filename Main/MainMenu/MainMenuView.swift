@@ -14,9 +14,9 @@ struct MainMenuView: View {
         TabView(selection: $model.mainMenuTabSelected) {
             VStack(alignment: .leading) {
                 Spacer()
-                ButtonsMainMenuView(selectedTab: $model.mainMenuTabSelected)
+                ButtonsMainMenuView()
                     .padding(.bottom, 10)
-                SearchView(selectedTab: model.mainMenuTabSelected)
+                SearchView()
                     .foregroundColor(.white)
             }
         }

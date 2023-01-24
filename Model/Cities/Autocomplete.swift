@@ -11,18 +11,21 @@ import Combine
 typealias AutocompleteCities = [AutocompleteCityElemnt]
 
 protocol DataAutocompleteProtocol {
-    func getAutocompleteCity(city: String) -> AnyPublisher<AutocompleteCities, Error>
+    func getAutocompleteCities(city: String) -> AnyPublisher<AutocompleteCities, Error>
 }
 
 struct Autocomplete: DataAutocompleteProtocol {
     private let apiService: APIServiceProtocol
     
-    func getAutocompleteCity(city: String) -> AnyPublisher<AutocompleteCities, Error> {
-        guard let url = Endpoint.places(city: city).absoluteURL else {
-            return  Fail(error: RequestError.addressUnreachable)
-                .eraseToAnyPublisher()
-        }
-        return apiService.get(url: url)
+    func getAutocompleteCities(city: String) -> AnyPublisher<AutocompleteCities, Error> {
+        Just(city)
+            .tryMap{
+                guard let url = Endpoint.places(city: $0).absoluteURL else {
+                    throw RequestError.addressUnreachable
+                }
+                return url
+            }
+            .flatMap(apiService.get)
             .eraseToAnyPublisher()
     }
     

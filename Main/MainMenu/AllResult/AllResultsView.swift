@@ -11,7 +11,7 @@ struct AllResultsView: View {
     @EnvironmentObject var model: MainModel
     @State private var isDetail = false
     @State private var showingOptions = false
-    @State private var sort: TrainSchedule.Sort?
+//    @State private var sort: TrainSchedule.Sort?
     
     var body: some View {
         ZStack {
@@ -24,32 +24,60 @@ struct AllResultsView: View {
                 ScrollView(.vertical) {
                     switch model.trainSchedule {
                     case .success(let schedule):
-                        HeaderScrollView(showingOptions: $showingOptions,
-                                         sort: $sort,
-                                         schedule: schedule)
-                        .padding(.top, 10)
-                        .padding(.horizontal, 10)
-                        
-                        ForEach(schedule, id: \.self) {trip in
-                            VStack(alignment: .leading) {
-                                TrainNameView(trip: trip)
-                                    .padding(5)
-                                DepArrView(trip: trip)
-                                    .padding(.bottom, 5)
-                                    .padding(.horizontal, 5)
-                                RailwayCarriageCategoryView(trip: trip)
-                                    .padding(.bottom, 5)
-                                    .padding(.horizontal, 5)
-                            }
-                            .foregroundColor(.black)
-                            .frame(maxWidth: .infinity)
-                            .background(.blue.opacity(0.1))
-                            .cornerRadius(5)
+                        if !schedule.isEmpty {
+                            HeaderScrollView(showingOptions: $showingOptions,
+                                             schedule: schedule)
+                            .padding(.top, 10)
                             .padding(.horizontal, 10)
-                            .onTapGesture {
-                                isDetail.toggle()
+                            
+                            ForEach(schedule, id: \.self) {trip in
+                                VStack(alignment: .leading) {
+                                    TrainNameView(trip: trip)
+                                        .padding(5)
+                                    DepArrView(trip: trip)
+                                        .padding(.bottom, 5)
+                                        .padding(.horizontal, 5)
+                                    RailwayCarriageCategoryView(trip: trip)
+                                        .padding(.bottom, 5)
+                                        .padding(.horizontal, 5)
+                                }
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity)
+                                .background(.blue.opacity(0.1))
+                                .cornerRadius(5)
+                                .padding(.horizontal, 10)
+                                .onTapGesture {
+                                    isDetail.toggle()
+                                }
                             }
+                            .actionSheet(isPresented: $showingOptions) {ActionSheet(
+                                title: Text("Сортировка:"),
+                                buttons: [
+                                    .default(Text("сначала дешевые")) {
+                                        model.sortTrain = .lowestPrice
+                                        model.trainScheduleForSort = schedule
+                                    },
+                                    .default(Text("сначала быстрые")) {
+                                        model.sortTrain = .fastest
+                                        model.trainScheduleForSort = schedule
+                                    },
+                                    .default(Text("сначала ранние")) {
+                                        model.sortTrain = .earliest
+                                        model.trainScheduleForSort = schedule
+                                    },
+                                    .default(Text("сначала поздние")) {
+                                        model.sortTrain = .latest
+                                        model.trainScheduleForSort = schedule
+                                    },
+                                    .cancel(Text("Отмена")) {
+                                    }
+                                ]
+                            )}
                         }
+                        else {
+                            NoScheduleView()
+                        }
+                        
                     case .none:
                         EmptyView()
                     case .some(.failure(let error)):
@@ -71,47 +99,46 @@ struct AllResultsView: View {
                 Text("")
             }
         }
-        .actionSheet(isPresented: $showingOptions) {sortActionSheet}
+        
         .onAppear {
             model.trainSchedule = nil
             model.isSearch = true
-            print("onappear")
         }
         .onDisappear{
             model.isSearch = false
-            print("onDisappear")
         }
     }
 }
 
 
-extension AllResultsView {
-    private var sortActionSheet: ActionSheet {
-        ActionSheet(
-            title: Text("Сортировка:"),
-            buttons: [
-                .default(Text("сначала дешевые")) {
-                    model.sortTrainSchedule(by: .lowestPrice)
-                    sort = .lowestPrice
-                },
-                .default(Text("сначала быстрые")) {
-                    model.sortTrainSchedule(by: .fastest)
-                    sort = .fastest
-                },
-                .default(Text("сначала ранние")) {
-                    model.sortTrainSchedule(by: .earliest)
-                    sort = .earliest
-                },
-                .default(Text("сначала поздние")) {
-                    model.sortTrainSchedule(by: .latest)
-                    sort = .latest
-                },
-                .cancel(Text("Отмена")) {
-                }
-            ]
-        )
-    }
-}
+//extension AllResultsView {
+//    private var sortActionSheet: ActionSheet {
+//        ActionSheet(
+//            title: Text("Сортировка:"),
+//            buttons: [
+//                .default(Text("сначала дешевые")) {
+//                    model.sortTrainSchedule(by: .lowestPrice)
+//
+//                    sort = .lowestPrice
+//                },
+//                .default(Text("сначала быстрые")) {
+//                    model.sortTrainSchedule(by: .fastest)
+//                    sort = .fastest
+//                },
+//                .default(Text("сначала ранние")) {
+//                    model.sortTrainSchedule(by: .earliest)
+//                    sort = .earliest
+//                },
+//                .default(Text("сначала поздние")) {
+//                    model.sortTrainSchedule(by: .latest)
+//                    sort = .latest
+//                },
+//                .cancel(Text("Отмена")) {
+//                }
+//            ]
+//        )
+//    }
+//}
 
 
 struct SearchAllResultView_Previews: PreviewProvider {

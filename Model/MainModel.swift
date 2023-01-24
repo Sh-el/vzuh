@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-class MainModel: ObservableObject {
+final class MainModel: ObservableObject {
     @Published var mainMenuTabSelected: MainMenuTab = .all
     @Published var isSearch = false
     
@@ -30,8 +30,11 @@ class MainModel: ObservableObject {
     private var dataTrainSchedule: TrainScheduleProtocol
     private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     
-    @Published var trainSchedule: TrainScheduleResultArray?
+    @Published var trainScheduleForSort: [TrainSchedule.Trip] = []
+    @Published var sortTrain: TrainSchedule.Sort?
     
+    @Published var trainSchedule: TrainScheduleResultArray?
+  
     func trainMinPrice(schedule: [TrainSchedule.Trip]) -> TrainSchedule.Trip? {
         dataTrainSchedule.minPrice(schedule)
     }
@@ -43,47 +46,11 @@ class MainModel: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func sortTrainSchedule(by sort: TrainSchedule.Sort) {
-        guard let arr = trainSchedule else {return}
-        
-        Publishers.CombineLatest(Just(arr), Just(sort))
-            .tryMap{(tripsResult, sort) in
-                switch tripsResult {
-                case .success(let trips):
-                    return (trips, sort)
-                case .failure(let error):
-                    throw error
-                }
-            }
-            .map{(trips, sort) in
-                switch sort {
-                case .earliest:
-                    return trips.sorted(by: {$0.departureTime < $1.departureTime})
-                case .lowestPrice:
-                    return trips.sorted(by: {$0.categories.min().map{$0.price} ?? 0 < $1.categories.min().map{$0.price} ?? 0})
-                case .fastest:
-                    return trips.sorted(by: {$0.travelTimeInSeconds < $1.travelTimeInSeconds})
-                case .latest:
-                    return trips.sorted(by: {$0.departureTime > $1.departureTime})
-                }
-            }
-            .asResult()
-            .print()
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$trainSchedule)
-    }
     
     func changeCity() {
         (arrival, departure) = (departure, arrival)
     }
-    
-    func numberPassengers() -> Int {
-        let numberAdult = adultPassengers
-        let numberChildren = children.count
-        return numberAdult + numberChildren
-    }
-    
+   
     private var isPssengersCountValid: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest($adultPassengers, $children)
             .map{$0 + $1.count < Const.maxNumberPassengers}
@@ -100,6 +67,12 @@ class MainModel: ObservableObject {
         Publishers.CombineLatest($adultPassengers, $children)
             .map{$0 + $1.filter{$0.age == .zero || $0.age == .one}.count <= 1}
             .eraseToAnyPublisher()
+    }
+    
+    func numberPassengers() -> Int {
+        let numberAdult = adultPassengers
+        let numberChildren = children.count
+        return numberAdult + numberChildren
     }
     
     func addAdult() {
@@ -211,11 +184,31 @@ class MainModel: ObservableObject {
             .filter{!($0.0?.name.isEmpty)! && !($0.1?.name.isEmpty)!}
             .map{($0.0, $0.1)}
             .flatMap{self.getTrips($0).asResult()}
-            .print()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedule)
-
+        
+        Publishers.CombineLatest($trainScheduleForSort, $sortTrain)
+            .filter{!$0.0.isEmpty}
+            .filter{$0.1 != nil}
+            .tryMap{(trips, sort) -> [TrainSchedule.Trip] in
+                switch sort {
+                case .earliest:
+                    return trips.sorted(by: {$0.departureTime < $1.departureTime})
+                case .lowestPrice:
+                    return trips.sorted(by: {$0.categories.min().map{$0.price} ?? 0 < $1.categories.min().map{$0.price} ?? 0})
+                case .fastest:
+                    return trips.sorted(by: {$0.travelTimeInSeconds < $1.travelTimeInSeconds})
+                case .latest:
+                    return trips.sorted(by: {$0.departureTime > $1.departureTime})
+                case .none:
+                    return trips
+                }
+            }
+            .asResult()
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$trainSchedule)
     }
     
     @Published var backgroundMain = "day_snow"
@@ -236,6 +229,36 @@ class MainModel: ObservableObject {
                                   MainMenuTab.flights,
                                   MainMenuTab.train,
                                   MainMenuTab.bus]
+    }
+    
+    func sortTrainSchedule(by sort: TrainSchedule.Sort) {
+        guard let arr = trainSchedule else {return}
+        
+        Publishers.CombineLatest(Just(arr), Just(sort))
+            .tryMap{(tripsResult, sort) in
+                switch tripsResult {
+                case .success(let trips):
+                    return (trips, sort)
+                case .failure(let error):
+                    throw error
+                }
+            }
+            .map{(trips, sort) in
+                switch sort {
+                case .earliest:
+                    return trips.sorted(by: {$0.departureTime < $1.departureTime})
+                case .lowestPrice:
+                    return trips.sorted(by: {$0.categories.min().map{$0.price} ?? 0 < $1.categories.min().map{$0.price} ?? 0})
+                case .fastest:
+                    return trips.sorted(by: {$0.travelTimeInSeconds < $1.travelTimeInSeconds})
+                case .latest:
+                    return trips.sorted(by: {$0.departureTime > $1.departureTime})
+                }
+            }
+            .asResult()
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$trainSchedule)
     }
 }
 

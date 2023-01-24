@@ -31,7 +31,7 @@ struct GeocodingIP: GeocodingIPProtocol {
     
     private func getIP() -> AnyPublisher<IP, Error> {
         guard let url = EndpointIP.ip.absoluteURL else {
-            return  Fail(error: RequestError.addressUnreachable)
+            return Fail(error: RequestError.addressUnreachable)
                 .eraseToAnyPublisher()
         }
         return apiService.get(url: url)
@@ -41,11 +41,10 @@ struct GeocodingIP: GeocodingIPProtocol {
     func getCity() -> AnyPublisher<GeocodingCity, Error> {
         getIP()
             .tryMap{value in
-                if let url = EndpointCity.city(ip: value.ip).absoluteURL {
-                    return url
-                }  else {
+                guard let url = EndpointCity.city(ip: value.ip).absoluteURL else {
                     throw RequestError.addressUnreachable
                 }
+                return url
             }
             .flatMap(apiService.get)
             .eraseToAnyPublisher()

@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct HeaderScrollView: View {
+    @EnvironmentObject var model: MainModel
     @Binding var showingOptions: Bool
-    @Binding var sort: TrainSchedule.Sort?
+//    @Binding var sort: TrainSchedule.Sort?
     let schedule: [TrainSchedule.Trip]
     
     var body: some View {
@@ -21,7 +22,7 @@ struct HeaderScrollView: View {
                     HStack {
                         Text("\(schedule.count) " + trainOkonchanie(schedule.count) + ",")
                             .foregroundColor(.black)
-                        Text(sort?.description ?? "Сортировка")
+                        Text(model.sortTrain?.description ?? "Сортировка")
                             .foregroundColor(.blue)
                     }
                     .font(.headline)
@@ -53,7 +54,9 @@ struct HeaderScrollView: View {
 }
 
 struct HeaderScrollView_Previews: PreviewProvider {
+    static let model = MainModel()
     static var previews: some View {
-        HeaderScrollView(showingOptions: .constant(true),sort: .constant(.earliest), schedule: [TrainSchedule.Trip]())
+        HeaderScrollView(showingOptions: .constant(true), schedule: [TrainSchedule.Trip]())
+            .environmentObject(model)
     }
 }

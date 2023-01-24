@@ -13,57 +13,35 @@ protocol TrainAPIProtocol {
 }
 
 struct TrainApi: TrainAPIProtocol {
-    private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
-        URLSession
-            .shared
-            .dataTaskPublisher(for: url)
-            .mapError{error -> Error in
-                return RequestError.invalidRequest
-            }
-            .map(\.data)
-            .timeout(.seconds(5.0),
-                     scheduler: DispatchQueue.main,
-                     customError: {RequestError.timeOut})
-            .eraseToAnyPublisher()
-    }
-    
-    private func decode(_ data: Data) -> AnyPublisher<TrainSchedule, Never> {
-        Just(data)
-            .tryMap{data -> TrainSchedule in
-                do {
-                    let decoder = JSONDecoder()
-                    return try decoder.decode(TrainSchedule.self, from: data)
-                }
-                catch {
-                    throw RequestError.decodingError
-                }
-            }
-            .replaceError(with: TrainSchedule())
-            .map{$0}
-            .eraseToAnyPublisher()
-    }
+    private let apiService: APIServiceProtocol
     
     func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<[TrainSchedule.Trip], Error> {
         location
             .publisher
-//          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
-            .tryMap {
-                guard let url = EndpointTrain.search(term: $0.departureStationId, term2: $0.arrivalStationId).absoluteURL
-                else {
+        //          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
+            .tryMap{
+                guard let url = EndpointTrain.search(term: $0.departureStationId, term2: $0.arrivalStationId).absoluteURL else {
                     throw RequestError.addressUnreachable
                 }
-            
                 return url
             }
-            .print()
-            .flatMap(fetchData)
-            .flatMap(decode)
-            .print()
+            .flatMap(apiService.get)
+            .tryCatch{
+                if case RequestError.decodingError = $0 {
+                    return Just(TrainSchedule())
+                        .eraseToAnyPublisher()
+                }
+                throw $0
+            }
             .map{$0.trips.map{$0}}
             .collect()
             .map{$0.flatMap{$0}}
             .map{Array(Set($0))}
             .eraseToAnyPublisher()
+    }
+    
+    init(apiService: APIServiceProtocol = APIService()) {
+        self.apiService = apiService
     }
 }
 

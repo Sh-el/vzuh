@@ -9,18 +9,17 @@ import SwiftUI
 
 struct SearchView: View {
     @EnvironmentObject var model: MainModel
-    let selectedTab: MainMenuTab
     
     var body: some View {
         VStack(alignment: .leading) {
-            EnterCitiesView(selectedTab: selectedTab)
+            EnterCitiesView()
             Divider()
             DateSelectionView()
             Divider()
             PassengersView()
             Divider()
             
-            switch selectedTab {
+            switch model.mainMenuTabSelected {
             case .all:
                 NavigationLink(destination: AllResultsView()) {
                     searchButton
@@ -64,7 +63,7 @@ struct AllFindView_Previews: PreviewProvider {
     static let model = MainModel()
     
     static var previews: some View {
-        SearchView(selectedTab: .all)
+        SearchView()
             .environmentObject(model)
     }
 }

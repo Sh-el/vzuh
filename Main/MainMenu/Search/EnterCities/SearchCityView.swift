@@ -23,7 +23,8 @@ struct SearchCityView: View {
                 Spacer()
             }
             
-            TextField((place == .departure ? model.departure?.name : model.arrival?.name) ?? "", text: $searching.city)
+//            TextField((place == .departure ? model.departure?.name : model.arrival?.name) ?? "", text: $searching.city)
+            TextField(place == .departure ? "Введите место отправления" : "Введите место прибытия", text: $searching.city)
                 .font(.title)
                 .fontWeight(.semibold)
                 .background(Color.gray.opacity(0.2))
@@ -35,6 +36,9 @@ struct SearchCityView: View {
         }
         .padding()
         .foregroundColor(.black)
+        .onAppear{
+            searching.city = ""
+        }
     }
 }
 

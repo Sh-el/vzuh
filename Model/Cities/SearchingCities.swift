@@ -19,7 +19,7 @@ struct Location: Identifiable {
 
 final class SearchingCities: ObservableObject {
     private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
-    private var dataGeocodingIP: GeocodingIPProtocol
+    private var geocodingIP: GeocodingIPProtocol
     private var dataAutocomplete: DataAutocompleteProtocol
     
     private var allStations: [String : String] = [:]
@@ -29,7 +29,8 @@ final class SearchingCities: ObservableObject {
     @Published var city = ""
     
     //Output
-    @Published var myCity: Result<GeocodingCity, Error>?
+//    @Published var myCity: Result<GeocodingCity, Error>?
+    @Published var myCity1: Result<AutocompleteCityElemnt, Error>?
     @Published var autocompleteCities: Result<AutocompleteCities, Error>?
     @Published var mainCities: Result<AutocompleteCities, Error>?
     
@@ -48,32 +49,39 @@ final class SearchingCities: ObservableObject {
     }
     
     func stationName(_ stationId: String) -> String  {
-        let allStaions = allStations
-        let resultDict = allStaions.first(where: {key, value in
+        let resultDict = allStations.first(where: {key, value in
             key == stationId
         })
         return resultDict?.value ?? "No Name"
     }
     
     init(
-        dataTrain: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv"),
-        dataGeocodingIP: GeocodingIPProtocol = GeocodingIP(),
+        trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv"),
+        geocodingIP: GeocodingIPProtocol = GeocodingIP(),
         dataAutocomplete : DataAutocompleteProtocol = Autocomplete()
     ) {
-        self.trainStationsAndRoutes = dataTrain
-        self.dataGeocodingIP = dataGeocodingIP
+        self.trainStationsAndRoutes = trainStationsAndRoutes
+        self.geocodingIP = geocodingIP
         self.dataAutocomplete = dataAutocomplete
         
         allStations = trainStationsAndRoutes.getTrainStationsNames()
         allTrainRoutes = trainStationsAndRoutes.getTrainRoutes()
         
-        dataGeocodingIP.getCity()
+//        dataGeocodingIP.getCity()
+//            .asResult()
+//            .receive(on: DispatchQueue.main)
+//            .assign(to: &$myCity)
+        
+        self.geocodingIP.getCity()
+            .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0.name)}
+            .filter{!$0.isEmpty}
+            .map{$0.first!}
             .asResult()
             .receive(on: DispatchQueue.main)
-            .assign(to: &$myCity)
+            .assign(to: &$myCity1)
         
         Just("Россия")
-            .flatMap{self.dataAutocomplete.getAutocompleteCity(city: $0).asResult()}
+            .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0).asResult()}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$mainCities)
@@ -81,7 +89,7 @@ final class SearchingCities: ObservableObject {
         $city
             .debounce(for: 0.6, scheduler: DispatchQueue.main)
             .filter{!$0.isEmpty}
-            .flatMap{self.dataAutocomplete.getAutocompleteCity(city: $0).asResult()}
+            .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0).asResult()}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$autocompleteCities)
