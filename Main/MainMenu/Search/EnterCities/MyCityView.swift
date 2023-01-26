@@ -15,7 +15,7 @@ struct MyCityView: View {
     let place: EnterCitiesView.Place?
     
     var body: some View {
-        switch searching.myCity1 {
+        switch searching.myCity {
         case .success(let result):
             VStack(alignment: .leading) {
                 HStack {

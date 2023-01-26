@@ -8,15 +8,6 @@
 import SwiftUI
 import Combine
 
-struct Location: Identifiable {
-    var id = UUID()
-    var name: String = ""
-    var countryName: String = ""
-    var codeIATA: String = ""
-    var trainStationId: [String] = []
-    var routes: [TrainRoute] = []
-}
-
 final class SearchingCities: ObservableObject {
     private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     private var geocodingIP: GeocodingIPProtocol
@@ -29,8 +20,7 @@ final class SearchingCities: ObservableObject {
     @Published var city = ""
     
     //Output
-//    @Published var myCity: Result<GeocodingCity, Error>?
-    @Published var myCity1: Result<AutocompleteCityElemnt, Error>?
+    @Published var myCity: Result<AutocompleteCityElemnt, Error>?
     @Published var autocompleteCities: Result<AutocompleteCities, Error>?
     @Published var mainCities: Result<AutocompleteCities, Error>?
     
@@ -67,18 +57,13 @@ final class SearchingCities: ObservableObject {
         allStations = trainStationsAndRoutes.getTrainStationsNames()
         allTrainRoutes = trainStationsAndRoutes.getTrainRoutes()
         
-//        dataGeocodingIP.getCity()
-//            .asResult()
-//            .receive(on: DispatchQueue.main)
-//            .assign(to: &$myCity)
-        
         self.geocodingIP.getCity()
             .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0.name)}
             .filter{!$0.isEmpty}
             .map{$0.first!}
             .asResult()
             .receive(on: DispatchQueue.main)
-            .assign(to: &$myCity1)
+            .assign(to: &$myCity)
         
         Just("Россия")
             .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0).asResult()}
@@ -96,3 +81,11 @@ final class SearchingCities: ObservableObject {
     }
 }
 
+struct Location: Identifiable {
+    var id = UUID()
+    var name: String = ""
+    var countryName: String = ""
+    var codeIATA: String = ""
+    var trainStationId: [String] = []
+    var routes: [TrainRoute] = []
+}

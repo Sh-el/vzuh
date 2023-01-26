@@ -2,7 +2,7 @@
 //  AddAdultView1.swift
 //  vzuh
 //
-//  Created by Stanislav Shelipov on 05.01.2023.
+//  Created by Stanislav Shelipov on 26.01.2023.
 //
 
 import SwiftUI
@@ -19,18 +19,18 @@ struct AddAdultView: View {
                         .foregroundColor(.gray)
                 }
                 Spacer()
-                Text("\(model.adultPassengers)")
+                Text("\(model.passengers.filter{$0 == .adult}.count)")
                     .padding(.horizontal, 20)
             }
         } onIncrement: {
-            model.addAdult()
+            model.inputPassengersForAction = (model.passengers, .addAdult)
         } onDecrement: {
-            model.removeAdult()
+            model.inputPassengersForAction = (model.passengers, .removeAdult)
         }
     }
 }
 
-struct NumberAdultView1_Previews: PreviewProvider {
+struct AddAdultView1_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
         AddAdultView()

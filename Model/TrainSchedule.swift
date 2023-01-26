@@ -10,6 +10,7 @@ import Combine
 
 protocol TrainScheduleProtocol {
     func minPrice(_ schedule: [TrainSchedule.Trip]) -> TrainSchedule.Trip?
+    func sort(_ schedule: ([TrainSchedule.Trip], TrainSchedule.Sort?)) -> AnyPublisher<[TrainSchedule.Trip], Error>
 }
 
 struct TrainSchedule: Codable, TrainScheduleProtocol {
@@ -29,6 +30,26 @@ struct TrainSchedule: Codable, TrainScheduleProtocol {
             .store(in: &subscriptions)
         return result
     }
+    
+    func sort(_ schedule: ([Trip], Sort?)) -> AnyPublisher<[Trip], Error> {
+        Just(schedule)
+        .tryMap{(trips, sort) in
+            switch sort {
+            case .earliest:
+                return trips.sorted(by: {$0.departureTime < $1.departureTime})
+            case .lowestPrice:
+                return trips.sorted(by: {$0.categories.min().map{$0.price} ?? 0 < $1.categories.min().map{$0.price} ?? 0})
+            case .fastest:
+                return trips.sorted(by: {$0.travelTimeInSeconds < $1.travelTimeInSeconds})
+            case .latest:
+                return trips.sorted(by: {$0.departureTime > $1.departureTime})
+            case .none:
+                return trips
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
 }
 // MARK: - Trip
 extension TrainSchedule {

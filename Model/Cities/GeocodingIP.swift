@@ -8,20 +8,6 @@
 import SwiftUI
 import Combine
 
-struct GeocodingCity: Codable {
-    let iata, name, countryName, coordinates: String
-    
-    enum CodingKeys: String, CodingKey {
-        case iata, name
-        case countryName = "country_name"
-        case coordinates
-    }
-}
-
-struct IP: Codable {
-    let ip: String
-}
-
 protocol GeocodingIPProtocol {
     func getCity() -> AnyPublisher<GeocodingCity, Error>
 }
@@ -30,18 +16,21 @@ struct GeocodingIP: GeocodingIPProtocol {
     private let apiService: APIServiceProtocol
     
     private func getIP() -> AnyPublisher<IP, Error> {
-        guard let url = EndpointIP.ip.absoluteURL else {
-            return Fail(error: RequestError.addressUnreachable)
-                .eraseToAnyPublisher()
-        }
-        return apiService.get(url: url)
+        Just(())
+            .tryMap{
+                guard let url = EndpointIP.ip.absoluteURL else {
+                    throw RequestError.addressUnreachable
+                }
+                return url
+            }
+            .flatMap(apiService.get)
             .eraseToAnyPublisher()
     }
     
     func getCity() -> AnyPublisher<GeocodingCity, Error> {
         getIP()
-            .tryMap{value in
-                guard let url = EndpointCity.city(ip: value.ip).absoluteURL else {
+            .tryMap{
+                guard let url = EndpointCity.city(ip: $0.ip).absoluteURL else {
                     throw RequestError.addressUnreachable
                 }
                 return url
@@ -130,4 +119,16 @@ extension GeocodingIP {
     }
 }
 
+struct GeocodingCity: Codable {
+    let iata, name, countryName, coordinates: String
+    
+    enum CodingKeys: String, CodingKey {
+        case iata, name
+        case countryName = "country_name"
+        case coordinates
+    }
+}
 
+struct IP: Codable {
+    let ip: String
+}

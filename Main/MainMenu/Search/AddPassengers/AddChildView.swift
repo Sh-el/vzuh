@@ -1,34 +1,43 @@
 //
-//  AddChildView3.swift
+//  AddChildView1.swift
 //  vzuh
 //
-//  Created by Stanislav Shelipov on 05.01.2023.
+//  Created by Stanislav Shelipov on 26.01.2023.
 //
 
 import SwiftUI
 
 struct AddChildView: View {
     @EnvironmentObject var model: MainModel
-    @State private var child: Child = Child(age: .zero)
+    @State private var child: Passenger = Passenger.baby
    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
-                Text(child.age.description)
-                Picker(selection: $child.age) {
-                    ForEach(Child.AgeChild.allCases) {age in
-                        Text(age.description).tag(age)
-                    }
+                Text(child.description)
+                
+                Picker(selection: $child) {
+                    Text(Passenger.baby.description).tag(Passenger.baby)
+                    Text(Passenger.child.description).tag(Passenger.child)
                 } label: {
-                    Text("Text")
+                    Text("Select")
                 }
-                .pickerStyle(WheelPickerStyle())
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+//                .pickerStyle(WheelPickerStyle())
                 
                 Button {
-                    model.addChild(child)
-                    if  model.resultAddPassengers.error == .everythingOk || model.resultAddPassengers.error == .lotsBabies
+                    if child == .baby {
+                        model.inputPassengersForAction = (model.passengers, .addBaby)
+                        dismiss()
+                    } else {
+                        model.inputPassengersForAction = (model.passengers, .addChild)
+                        dismiss()
+                    }
+ 
+                    if  model.actionPassengersResult == .ok || model.actionPassengersResult == .lotsBabies
                     {
                         dismiss()
                     }
@@ -42,7 +51,7 @@ struct AddChildView: View {
     }
 }
 
-struct AddChildView3_Previews: PreviewProvider {
+struct AddChildView1_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
         AddChildView()

@@ -32,63 +32,15 @@ struct ButtonsMainMenuView: View {
             }
             .font(.title2)
             .fontWeight(.bold)
-            
-            
-//            HStack {
-//                ForEach(Const.ButtonsMain.allCases, id: \.id) {value in
-//                    VStack {
-//                        Image(systemName: value.imageName)
-//                            .foregroundColor(value == selected ?
-//                                             Const.colorDefault.opacity(Const.opacity) : Const.colorSelcted)
-//                            .padding(10)
-//                            .background {
-//                                Circle()
-//                                    .foregroundColor(value == selected ? Const.colorSelcted : Const.colorDefault.opacity(Const.opacity))
-//                            }
-//                            .onTapGesture {
-//                                selected = value
-//                            }
-//                    }
-//                }
-//                Spacer()
-//            }
-//            .font(.title2)
-//            .fontWeight(.bold)
-//            .padding()
         }
-        
     }
-    
+}
+
+extension ButtonsMainMenuView {
     private struct Const {
         static let colorSelcted = Color.white
         static let colorDefault = Color.black
         static let opacity: CGFloat = 0.7
-        
-//        enum ButtonsMain: Identifiable, CaseIterable {
-//            case all
-//            case hotels
-//            case airplane
-//            case train
-//            case bus
-//
-//            var imageName: String {
-//                switch self {
-//                case .all:
-//                    return "globe"
-//                case .hotels:
-//                    return "bed.double"
-//                case .airplane:
-//                    return "airplane"
-//                case .train:
-//                    return "tram"
-//                case .bus:
-//                    return "bus"
-//                }
-//            }
-//
-//            var id: Self{self}
-//        }
-        
     }
 }
 

@@ -11,7 +11,6 @@ struct AllResultsView: View {
     @EnvironmentObject var model: MainModel
     @State private var isDetail = false
     @State private var showingOptions = false
-//    @State private var sort: TrainSchedule.Sort?
     
     var body: some View {
         ZStack {
@@ -54,20 +53,16 @@ struct AllResultsView: View {
                                 title: Text("Сортировка:"),
                                 buttons: [
                                     .default(Text("сначала дешевые")) {
-                                        model.sortTrain = .lowestPrice
-                                        model.trainScheduleForSort = schedule
+                                        model.inputTrainScheduleForSort = (schedule, .lowestPrice)
                                     },
                                     .default(Text("сначала быстрые")) {
-                                        model.sortTrain = .fastest
-                                        model.trainScheduleForSort = schedule
+                                        model.inputTrainScheduleForSort = (schedule, .fastest)
                                     },
                                     .default(Text("сначала ранние")) {
-                                        model.sortTrain = .earliest
-                                        model.trainScheduleForSort = schedule
+                                        model.inputTrainScheduleForSort = (schedule, .earliest)
                                     },
                                     .default(Text("сначала поздние")) {
-                                        model.sortTrain = .latest
-                                        model.trainScheduleForSort = schedule
+                                        model.inputTrainScheduleForSort = (schedule, .latest)
                                     },
                                     .cancel(Text("Отмена")) {
                                     }
@@ -99,7 +94,6 @@ struct AllResultsView: View {
                 Text("")
             }
         }
-        
         .onAppear {
             model.trainSchedule = nil
             model.isSearch = true
@@ -110,43 +104,10 @@ struct AllResultsView: View {
     }
 }
 
-
-//extension AllResultsView {
-//    private var sortActionSheet: ActionSheet {
-//        ActionSheet(
-//            title: Text("Сортировка:"),
-//            buttons: [
-//                .default(Text("сначала дешевые")) {
-//                    model.sortTrainSchedule(by: .lowestPrice)
-//
-//                    sort = .lowestPrice
-//                },
-//                .default(Text("сначала быстрые")) {
-//                    model.sortTrainSchedule(by: .fastest)
-//                    sort = .fastest
-//                },
-//                .default(Text("сначала ранние")) {
-//                    model.sortTrainSchedule(by: .earliest)
-//                    sort = .earliest
-//                },
-//                .default(Text("сначала поздние")) {
-//                    model.sortTrainSchedule(by: .latest)
-//                    sort = .latest
-//                },
-//                .cancel(Text("Отмена")) {
-//                }
-//            ]
-//        )
-//    }
-//}
-
-
 struct SearchAllResultView_Previews: PreviewProvider {
     static let model = MainModel()
-    //    static let searching = SearchingCities()
     static var previews: some View {
         AllResultsView()
             .environmentObject(model)
-        //            .environmentObject(searching)
     }
 }

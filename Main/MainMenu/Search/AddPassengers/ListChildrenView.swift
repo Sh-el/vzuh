@@ -1,8 +1,8 @@
 //
-//  ListChildrenView2.swift
+//  ListChildrenView1.swift
 //  vzuh
 //
-//  Created by Stanislav Shelipov on 05.01.2023.
+//  Created by Stanislav Shelipov on 26.01.2023.
 //
 
 import SwiftUI
@@ -11,15 +11,19 @@ struct ListChildrenView: View {
     @EnvironmentObject var model: MainModel
     
     var body: some View {
-        if !model.children.isEmpty {
+        let children = model.passengers.filter({$0 == .child || $0 == .baby})
+        if !children.isEmpty {
             VStack{
-                Text("\(model.children.count)")
-                ForEach(model.children, id: \.id) {child in
+                ForEach(children, id: \.self) {child in
                     HStack {
-                        Text(child.age.description)
+                        Text(child.description)
                         Spacer()
                         Button {
-                            model.removeChild(child)
+                            if child == .child {
+                                model.inputPassengersForAction = (model.passengers, .removeChild)
+                            } else if child == .baby {
+                                model.inputPassengersForAction = (model.passengers, .removeBaby)
+                            }
                         } label: {
                             Text("X")
                                 .padding(.trailing, 20)
@@ -31,12 +35,10 @@ struct ListChildrenView: View {
     }
 }
 
-struct ListChildrenView2_Previews: PreviewProvider {
+struct ListChildrenView1_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
         ListChildrenView()
             .environmentObject(model)
     }
 }
-
-

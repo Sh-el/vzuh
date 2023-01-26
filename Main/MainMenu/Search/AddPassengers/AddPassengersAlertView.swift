@@ -1,8 +1,8 @@
 //
-//  LotsPassengers.swift
+//  AddPassengersAlertView1.swift
 //  vzuh
 //
-//  Created by Stanislav Shelipov on 04.01.2023.
+//  Created by Stanislav Shelipov on 26.01.2023.
 //
 
 import SwiftUI
@@ -12,10 +12,10 @@ struct AddPassengersAlertView: View {
   
     var body: some View {
         HStack {
-            Text(model.resultAddPassengers.error.rawValue)
+            Text(model.actionPassengersResult.rawValue)
             Spacer()
             Button {
-                    model.resultAddPassengers.error = .everythingOk
+                    model.actionPassengersResult = .ok
             } label: {
                 Text("X")
             }
@@ -25,13 +25,13 @@ struct AddPassengersAlertView: View {
         .foregroundColor(.black)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                model.resultAddPassengers.error = .everythingOk
+                model.actionPassengersResult = .ok
             }
         }
     }
 }
 
-struct LotsPassengers_Previews: PreviewProvider {
+struct AddPassengersAlertView1_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
         AddPassengersAlertView()

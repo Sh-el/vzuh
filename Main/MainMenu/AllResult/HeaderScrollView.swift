@@ -10,7 +10,6 @@ import SwiftUI
 struct HeaderScrollView: View {
     @EnvironmentObject var model: MainModel
     @Binding var showingOptions: Bool
-//    @Binding var sort: TrainSchedule.Sort?
     let schedule: [TrainSchedule.Trip]
     
     var body: some View {
@@ -22,7 +21,7 @@ struct HeaderScrollView: View {
                     HStack {
                         Text("\(schedule.count) " + trainOkonchanie(schedule.count) + ",")
                             .foregroundColor(.black)
-                        Text(model.sortTrain?.description ?? "Сортировка")
+                        Text(model.inputTrainScheduleForSort.1?.description ?? "Сортировка")
                             .foregroundColor(.blue)
                     }
                     .font(.headline)

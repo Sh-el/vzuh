@@ -85,6 +85,12 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
     
 }
 
-
+struct TrainRoute: Hashable, Identifiable {
+    let id = UUID()
+    var departureStationId: String = ""
+    var departureStationName: String = ""
+    var arrivalStationId: String = ""
+    var arrivalStationName: String = ""
+}
 
 

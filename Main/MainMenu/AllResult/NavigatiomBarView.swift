@@ -23,7 +23,7 @@ struct NavigatiomBarView: View {
 //                    .fontWeight(.semibold)
                 HStack {
                     Text(model.isDateBack ? model.dateDeparture.dateToString + " - " + model.dateBack.dateToString : model.dateDeparture.dateToString + ".")
-                    Text(model.numberPassengers() == 1 ? "\(model.numberPassengers()) пассажир" : "\(model.numberPassengers()) пассажира")
+                    Text(model.passengers.count == 1 ? "\(model.passengers.count) пассажир" : "\(model.passengers.count) пассажира")
                 }
                 .font(.callout)
                 TitleResultView()

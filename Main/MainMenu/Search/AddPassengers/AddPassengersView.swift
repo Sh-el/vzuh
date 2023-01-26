@@ -2,7 +2,7 @@
 //  AddPassengersView1.swift
 //  vzuh
 //
-//  Created by Stanislav Shelipov on 05.01.2023.
+//  Created by Stanislav Shelipov on 26.01.2023.
 //
 
 import SwiftUI
@@ -35,7 +35,7 @@ struct AddPassengersView: View {
                 AddChildView()
                     .presentationDetents([.fraction(0.3)])
             }
-            if model.resultAddPassengers.error != .everythingOk {
+            if model.actionPassengersResult != .ok {
                 AddPassengersAlertView()
             }
         }
@@ -50,7 +50,7 @@ extension AddPassengersView {
             Text("+ Добавить ребенка")
         }
         .foregroundColor(.blue)
-        .disabled(model.resultAddPassengers.isMaxPassengers)
+        .disabled(model.passengers.count == 4)
     }
 }
 

@@ -10,7 +10,7 @@ import SwiftUI
 struct TrainsResultView: View {
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Airplane")
+            Text("Train")
         }
         .foregroundColor(.black)
         .padding()
