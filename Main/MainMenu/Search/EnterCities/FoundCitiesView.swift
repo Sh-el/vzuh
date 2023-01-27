@@ -21,7 +21,7 @@ struct FoundCitiesView: View {
                     MyCityView(place: place)
                 }
                 
-                switch searching.city.isEmpty ? searching.mainCities : searching.autocompleteCities {
+                switch searching.autocompleteCities {
                 case .success(let result):
                     VStack {
                         ForEach(result, id: \.id) {city in

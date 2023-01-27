@@ -34,7 +34,9 @@ struct ActionPassengers: ActionPassengersProtocol {
                         return (.fewerAdultsThansBabies, nil)
                     }
                     var arr = $0.0
-                    arr.remove(at: arr.firstIndex(of: .adult) ?? 0)
+                    if let index = arr.firstIndex(of: .adult) {
+                        arr.remove(at: index)
+                    }
                     return (.ok, arr)
                     
                 case .addChild:
@@ -44,7 +46,9 @@ struct ActionPassengers: ActionPassengersProtocol {
                     
                 case .removeChild:
                     var arr = $0.0
-                    arr.remove(at: arr.firstIndex(of: .child) ?? 0)
+                    if let index = arr.firstIndex(of: .child) {
+                        arr.remove(at: index)
+                    }
                     return (.ok, arr)
                     
                 case .addBaby:
@@ -57,7 +61,9 @@ struct ActionPassengers: ActionPassengersProtocol {
                     
                 case .removeBaby:
                     var arr = $0.0
-                    arr.remove(at: arr.firstIndex(of: .baby) ?? 0)
+                    if let index = arr.firstIndex(of: .baby) {
+                        arr.remove(at: index)
+                    }
                     return (.ok, arr)
                 }
             }

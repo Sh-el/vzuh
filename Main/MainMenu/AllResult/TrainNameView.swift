@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TrainNameView: View {
-    let trip: TrainSchedule.Trip
+    let trip: Train.Trip
     
     var body: some View {
         HStack {

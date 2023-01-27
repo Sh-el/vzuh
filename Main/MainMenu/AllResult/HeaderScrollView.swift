@@ -10,7 +10,7 @@ import SwiftUI
 struct HeaderScrollView: View {
     @EnvironmentObject var model: MainModel
     @Binding var showingOptions: Bool
-    let schedule: [TrainSchedule.Trip]
+    let schedule: [Train.Trip]
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -55,7 +55,7 @@ struct HeaderScrollView: View {
 struct HeaderScrollView_Previews: PreviewProvider {
     static let model = MainModel()
     static var previews: some View {
-        HeaderScrollView(showingOptions: .constant(true), schedule: [TrainSchedule.Trip]())
+        HeaderScrollView(showingOptions: .constant(true), schedule: [Train.Trip]())
             .environmentObject(model)
     }
 }

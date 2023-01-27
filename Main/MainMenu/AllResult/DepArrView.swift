@@ -10,7 +10,7 @@ import SwiftUI
 struct DepArrView: View {
     @EnvironmentObject var model: MainModel
     @EnvironmentObject var searching: SearchingCities
-    let trip: TrainSchedule.Trip
+    let trip: Train.Trip
     
     var body: some View {
         HStack {

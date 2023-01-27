@@ -26,19 +26,19 @@ final class MainModel: ObservableObject {
     @Published var actionPassengersResult: ActionPassengersResult  = .ok
     
     //Train
-    typealias TrainScheduleResultArray = Result<[TrainSchedule.Trip], Error>
+    typealias TrainScheduleResultArray = Result<[Train.Trip], Error>
     private var trainAPI: TrainAPIProtocol
-    private var trainScheduleProtocol: TrainScheduleProtocol
+    private var train: TrainProtocol
     private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     
     @Published var trainSchedule: TrainScheduleResultArray?
-    @Published var inputTrainScheduleForSort: ([TrainSchedule.Trip], TrainSchedule.Sort?) = ([], nil)
+    @Published var inputTrainScheduleForSort: ([Train.Trip], Train.Sort?) = ([], nil)
     
-    func trainMinPrice(schedule: [TrainSchedule.Trip]) -> TrainSchedule.Trip? {
-        trainScheduleProtocol.minPrice(schedule)
+    func trainMinPrice(schedule: [Train.Trip]) -> Train.Trip? {
+        train.minPrice(schedule)
     }
     
-    private func getTrips(_ value: (Location?, Location?)) ->  AnyPublisher<[TrainSchedule.Trip], Error>{
+    private func getTrips(_ value: (Location?, Location?)) ->  AnyPublisher<[Train.Trip], Error>{
         Just(value)
             .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
             .flatMap{self.trainAPI.getTrainSchedule($0)}
@@ -54,12 +54,12 @@ final class MainModel: ObservableObject {
     init(
         actionPassengers: ActionPassengersProtocol = ActionPassengers(),
         dataTrain: TrainAPIProtocol = TrainApi(),
-        dataTrainSchedule: TrainScheduleProtocol = TrainSchedule(),
+        dataTrainSchedule: TrainProtocol = Train(),
         trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv")
     ) {
         self.actionPassengers = actionPassengers
         self.trainAPI = dataTrain
-        self.trainScheduleProtocol = dataTrainSchedule
+        self.train = dataTrainSchedule
         self.trainStationsAndRoutes = trainStationsAndRoutes
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
@@ -77,7 +77,7 @@ final class MainModel: ObservableObject {
         
         $inputTrainScheduleForSort
             .filter{!$0.0.isEmpty}
-            .flatMap(self.trainScheduleProtocol.sort)
+            .flatMap(self.train.sort)
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)

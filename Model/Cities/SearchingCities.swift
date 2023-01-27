@@ -65,15 +65,12 @@ final class SearchingCities: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$myCity)
         
-        Just("Россия")
-            .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0).asResult()}
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$mainCities)
-        
         $city
             .debounce(for: 0.6, scheduler: DispatchQueue.main)
-            .filter{!$0.isEmpty}
+            .map{
+                guard !$0.isEmpty else {return "Россия"}
+                    return $0
+            }
             .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0).asResult()}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)

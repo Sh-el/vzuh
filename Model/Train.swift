@@ -8,16 +8,16 @@
 import SwiftUI
 import Combine
 
-protocol TrainScheduleProtocol {
-    func minPrice(_ schedule: [TrainSchedule.Trip]) -> TrainSchedule.Trip?
-    func sort(_ schedule: ([TrainSchedule.Trip], TrainSchedule.Sort?)) -> AnyPublisher<[TrainSchedule.Trip], Error>
+protocol TrainProtocol {
+    func minPrice(_ schedule: [Train.Trip]) -> Train.Trip?
+    func sort(_ schedule: ([Train.Trip], Train.Sort?)) -> AnyPublisher<[Train.Trip], Error>
 }
 
-struct TrainSchedule: Codable, TrainScheduleProtocol {
+struct Train: Codable, TrainProtocol {
     var trips: [Trip] = []
     var url: String = ""
     
-    func minPrice(_ schedule: [TrainSchedule.Trip]) -> Trip? {
+    func minPrice(_ schedule: [Train.Trip]) -> Trip? {
         var result: Trip?
         var subscriptions = Set<AnyCancellable>()
         schedule
@@ -52,7 +52,7 @@ struct TrainSchedule: Codable, TrainScheduleProtocol {
     
 }
 // MARK: - Trip
-extension TrainSchedule {
+extension Train {
     struct Trip: Codable, Comparable, Hashable {
         static func < (lhs: Trip, rhs: Trip) -> Bool {
             (lhs.categories.min().map{$0.price} ?? 0) < (rhs.categories.min().map{$0.price} ?? 0)
@@ -82,7 +82,7 @@ extension TrainSchedule {
     }
 }
 // MARK: - Category
-extension TrainSchedule {
+extension Train {
     struct Category: Codable, Comparable, Hashable {
         static func < (lhs: Category, rhs: Category) -> Bool {
             lhs.price < rhs.price
@@ -116,7 +116,7 @@ extension TrainSchedule {
     }
 }
 // MARK: - Sort
-extension TrainSchedule {
+extension Train {
     enum Sort: Identifiable {
         case earliest
         case lowestPrice

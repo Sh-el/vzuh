@@ -9,16 +9,16 @@ import SwiftUI
 import Combine
 
 protocol TrainAPIProtocol {
-    func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<[TrainSchedule.Trip], Error>
+    func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<[Train.Trip], Error>
 }
 
 struct TrainApi: TrainAPIProtocol {
     private let apiService: APIServiceProtocol
     
-    func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<[TrainSchedule.Trip], Error> {
+    func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<[Train.Trip], Error> {
         location
             .publisher
-        //          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
+//          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
             .tryMap{
                 guard let url = EndpointTrain.search(term: $0.departureStationId, term2: $0.arrivalStationId).absoluteURL else {
                     throw RequestError.addressUnreachable
@@ -28,7 +28,7 @@ struct TrainApi: TrainAPIProtocol {
             .flatMap(apiService.get)
             .tryCatch{
                 if case RequestError.decodingError = $0 {
-                    return Just(TrainSchedule())
+                    return Just(Train())
                         .eraseToAnyPublisher()
                 }
                 throw $0

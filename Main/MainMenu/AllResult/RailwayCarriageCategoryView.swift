@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RailwayCarriageCategoryView: View {
-    let trip: TrainSchedule.Trip
+    let trip: Train.Trip
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
