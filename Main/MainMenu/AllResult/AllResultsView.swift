@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllResultsView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @State private var isDetail = false
     @State private var showingOptions = false
     
@@ -94,7 +94,7 @@ struct AllResultsView: View {
                 Text("")
             }
         }
-        .onAppear {
+        .task {
             model.trainSchedule = nil
             model.isSearch = true
         }
@@ -105,7 +105,7 @@ struct AllResultsView: View {
 }
 
 struct SearchAllResultView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         AllResultsView()
             .environmentObject(model)

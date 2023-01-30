@@ -8,7 +8,11 @@
 import SwiftUI
 import Combine
 
+
+
 final class SearchingCities: ObservableObject {
+    
+    
     private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     private var geocodingIP: GeocodingIPProtocol
     private var dataAutocomplete: DataAutocompleteProtocol
@@ -45,6 +49,17 @@ final class SearchingCities: ObservableObject {
         return resultDict?.value ?? "No Name"
     }
     
+    func getCityForIP() -> AnyPublisher<AutocompleteCityElemnt, Error> {
+        Just(())
+            .flatMap{_ in
+                self.geocodingIP.getCity()
+            }
+            .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0.name)}
+            .filter{!$0.isEmpty}
+            .map{$0.first!}
+            .eraseToAnyPublisher()
+    }
+  
     init(
         trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv"),
         geocodingIP: GeocodingIPProtocol = GeocodingIP(),
@@ -53,15 +68,13 @@ final class SearchingCities: ObservableObject {
         self.trainStationsAndRoutes = trainStationsAndRoutes
         self.geocodingIP = geocodingIP
         self.dataAutocomplete = dataAutocomplete
-        
+       
         allStations = trainStationsAndRoutes.getTrainStationsNames()
         allTrainRoutes = trainStationsAndRoutes.getTrainRoutes()
         
-        self.geocodingIP.getCity()
-            .flatMap{self.dataAutocomplete.getAutocompleteCities(city: $0.name)}
-            .filter{!$0.isEmpty}
-            .map{$0.first!}
-            .asResult()
+        $city
+            .filter{$0.isEmpty}
+            .flatMap{_ in self.getCityForIP().asResult()}
             .receive(on: DispatchQueue.main)
             .assign(to: &$myCity)
         

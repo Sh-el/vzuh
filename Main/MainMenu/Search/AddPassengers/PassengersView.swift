@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PassengersView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @State private var isPassengersChoice = false
     
     var body: some View {
@@ -30,7 +30,7 @@ struct PassengersView: View {
 }
 
 struct PassengersView1_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         PassengersView()
             .environmentObject(model)

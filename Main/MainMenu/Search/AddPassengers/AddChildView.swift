@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddChildView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @State private var child: Passenger = Passenger.baby
    
     @Environment(\.dismiss) private var dismiss
@@ -52,7 +52,7 @@ struct AddChildView: View {
 }
 
 struct AddChildView1_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         AddChildView()
             .environmentObject(model)

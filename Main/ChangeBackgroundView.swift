@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChangeBackgroundView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @Environment(\.dismiss) private var dismiss
     
     private var columns: [GridItem] {
@@ -53,7 +53,7 @@ struct ChangeBackgroundView: View {
 }
 
 struct ChangeBackgroundView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         ChangeBackgroundView()
             .environmentObject(model)

@@ -15,11 +15,12 @@ struct WelcomeView: View {
             HelpView()
             ProfileView()
         }
+        
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     
     static var previews: some View {
         WelcomeView()

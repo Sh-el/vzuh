@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HeaderScrollView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @Binding var showingOptions: Bool
     let schedule: [Train.Trip]
     
@@ -53,7 +53,7 @@ struct HeaderScrollView: View {
 }
 
 struct HeaderScrollView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         HeaderScrollView(showingOptions: .constant(true), schedule: [Train.Trip]())
             .environmentObject(model)

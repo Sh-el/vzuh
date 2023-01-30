@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NavigatiomBarView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -35,7 +35,7 @@ struct NavigatiomBarView: View {
 }
 
 struct NavigatiomBarView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         NavigatiomBarView()
             .environmentObject(model)

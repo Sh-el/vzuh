@@ -1,31 +1,31 @@
 //
-//  ButtonsMainView.swift
+//  ButtonsMainMenuView1.swift
 //  vzuh
 //
-//  Created by Stanislav Shelipov on 30.12.2022.
+//  Created by Stanislav Shelipov on 27.01.2023.
 //
 
 import SwiftUI
 
-struct ButtonsMainMenuView: View {
+struct ButtonsMainMenuView1: View {
     @EnvironmentObject var model: MainVM
     
     var body: some View {
         VStack {
             HStack {
-                ForEach(model.buttonsMain, id: \.self) {value in
+                ForEach(MainMenuTab1.allCases, id: \.self) {value in
                     VStack {
                         Image(systemName: value.imageName)
-                            .foregroundColor(value == model.mainMenuTabSelected ?
+                            .foregroundColor(value == model.mainMenuTabSelected1 ?
                                              Const.colorDefault.opacity(Const.opacity) : Const.colorSelcted)
                             .padding(10)
                             .background {
                                 Circle()
-                                    .foregroundColor(value == model.mainMenuTabSelected ? Const.colorSelcted : Const.colorDefault.opacity(Const.opacity))
+                                    .foregroundColor(value == model.mainMenuTabSelected1 ? Const.colorSelcted : Const.colorDefault.opacity(Const.opacity))
                             }
                     }
                     .onTapGesture {
-                        model.mainMenuTabSelected = value
+                        model.mainMenuTabSelected1 = value
                     }
                 }
                 Spacer()
@@ -36,7 +36,7 @@ struct ButtonsMainMenuView: View {
     }
 }
 
-extension ButtonsMainMenuView {
+extension ButtonsMainMenuView1 {
     private struct Const {
         static let colorSelcted = Color.white
         static let colorDefault = Color.black
@@ -44,10 +44,10 @@ extension ButtonsMainMenuView {
     }
 }
 
-struct ButtonsMainView_Previews: PreviewProvider {
+struct ButtonsMainMenuView1_Previews: PreviewProvider {
     static let model = MainVM()
     static var previews: some View {
-        ButtonsMainMenuView()
+        ButtonsMainMenuView1()
             .environmentObject(model)
     }
 }

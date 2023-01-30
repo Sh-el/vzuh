@@ -8,8 +8,9 @@
 import SwiftUI
 import Combine
 
-final class MainModel: ObservableObject {
+final class MainVM: ObservableObject {
     @Published var mainMenuTabSelected: MainMenuTab = .all
+    @Published var mainMenuTabSelected1: MainMenuTab1 = .all
     @Published var isSearch = false
     
     @Published var departure: Location?
@@ -151,6 +152,28 @@ extension Publisher {
 }
 
 enum MainMenuTab {
+    case all
+    case hotels
+    case flights
+    case train
+    case bus
+    
+    var imageName: String {
+        switch self {
+        case .all:
+            return "globe"
+        case .hotels:
+            return "bed.double"
+        case .flights:
+            return "airplane"
+        case .train:
+            return "tram"
+        case .bus:
+            return "bus"
+        }
+    }
+}
+enum MainMenuTab1: CaseIterable {
     case all
     case hotels
     case flights

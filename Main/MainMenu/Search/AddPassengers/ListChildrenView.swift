@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ListChildrenView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     
     var body: some View {
         let children = model.passengers.filter({$0 == .child || $0 == .baby})
@@ -36,7 +36,7 @@ struct ListChildrenView: View {
 }
 
 struct ListChildrenView1_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         ListChildrenView()
             .environmentObject(model)

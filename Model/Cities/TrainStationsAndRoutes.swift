@@ -20,7 +20,7 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
     func validTrainRoutes(_ departure: Location, _ arrival: Location) -> AnyPublisher<[TrainRoute], Error> {
         Publishers.Zip(Just(departure), Just(arrival))
             .map{(Set($0.0.routes), Set($0.1.routes))}
-            .map{Array($0.0.intersection($0.1)).filter{$0.departureStationName.contains(departure.name)}}
+            .map{Array($0.0.intersection($0.1)).filter{$0.departureStationName.lowercased().contains(departure.name.lowercased())}}
             .tryMap{value in
                 if value.isEmpty {
                     throw RequestError.invalidRequest

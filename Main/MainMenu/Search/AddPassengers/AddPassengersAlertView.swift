@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddPassengersAlertView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
   
     var body: some View {
         HStack {
@@ -32,7 +32,7 @@ struct AddPassengersAlertView: View {
 }
 
 struct AddPassengersAlertView1_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         AddPassengersAlertView()
             .environmentObject(model)

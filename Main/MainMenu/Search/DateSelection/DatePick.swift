@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DatePick: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     let dateTrip: DateSelectionView.DateTrip?
     
     var body: some View {
@@ -41,7 +41,7 @@ struct DatePick: View {
 }
 
 struct DatePick_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         DatePick(dateTrip: .dateDeparture)
             .environmentObject(model)

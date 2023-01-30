@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @State private var isTopButtons: TopButtons?
     
     var body: some View {
@@ -107,7 +107,7 @@ extension MainView {
 }
 
 struct MainView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         MainView()
             .environmentObject(model)

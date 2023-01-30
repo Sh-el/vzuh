@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainMenuView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     
     var body: some View {
         TabView(selection: $model.mainMenuTabSelected) {
@@ -25,7 +25,7 @@ struct MainMenuView: View {
 }
 
 struct MainMenuView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         MainMenuView()
             .environmentObject(model)

@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct vzuhApp: App {
-    @StateObject var model = MainModel()
+    @StateObject var model = MainVM()
     @StateObject var searching = SearchingCities()
     
     var body: some Scene {
@@ -17,6 +17,10 @@ struct vzuhApp: App {
             WelcomeView()
                 .environmentObject(model)
                 .environmentObject(searching)
+                .task{
+                    
+                }
         }
+        
     }
 }

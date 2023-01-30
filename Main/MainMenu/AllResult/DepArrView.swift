@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DepArrView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @EnvironmentObject var searching: SearchingCities
     let trip: Train.Trip
     

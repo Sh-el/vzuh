@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchCityView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @EnvironmentObject var searching: SearchingCities
     @Environment(\.dismiss) private var dismiss
     
@@ -39,11 +39,14 @@ struct SearchCityView: View {
         .onAppear{
             searching.city = ""
         }
+        .onDisappear{
+            print("dis")
+        }
     }
 }
 
 struct WhereFromView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static let searching = SearchingCities()
     
     static var previews: some View {

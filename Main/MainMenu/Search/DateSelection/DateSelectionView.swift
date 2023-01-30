@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DateSelectionView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @State private var dateTrip: DateTrip?
     
     var body: some View {
@@ -61,7 +61,7 @@ extension DateSelectionView {
 }
 
 struct DateSelectionView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         DateSelectionView()
             .environmentObject(model)

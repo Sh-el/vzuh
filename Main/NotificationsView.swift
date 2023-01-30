@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NotificationsView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         ZStack(alignment: .center) {
@@ -37,7 +37,7 @@ struct NotificationsView: View {
 }
 
 struct NotificationsView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         NotificationsView()
             .environmentObject(model)

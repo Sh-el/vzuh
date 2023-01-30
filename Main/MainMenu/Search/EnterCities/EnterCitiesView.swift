@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EnterCitiesView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     
     @State private var place: Place?
     
@@ -68,7 +68,7 @@ extension EnterCitiesView {
 }
 
 struct EnterCitiesView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     static var previews: some View {
         EnterCitiesView()
             .environmentObject(model)

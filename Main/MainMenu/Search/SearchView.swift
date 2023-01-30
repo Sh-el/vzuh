@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @EnvironmentObject var model: MainModel
+    @EnvironmentObject var model: MainVM
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -60,7 +60,7 @@ struct SearchView: View {
 }
 
 struct AllFindView_Previews: PreviewProvider {
-    static let model = MainModel()
+    static let model = MainVM()
     
     static var previews: some View {
         SearchView()
