@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddAdultView: View {
     @EnvironmentObject var model: MainVM
-    
+
     var body: some View {
         Stepper {
             HStack {
@@ -19,11 +19,12 @@ struct AddAdultView: View {
                         .foregroundColor(.gray)
                 }
                 Spacer()
-                Text("\(model.passengers.filter{$0 == .adult}.count)")
+                Text("\(model.passengers.filter {$0 == .adult}.count)")
                     .padding(.horizontal, 20)
             }
         } onIncrement: {
             model.inputPassengersForAction = (model.passengers, .addAdult)
+            model.passengers1.send(model.passengers)
         } onDecrement: {
             model.inputPassengersForAction = (model.passengers, .removeAdult)
         }

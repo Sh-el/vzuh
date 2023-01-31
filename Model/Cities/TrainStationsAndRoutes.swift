@@ -9,19 +9,22 @@ import SwiftUI
 import Combine
 
 protocol TrainStationsAndRoutesProtocol {
-    func getTrainStationsNames() -> [String : String]
+    func getTrainStationsNames() -> [String: String]
     func getTrainRoutes() -> [TrainRoute]
     func validTrainRoutes(_ departure: Location, _ arrival: Location) -> AnyPublisher<[TrainRoute], Error>
 }
 
 struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
     let inputFile: String
-    
+
     func validTrainRoutes(_ departure: Location, _ arrival: Location) -> AnyPublisher<[TrainRoute], Error> {
         Publishers.Zip(Just(departure), Just(arrival))
-            .map{(Set($0.0.routes), Set($0.1.routes))}
-            .map{Array($0.0.intersection($0.1)).filter{$0.departureStationName.lowercased().contains(departure.name.lowercased())}}
-            .tryMap{value in
+            .map {(Set($0.0.routes), Set($0.1.routes))}
+            .map {Array($0.0.intersection($0.1))
+                .filter {$0.departureStationName
+                .lowercased()
+                .contains(departure.name.lowercased())}}
+            .tryMap {value in
                 if value.isEmpty {
                     throw RequestError.invalidRequest
                 }
@@ -29,14 +32,14 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
             }
             .eraseToAnyPublisher()
     }
- 
-    func getTrainStationsNames() -> [String : String] {
+
+    func getTrainStationsNames() -> [String: String] {
         if let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) {
             do {
                 let fileContent = try String(contentsOfFile: filepath)
                 let lines = fileContent.components(separatedBy: "\n")
                 var resultsDict: [String: String] = [:]
-                
+
                 lines.dropFirst().forEach {line in
                     let data = line.components(separatedBy: ";")
                     if data.count == 4 {
@@ -54,14 +57,14 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
         }
         return [:]
     }
-    
+
     func getTrainRoutes() -> [TrainRoute] {
         if let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) {
             do {
                 let fileContent = try String(contentsOfFile: filepath)
                 let lines = fileContent.components(separatedBy: "\n")
                 var resultsArr: [TrainRoute] = []
-                
+
                 lines.dropFirst().forEach {line in
                     let data = line.components(separatedBy: ";")
                     if data.count == 4 {
@@ -82,7 +85,7 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
         }
         return []
     }
-    
+
 }
 
 struct TrainRoute: Hashable, Identifiable {
@@ -92,5 +95,3 @@ struct TrainRoute: Hashable, Identifiable {
     var arrivalStationId: String = ""
     var arrivalStationName: String = ""
 }
-
-

@@ -12,48 +12,49 @@ final class MainVM: ObservableObject {
     @Published var mainMenuTabSelected: MainMenuTab = .all
     @Published var mainMenuTabSelected1: MainMenuTab1 = .all
     @Published var isSearch = false
-    
+
     @Published var departure: Location?
     @Published var arrival: Location?
-    
+
     @Published var dateDeparture = Date.now
     @Published var dateBack = Date.now
     @Published var isDateBack = false
-    
-    //Passengers
-    private var actionPassengers: ActionPassengersProtocol
+
+    // Passengers
+    private let actionPassengers: PassengersProtocol
+    var passengers1 = PassthroughSubject<[Passenger], Never>()
     @Published var passengers: [Passenger] = [.adult]
     @Published var inputPassengersForAction: ([Passenger], ActionPassenger?) = ([], nil)
-    @Published var actionPassengersResult: ActionPassengersResult  = .ok
-    
-    //Train
-    typealias TrainScheduleResultArray = Result<[Train.Trip], Error>
-    private var trainAPI: TrainAPIProtocol
-    private var train: TrainProtocol
-    private var trainStationsAndRoutes: TrainStationsAndRoutesProtocol
-    
+    @Published var changeNumberPassengersError: ChangeNumberPassengersError  = .valid
+
+    // Train
+    typealias TrainScheduleResultArray = Result<[TrainTrip], Error>
+    private let trainAPI: TrainAPIProtocol
+    private let train: TrainProtocol
+    private let trainStationsAndRoutes: TrainStationsAndRoutesProtocol
+
     @Published var trainSchedule: TrainScheduleResultArray?
-    @Published var inputTrainScheduleForSort: ([Train.Trip], Train.Sort?) = ([], nil)
-    
-    func trainMinPrice(schedule: [Train.Trip]) -> Train.Trip? {
+    @Published var inputTrainScheduleForSort: ([TrainTrip], Train.Sort?) = ([], nil)
+
+    func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip? {
         train.minPrice(schedule)
     }
-    
-    private func getTrips(_ value: (Location?, Location?)) ->  AnyPublisher<[Train.Trip], Error>{
+
+    private func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
         Just(value)
-            .flatMap{self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
-            .flatMap{self.trainAPI.getTrainSchedule($0)}
+            .flatMap {self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
+            .flatMap {self.trainAPI.getTrainSchedule($0)}
             .eraseToAnyPublisher()
     }
-    
-    private var passengersResult: AnyPublisher<(ActionPassengersResult, [Passenger]?), Never> {
+
+    private var passengersResult: AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
         $inputPassengersForAction
-            .flatMap(actionPassengers.action)
+            .flatMap(actionPassengers.changeNumberPassengers)
             .eraseToAnyPublisher()
     }
-   
+
     init(
-        actionPassengers: ActionPassengersProtocol = ActionPassengers(),
+        actionPassengers: PassengersProtocol = Passengers(),
         dataTrain: TrainAPIProtocol = TrainApi(),
         dataTrainSchedule: TrainProtocol = Train(),
         trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv")
@@ -62,49 +63,50 @@ final class MainVM: ObservableObject {
         self.trainAPI = dataTrain
         self.train = dataTrainSchedule
         self.trainStationsAndRoutes = trainStationsAndRoutes
+
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
-        
+
         Publishers.CombineLatest4($departure, $arrival, $mainMenuTabSelected, $isSearch)
-            .filter{$0.3}
-            .filter{$0.2 == .all}
-            .filter{$0.0 != nil && $0.1 != nil}
-            .filter{!$0.0!.name.isEmpty && !$0.1!.name.isEmpty}
-            .map{($0.0, $0.1)}
-            .flatMap{self.getTrips($0).asResult()}
+            .filter {$0.3}
+            .filter {$0.2 == .all}
+            .filter {$0.0 != nil && $0.1 != nil}
+            .filter {!$0.0!.name.isEmpty && !$0.1!.name.isEmpty}
+            .map {($0.0, $0.1)}
+            .flatMap {self.getTrips($0).asResult()}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedule)
-        
+
         $inputTrainScheduleForSort
-            .filter{!$0.0.isEmpty}
+            .filter {!$0.0.isEmpty}
             .flatMap(self.train.sort)
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedule)
-     
+
         passengersResult
-            .filter{$0.1 != nil}
-            .map{$0.1!}
+            .filter {$0.1 != nil}
+            .map {$0.1!}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$passengers)
-        
+
         passengersResult
-            .filter{$0.0 != .ok}
-            .map{$0.0}
+            .filter {$0.0 != .valid}
+            .map {$0.0}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
-            .assign(to: &$actionPassengersResult)
+            .assign(to: &$changeNumberPassengersError)
     }
-    
+
     private var subscriptions = Set<AnyCancellable>()
-    
+
     @Published var backgroundMain = "day_snow"
     @Published var imagesBackground: [String] = []
     @Published var buttonsMain: [MainMenuTab] = []
-    
+
     private struct Const {
         static let imagesBackground = ["day_snow",
                                        "snow_mountain",
@@ -112,13 +114,13 @@ final class MainVM: ObservableObject {
                                        "day_cloudy",
                                        "night_clearsky",
                                        "tokyo-station"]
-        
+
         static let buttonsMain = [MainMenuTab.all,
                                   MainMenuTab.flights,
                                   MainMenuTab.train,
                                   MainMenuTab.bus]
     }
-    
+
     func convertSecondsToHrMinute(seconds: String) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
@@ -126,15 +128,15 @@ final class MainVM: ObservableObject {
         var calendar = Calendar.current
         calendar.locale = Locale(identifier: "ru")
         formatter.calendar = calendar
-        
+
         if let seconds = Int(seconds) {
-            let formattedString = formatter.string(from:TimeInterval(seconds))!
+            let formattedString = formatter.string(from: TimeInterval(seconds))!
             return formattedString
         } else {
             return ""
         }
     }
-    
+
     func changeCity() {
         (arrival, departure) = (departure, arrival)
     }
@@ -144,7 +146,7 @@ extension Publisher {
     func asResult() -> AnyPublisher<Result<Output, Failure>?, Never> {
         self
             .map(Result.success)
-            .catch{error in
+            .catch {error in
                 Just(.failure(error))
             }
             .eraseToAnyPublisher()
@@ -157,7 +159,7 @@ enum MainMenuTab {
     case flights
     case train
     case bus
-    
+
     var imageName: String {
         switch self {
         case .all:
@@ -179,7 +181,7 @@ enum MainMenuTab1: CaseIterable {
     case flights
     case train
     case bus
-    
+
     var imageName: String {
         switch self {
         case .all:
@@ -195,4 +197,3 @@ enum MainMenuTab1: CaseIterable {
         }
     }
 }
-

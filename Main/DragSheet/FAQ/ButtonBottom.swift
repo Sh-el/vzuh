@@ -11,7 +11,7 @@ struct ButtonBottom: View {
     let image: String
     let textHeader: String
     let text: String
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -32,7 +32,7 @@ struct ButtonBottom: View {
                 .foregroundColor(.gray)
                 .padding(.leading, 10)
             Spacer()
-            
+
         }
         .foregroundColor(.black)
         .frame(height: 150)

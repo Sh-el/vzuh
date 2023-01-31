@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TitleResultView: View {
     @EnvironmentObject var model: MainVM
-    
+
     var body: some View {
         HStack(alignment: .top) {
             switch model.trainSchedule {
@@ -26,12 +26,12 @@ struct TitleResultView: View {
                 }
             case .none:
                 EmptyView()
-            case .some(.failure(_)):
+            case .some(.failure):
                 EmptyView()
             }
         }
     }
- 
+
 }
 
 struct ButtonsTopView_Previews: PreviewProvider {

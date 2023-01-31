@@ -9,13 +9,13 @@ import SwiftUI
 
 struct AddPassengersAlertView: View {
     @EnvironmentObject var model: MainVM
-  
+
     var body: some View {
         HStack {
-            Text(model.actionPassengersResult.rawValue)
+            Text(model.changeNumberPassengersError.rawValue)
             Spacer()
             Button {
-                    model.actionPassengersResult = .ok
+                    model.changeNumberPassengersError = .valid
             } label: {
                 Text("X")
             }
@@ -25,7 +25,7 @@ struct AddPassengersAlertView: View {
         .foregroundColor(.black)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                model.actionPassengersResult = .ok
+                model.changeNumberPassengersError = .valid
             }
         }
     }

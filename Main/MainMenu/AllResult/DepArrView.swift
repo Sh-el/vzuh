@@ -10,8 +10,8 @@ import SwiftUI
 struct DepArrView: View {
     @EnvironmentObject var model: MainVM
     @EnvironmentObject var searching: SearchingCities
-    let trip: Train.Trip
-    
+    let trip: TrainTrip
+
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -45,7 +45,7 @@ struct DepArrView: View {
     }
 }
 
-//struct DepArrView_Previews: PreviewProvider {
+// struct DepArrView_Previews: PreviewProvider {
 //    static let model = MainModel()
 //    static let searching = SearchingCities()
 //    static var previews: some View {
@@ -53,4 +53,4 @@ struct DepArrView: View {
 //            .environmentObject(model)
 //            .environmentObject(searching)
 //    }
-//}
+// }

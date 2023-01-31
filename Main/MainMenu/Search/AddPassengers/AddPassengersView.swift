@@ -10,10 +10,10 @@ import SwiftUI
 struct AddPassengersView: View {
     @EnvironmentObject var model: MainVM
     @Environment(\.dismiss) private var dismiss
-    
+
     @State private var isAddChild = false
     @State private var isShow = false
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(alignment: .leading) {
@@ -35,7 +35,7 @@ struct AddPassengersView: View {
                 AddChildView()
                     .presentationDetents([.fraction(0.3)])
             }
-            if model.actionPassengersResult != .ok {
+            if model.changeNumberPassengersError != .valid {
                 AddPassengersAlertView()
             }
         }

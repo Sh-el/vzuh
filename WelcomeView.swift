@@ -15,13 +15,13 @@ struct WelcomeView: View {
             HelpView()
             ProfileView()
         }
-        
+
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static let model = MainVM()
-    
+
     static var previews: some View {
         WelcomeView()
             .environmentObject(model)

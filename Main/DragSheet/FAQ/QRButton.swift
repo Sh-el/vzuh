@@ -9,7 +9,7 @@ import SwiftUI
 
 struct QRButton: View {
     @State private var isMoreDetail = false
-    
+
     var body: some View {
         ButtonBottom(image: "qrcode",
                      textHeader: "QR-коды и ограничения",

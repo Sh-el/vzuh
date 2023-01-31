@@ -10,7 +10,7 @@ import SwiftUI
 struct NavigatiomBarView: View {
     @EnvironmentObject var model: MainVM
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         HStack {
             Button {
@@ -22,8 +22,12 @@ struct NavigatiomBarView: View {
 //                Text((model.departure?.name ?? "") + " - " + (model.arrival?.name ?? ""))
 //                    .fontWeight(.semibold)
                 HStack {
-                    Text(model.isDateBack ? model.dateDeparture.dateToString + " - " + model.dateBack.dateToString : model.dateDeparture.dateToString + ".")
-                    Text(model.passengers.count == 1 ? "\(model.passengers.count) пассажир" : "\(model.passengers.count) пассажира")
+                    Text(model.isDateBack ?
+                         model.dateDeparture.dateToString + " - " + model.dateBack.dateToString :
+                            model.dateDeparture.dateToString + ".")
+                    Text(model.passengers.count == 1 ?
+                         "\(model.passengers.count) пассажир" :
+                         "\(model.passengers.count) пассажира")
                 }
                 .font(.callout)
                 TitleResultView()

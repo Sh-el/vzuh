@@ -9,9 +9,9 @@ import SwiftUI
 
 struct EnterCitiesView: View {
     @EnvironmentObject var model: MainVM
-    
+
     @State private var place: Place?
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -62,8 +62,8 @@ extension EnterCitiesView {
     enum Place: Identifiable {
         case departure
         case arrival
-        
-        var id: Self{self}
+
+        var id: Self {self}
     }
 }
 

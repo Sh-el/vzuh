@@ -9,9 +9,9 @@ import SwiftUI
 
 struct SignUpView: View {
     @State private var isEnter = false
-    
+
     var body: some View {
-        VStack() {
+        VStack {
             HStack {
                 Text("Привет")
                     .font(.title)
@@ -20,12 +20,12 @@ struct SignUpView: View {
                 Spacer()
             }
             .padding(.top, 15)
-            
+
             VStack(alignment: .leading) {
                 HStack {
                     Image(systemName: "person.circle")
                         .font(.largeTitle)
-                    
+
                     Text("Войти в свой профиль")
                         .font(.title)
                         .bold()
@@ -34,13 +34,13 @@ struct SignUpView: View {
                         .padding(.vertical, 10)
                 }
                 .padding(.horizontal, 10)
-                
+
                 Text("Проверьте заказы и сохраните данные пассажиров.")
                     .font(.headline)
                     .lineLimit(5)
                     .padding(.horizontal, 10)
                     .padding(.bottom, 10)
-                
+
                 Button {
                     isEnter.toggle()
                 } label: {
@@ -50,10 +50,10 @@ struct SignUpView: View {
                         .padding(.horizontal, 10)
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
-                        .background(.blue.opacity(0.2))
+                        .background(.blue.opacity(0.2).gradient)
                         .cornerRadius(5)
                 }
-                
+
                 .padding(.horizontal, 10)
                 .padding(.bottom, 10)
             }

@@ -11,7 +11,7 @@ struct AllResultsView: View {
     @EnvironmentObject var model: MainVM
     @State private var isDetail = false
     @State private var showingOptions = false
-    
+
     var body: some View {
         ZStack {
             Image(model.backgroundMain)
@@ -28,7 +28,7 @@ struct AllResultsView: View {
                                              schedule: schedule)
                             .padding(.top, 10)
                             .padding(.horizontal, 10)
-                            
+
                             ForEach(schedule, id: \.self) {trip in
                                 VStack(alignment: .leading) {
                                     TrainNameView(trip: trip)
@@ -68,15 +68,14 @@ struct AllResultsView: View {
                                     }
                                 ]
                             )}
-                        }
-                        else {
+                        } else {
                             NoScheduleView()
                         }
-                        
+
                     case .none:
                         EmptyView()
                     case .some(.failure(let error)):
-                        ErrorAllResultView(error: error as! RequestError)
+                        ErrorAllResultView(error: (error as? RequestError)!)
                             .padding(.top, 10)
                             .padding(.horizontal, 5)
                     }
@@ -87,7 +86,7 @@ struct AllResultsView: View {
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: NavigatiomBarView())
-            
+
         }
         .sheet(isPresented: $isDetail) {
             ZStack {
@@ -98,7 +97,7 @@ struct AllResultsView: View {
             model.trainSchedule = nil
             model.isSearch = true
         }
-        .onDisappear{
+        .onDisappear {
             model.isSearch = false
         }
     }

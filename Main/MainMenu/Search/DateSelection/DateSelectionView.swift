@@ -10,7 +10,7 @@ import SwiftUI
 struct DateSelectionView: View {
     @EnvironmentObject var model: MainVM
     @State private var dateTrip: DateTrip?
-    
+
     var body: some View {
         HStack {
             Text(model.dateDeparture.dateToString)
@@ -55,8 +55,8 @@ extension DateSelectionView {
     enum DateTrip: Identifiable {
         case dateDeparture
         case dateBack
-        
-        var id: Self{self}
+
+        var id: Self {self}
     }
 }
 
@@ -67,4 +67,3 @@ struct DateSelectionView_Previews: PreviewProvider {
             .environmentObject(model)
     }
 }
-

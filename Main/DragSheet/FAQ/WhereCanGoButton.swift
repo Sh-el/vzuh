@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WhereCanGoButton: View {
     @State private var isMoreDetail = false
-    
+
     var body: some View {
         ButtonBottom(image: "balloon.fill",
                      textHeader: "Куда можно поехать ",

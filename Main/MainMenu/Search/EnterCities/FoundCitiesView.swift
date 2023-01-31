@@ -11,16 +11,16 @@ struct FoundCitiesView: View {
     @EnvironmentObject var model: MainVM
     @EnvironmentObject var searching: SearchingCities
     @Environment(\.dismiss) private var dismiss
-    
+
     let place: EnterCitiesView.Place?
-    
+
     var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(alignment: .leading) {
                 if searching.city.isEmpty {
                     MyCityView(place: place)
                 }
-                
+
                 switch searching.autocompleteCities {
                 case .success(let result):
                     VStack {
@@ -55,7 +55,7 @@ struct FoundCitiesView: View {
                     }
                 case .none:
                     EmptyView()
-                case .some(.failure(_)):
+                case .some(.failure):
                     EmptyView()
                 }
             }

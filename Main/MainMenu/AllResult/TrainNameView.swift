@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TrainNameView: View {
-    let trip: Train.Trip
-    
+    let trip: TrainTrip
+
     var body: some View {
         HStack {
             Text(trip.name?.trimmingCharacters(in: .whitespaces) ?? "")
@@ -21,8 +21,8 @@ struct TrainNameView: View {
     }
 }
 
-//struct TrainNameView_Previews: PreviewProvider {
+// struct TrainNameView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        TrainNameView(trip: TrainSchedule.Trip())
 //    }
-//}
+// }

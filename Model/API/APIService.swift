@@ -13,7 +13,7 @@ enum RequestError: Error {
 }
 
 struct APIService: APIServiceProtocol {
-    
+
     private func fetchURL(url: String) -> AnyPublisher<URL, Error> {
         Just(url)
             .tryMap {
@@ -25,12 +25,12 @@ struct APIService: APIServiceProtocol {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
         URLSession
             .shared
             .dataTaskPublisher(for: url)
-            .mapError{error -> Error in
+            .mapError {_ -> Error in
                 return RequestError.invalidRequest
             }
             .map(\.data)
@@ -39,22 +39,21 @@ struct APIService: APIServiceProtocol {
                      customError: {RequestError.timeOut})
             .eraseToAnyPublisher()
     }
-    
+
     private func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T, Error> {
         Just(data)
-            .tryMap{data -> T in
+            .tryMap {data -> T in
                 do {
                     let decoder = JSONDecoder()
                     return try decoder.decode(T.self, from: data)
-                }
-                catch {
+                } catch {
                     throw RequestError.decodingError
                 }
             }
-            .map{$0}
+            .map {$0}
             .eraseToAnyPublisher()
     }
-    
+
     func get<T: Decodable>(url: URL) -> AnyPublisher<T, Error> {
         Just(url)
             .flatMap(fetchData)
@@ -62,7 +61,3 @@ struct APIService: APIServiceProtocol {
             .eraseToAnyPublisher()
     }
 }
-
-
-
-

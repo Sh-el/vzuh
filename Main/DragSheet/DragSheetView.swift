@@ -12,7 +12,7 @@ struct DragSheetView: View {
     @State private var currentDragOffsetY: CGFloat = 0
     @State private var endingOffsetY: CGFloat = 0
     @State private var isDisabled = true
-    
+
     var body: some View {
         VStack {
             Rectangle()
@@ -49,11 +49,11 @@ extension DragSheetView {
                     currentDragOffsetY = value.translation.height
                 }
             }
-            .onEnded {value in
+            .onEnded {_ in
                 withAnimation(.spring()) {
                     isDisabled = true
                 }
-                
+
             }
     }
 }

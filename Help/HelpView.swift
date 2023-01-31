@@ -15,11 +15,11 @@ struct HelpView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
         }
-                .tabItem{
+                .tabItem {
                     Image(systemName: "ellipsis.message.fill")
                     Text("Заказы")
                 }
-        
+
     }
 }
 

@@ -25,20 +25,20 @@ struct OrdersView: View {
                 Text("Войдите, чтобы сохранить заказ в своем профиле на Вжух. Предыдущие заказы из профиля.")
                     .lineLimit(3)
                 Button {
-                    
+
                 } label: {
                     enterButton
                 }
 
             }
-            
+
         }
-        .tabItem{
+        .tabItem {
             Image(systemName: "dollarsign.square")
             Text("Заказы")
         }
     }
-    
+
     var enterButton: some View {
         Text("Войти")
             .font(.title)

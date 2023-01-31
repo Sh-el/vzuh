@@ -10,14 +10,14 @@ import SwiftUI
 struct AddChildView: View {
     @EnvironmentObject var model: MainVM
     @State private var child: Passenger = Passenger.baby
-   
+
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
                 Text(child.description)
-                
+
                 Picker(selection: $child) {
                     Text(Passenger.baby.description).tag(Passenger.baby)
                     Text(Passenger.child.description).tag(Passenger.child)
@@ -27,7 +27,7 @@ struct AddChildView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
 //                .pickerStyle(WheelPickerStyle())
-                
+
                 Button {
                     if child == .baby {
                         model.inputPassengersForAction = (model.passengers, .addBaby)
@@ -36,9 +36,9 @@ struct AddChildView: View {
                         model.inputPassengersForAction = (model.passengers, .addChild)
                         dismiss()
                     }
- 
-                    if  model.actionPassengersResult == .ok || model.actionPassengersResult == .lotsBabies
-                    {
+
+                    if  model.changeNumberPassengersError == .valid ||
+                        model.changeNumberPassengersError == .lotsBabies {
                         dismiss()
                     }
                 } label: {

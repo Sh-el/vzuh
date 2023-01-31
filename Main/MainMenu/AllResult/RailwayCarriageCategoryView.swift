@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct RailwayCarriageCategoryView: View {
-    let trip: Train.Trip
-    
+    let trip: TrainTrip
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
@@ -20,7 +20,7 @@ struct RailwayCarriageCategoryView: View {
                             .fontWeight(.bold)
                             .foregroundColor(.blue)
                         Text(category.type.description)
-                        
+
                     }
                     .padding(5)
                     .background(.blue.opacity(0.15))
@@ -32,12 +32,11 @@ struct RailwayCarriageCategoryView: View {
 }
 
 extension StringProtocol {
-    var addSpaceBeforLastThreeSymbol: String{prefix(self.count - 3) + " " + dropFirst(self.count - 3)}
+    var addSpaceBeforLastThreeSymbol: String {prefix(self.count - 3) + " " + dropFirst(self.count - 3)}
 }
 
-
-//struct RailwayCarriageCategoryView_Previews: PreviewProvider {
+// struct RailwayCarriageCategoryView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        RailwayCarriageCategoryView(trip: TrainSchedule.Trip())
 //    }
-//}
+// }

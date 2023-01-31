@@ -8,19 +8,19 @@
 import SwiftUI
 
 @main
-struct vzuhApp: App {
+struct VzuhApp: App {
     @StateObject var model = MainVM()
     @StateObject var searching = SearchingCities()
-    
+
     var body: some Scene {
         WindowGroup {
             WelcomeView()
                 .environmentObject(model)
                 .environmentObject(searching)
-                .task{
-                    
+                .task {
+
                 }
         }
-        
+
     }
 }

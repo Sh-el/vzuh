@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ErrorAllResultView: View {
     let error: RequestError
-    
+
     var body: some View {
         switch error {
         case .addressUnreachable:

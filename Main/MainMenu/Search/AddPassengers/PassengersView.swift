@@ -10,13 +10,15 @@ import SwiftUI
 struct PassengersView: View {
     @EnvironmentObject var model: MainVM
     @State private var isPassengersChoice = false
-    
+
     var body: some View {
         Button {
             isPassengersChoice.toggle()
         } label: {
             HStack {
-                Text(model.passengers.count == 1 ? "\(model.passengers.count) пассажир" : "\(model.passengers.count) пассажира")
+                Text(model.passengers.count == 1 ?
+                     "\(model.passengers.count) пассажир" :
+                     "\(model.passengers.count) пассажира")
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
                 Spacer()

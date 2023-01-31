@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ButtonTop: View {
-    
+
     let image: String
     let text: String
-    
+
     var body: some View {
         VStack(alignment: .center) {
             Image(systemName: image)

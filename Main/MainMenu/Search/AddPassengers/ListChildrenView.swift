@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ListChildrenView: View {
     @EnvironmentObject var model: MainVM
-    
+
     var body: some View {
         let children = model.passengers.filter({$0 == .child || $0 == .baby})
         if !children.isEmpty {
-            VStack{
+            VStack {
                 ForEach(children, id: \.self) {child in
                     HStack {
                         Text(child.description)

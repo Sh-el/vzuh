@@ -10,12 +10,12 @@ import SwiftUI
 struct ChangeBackgroundView: View {
     @EnvironmentObject var model: MainVM
     @Environment(\.dismiss) private var dismiss
-    
+
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: 150, maximum: 250)),
          GridItem(.adaptive(minimum: 150, maximum: 250))]
     }
-    
+
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView {

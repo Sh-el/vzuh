@@ -10,7 +10,7 @@ import SwiftUI
 struct DatePick: View {
     @EnvironmentObject var model: MainVM
     let dateTrip: DateSelectionView.DateTrip?
-    
+
     var body: some View {
         VStack {
             if dateTrip == .dateDeparture {
@@ -30,7 +30,7 @@ struct DatePick: View {
         }
         .foregroundColor(.black)
         .padding()
-        .onDisappear{
+        .onDisappear {
             if dateTrip == .dateDeparture && model.dateBack < model.dateDeparture {
                 model.dateBack = model.dateDeparture
             } else if dateTrip == .dateBack && model.dateDeparture > model.dateBack {

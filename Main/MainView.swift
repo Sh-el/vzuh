@@ -10,7 +10,7 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var model: MainVM
     @State private var isTopButtons: TopButtons?
-    
+
     var body: some View {
         NavigationView {
             ZStack(alignment: .top) {
@@ -32,7 +32,7 @@ struct MainView: View {
                 }
             }
         }
-        .tabItem{
+        .tabItem {
             Image(systemName: "magnifyingglass")
             Text("Поиск")
         }
@@ -68,8 +68,8 @@ extension MainView {
     enum TopButtons: Identifiable {
         case changeBackground
         case notifications
-        
-        var id: Self{self}
+
+        var id: Self {self}
     }
 }
 
@@ -100,7 +100,10 @@ extension MainView {
 
 extension MainView {
     struct Const {
-        static let gradient = LinearGradient(colors: [.blue.opacity(0.4), .blue.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        static let gradient = LinearGradient(colors: [.blue.opacity(0.4),
+                                                      .blue.opacity(0.8)],
+                                             startPoint: .topLeading,
+                                             endPoint: .bottomTrailing)
         static let startingOffsetYDragGesture = UIScreen.main.bounds.height * 0.75
         static let offsetYMainMenu = -UIScreen.main.bounds.height * (1 - 0.75)
     }

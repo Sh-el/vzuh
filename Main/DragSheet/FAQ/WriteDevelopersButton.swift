@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WriteDevelopersButton: View {
     @State private var isMoreDetail = false
-    
+
     var body: some View {
         ButtonBottom(image: "wrench.and.screwdriver",
                      textHeader: "Написать разработчикам",

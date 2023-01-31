@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ReturrnTicketButton: View {
     @State private var isMoreDetail = false
-    
+
     var body: some View {
         ButtonBottom(image: "arrow.triangle.2.circlepath",
                      textHeader: "Вернуть или обменять билет",
@@ -21,7 +21,7 @@ struct ReturrnTicketButton: View {
             Text("More detail")
         }
     }
-    
+
 }
 
 struct FAQReturrnTicketButton_Previews: PreviewProvider {

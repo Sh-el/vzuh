@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchView: View {
     @EnvironmentObject var model: MainVM
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             EnterCitiesView()
@@ -18,7 +18,7 @@ struct SearchView: View {
             Divider()
             PassengersView()
             Divider()
-            
+
             switch model.mainMenuTabSelected {
             case .all:
                 NavigationLink(destination: AllResultsView()) {
@@ -44,7 +44,7 @@ struct SearchView: View {
             }
         }
     }
-    
+
     var searchButton: some View {
         Text("Найти")
             .font(.title)
@@ -53,7 +53,7 @@ struct SearchView: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity)
-            .background(.blue)
+            .background(.blue.gradient)
             .cornerRadius(5)
             .padding(.horizontal, 10)
     }
@@ -61,7 +61,7 @@ struct SearchView: View {
 
 struct AllFindView_Previews: PreviewProvider {
     static let model = MainVM()
-    
+
     static var previews: some View {
         SearchView()
             .environmentObject(model)

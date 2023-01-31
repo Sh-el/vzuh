@@ -11,9 +11,9 @@ struct MyCityView: View {
     @EnvironmentObject var model: MainVM
     @EnvironmentObject var searching: SearchingCities
     @Environment(\.dismiss) private var dismiss
-    
+
     let place: EnterCitiesView.Place?
-    
+
     var body: some View {
         switch searching.myCity {
         case .success(let result):
@@ -40,7 +40,7 @@ struct MyCityView: View {
             }
         case .none:
             Text("loading")
-        case .some(.failure(_)):
+        case .some(.failure):
             Text("error")
         }
     }

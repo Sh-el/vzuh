@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var model: MainVM
-    
+
     var body: some View {
         TabView(selection: $model.mainMenuTabSelected) {
             VStack(alignment: .leading) {

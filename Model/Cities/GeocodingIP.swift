@@ -8,17 +8,17 @@
 import SwiftUI
 import Combine
 
-protocol GeocodingIPProtocol {
+protocol GeocodingIpProtocol {
     func getCity() -> AnyPublisher<GeocodingCity, Error>
 }
 
-struct GeocodingIP: GeocodingIPProtocol {
+struct GeocodingIP: GeocodingIpProtocol {
     private let apiService: APIServiceProtocol
-    
-    private func getIP() -> AnyPublisher<IP, Error> {
+
+    private func getIP() -> AnyPublisher<IpForCity, Error> {
         Just(())
-            .tryMap{
-                guard let url = EndpointIP.ip.absoluteURL else {
+            .tryMap {
+                guard let url = EndpointIP.ipForPlace.absoluteURL else {
                     throw RequestError.addressUnreachable
                 }
                 return url
@@ -26,11 +26,11 @@ struct GeocodingIP: GeocodingIPProtocol {
             .flatMap(apiService.get)
             .eraseToAnyPublisher()
     }
-    
+
     func getCity() -> AnyPublisher<GeocodingCity, Error> {
         getIP()
-            .tryMap{
-                guard let url = EndpointCity.city(ip: $0.ip).absoluteURL else {
+            .tryMap {
+                guard let url = EndpointCity.city($0.ip).absoluteURL else {
                     throw RequestError.addressUnreachable
                 }
                 return url
@@ -38,7 +38,7 @@ struct GeocodingIP: GeocodingIPProtocol {
             .flatMap(apiService.get)
             .eraseToAnyPublisher()
     }
-    
+
     init(apiService: APIServiceProtocol = APIService()) {
         self.apiService = apiService
     }
@@ -46,22 +46,22 @@ struct GeocodingIP: GeocodingIPProtocol {
 
 extension GeocodingIP {
     enum EndpointIP {
-        case ip
-        
+        case ipForPlace
+
         var baseURL: URL? {
             if let baseURL = URL(string: "https://api.ipify.org/") {
                 return baseURL
             }
             return  nil
         }
-        
+
         var path: String {
             switch self {
-            case .ip:
+            case .ipForPlace:
                 return ""
             }
         }
-        
+
         var absoluteURL: URL? {
             guard let baseURL = baseURL else {
                 return nil
@@ -72,7 +72,7 @@ extension GeocodingIP {
                 return nil
             }
             switch self {
-            case .ip:
+            case .ipForPlace:
                 urlComponents.queryItems = [URLQueryItem(name: "format", value: "json")]
             }
             return urlComponents.url
@@ -82,22 +82,22 @@ extension GeocodingIP {
 
 extension GeocodingIP {
     enum EndpointCity {
-        case city(ip: String)
-        
+        case city(String)
+
         var baseURL: URL? {
             if let baseURL = URL(string: "https://www.travelpayouts.com/") {
                 return baseURL
             }
             return  nil
         }
-        
+
         var path: String {
             switch self {
             case .city:
                 return "whereami"
             }
         }
-        
+
         var absoluteURL: URL? {
             guard let baseURL = baseURL else {
                 return nil
@@ -121,7 +121,7 @@ extension GeocodingIP {
 
 struct GeocodingCity: Codable {
     let iata, name, countryName, coordinates: String
-    
+
     enum CodingKeys: String, CodingKey {
         case iata, name
         case countryName = "country_name"
@@ -129,6 +129,6 @@ struct GeocodingCity: Codable {
     }
 }
 
-struct IP: Codable {
+struct IpForCity: Codable {
     let ip: String
 }

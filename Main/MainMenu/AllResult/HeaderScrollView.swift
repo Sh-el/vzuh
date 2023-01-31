@@ -10,8 +10,8 @@ import SwiftUI
 struct HeaderScrollView: View {
     @EnvironmentObject var model: MainVM
     @Binding var showingOptions: Bool
-    let schedule: [Train.Trip]
-    
+    let schedule: [TrainTrip]
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -36,7 +36,7 @@ struct HeaderScrollView: View {
             }
         }
     }
-    
+
     func trainOkonchanie(_ count: Int) -> String {
         guard let okonchanie = (String(count).last) else {return ""}
         guard let okInt = Int(String(okonchanie)) else {return ""}
@@ -47,7 +47,7 @@ struct HeaderScrollView: View {
             return "поезда"
         default:
             return"поездов"
-            
+
         }
     }
 }
@@ -55,7 +55,7 @@ struct HeaderScrollView: View {
 struct HeaderScrollView_Previews: PreviewProvider {
     static let model = MainVM()
     static var previews: some View {
-        HeaderScrollView(showingOptions: .constant(true), schedule: [Train.Trip]())
+        HeaderScrollView(showingOptions: .constant(true), schedule: [TrainTrip]())
             .environmentObject(model)
     }
 }

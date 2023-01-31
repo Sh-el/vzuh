@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ButtonsMainMenuView1: View {
     @EnvironmentObject var model: MainVM
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -21,7 +21,10 @@ struct ButtonsMainMenuView1: View {
                             .padding(10)
                             .background {
                                 Circle()
-                                    .foregroundColor(value == model.mainMenuTabSelected1 ? Const.colorSelcted : Const.colorDefault.opacity(Const.opacity))
+                                    .foregroundColor(value == model.mainMenuTabSelected1 ?
+                                                     Const.colorSelcted :
+                                                     Const.colorDefault
+                                                          .opacity(Const.opacity))
                             }
                     }
                     .onTapGesture {

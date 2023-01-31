@@ -14,9 +14,9 @@ struct ProfileView: View {
                 .resizable()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
-            
+
         }
-        .tabItem{
+        .tabItem {
             Image(systemName: "person.circle")
             Text("Профиль")
         }
