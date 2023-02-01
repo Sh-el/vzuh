@@ -17,7 +17,8 @@ struct ButtonsMainMenuView: View {
                     VStack {
                         Image(systemName: value.imageName)
                             .foregroundColor(value == model.mainMenuTabSelected ?
-                                             Const.colorDefault.opacity(Const.opacity) : Const.colorSelcted)
+                                             Const.colorDefault.opacity(Const.opacity) :
+                                             Const.colorSelcted)
                             .padding(10)
                             .background {
                                 Circle()

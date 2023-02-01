@@ -51,12 +51,11 @@ final class SearchingCities: ObservableObject {
         return resultDict?.value ?? "No Name"
     }
 
-    func getCityForIP() -> AnyPublisher<AutocompleteCityElemnt, Error> {
+    private func getCityForIP() -> AnyPublisher<AutocompleteCityElemnt, Error> {
         Just(())
-            .flatMap {_ in
-                self.geocodingIP.getCity()
-            }
-            .flatMap {self.dataAutocomplete.getAutocompleteCities(city: $0.name)}
+            .flatMap(geocodingIP.getCity)
+            .map {$0.name}
+            .flatMap(dataAutocomplete.getAutocompleteCities)
             .filter {!$0.isEmpty}
             .map {$0.first!}
             .eraseToAnyPublisher()
@@ -76,7 +75,15 @@ final class SearchingCities: ObservableObject {
 
         $city
             .filter {$0.isEmpty}
-            .flatMap {_ in self.getCityForIP().asResult()}
+            .flatMap {[weak self] _ in
+                guard let self = self else {
+                    return Empty(outputType: AutocompleteCityElemnt.self, failureType: Error.self)
+                        .eraseToAnyPublisher()
+                }
+                return self.getCityForIP()
+            } // ?
+            .asResult()
+            .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$myCity)
 
@@ -86,7 +93,8 @@ final class SearchingCities: ObservableObject {
                 guard !$0.isEmpty else {return "Россия"}
                 return $0
             }
-            .flatMap {self.dataAutocomplete.getAutocompleteCities(city: $0).asResult()}
+            .flatMap(dataAutocomplete.getAutocompleteCities)
+            .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$autocompleteCities)

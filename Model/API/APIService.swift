@@ -13,7 +13,6 @@ enum RequestError: Error {
 }
 
 struct APIService: APIServiceProtocol {
-
     private func fetchURL(url: String) -> AnyPublisher<URL, Error> {
         Just(url)
             .tryMap {

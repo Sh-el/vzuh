@@ -21,40 +21,108 @@ final class MainVM: ObservableObject {
     @Published var isDateBack = false
 
     // Passengers
-    private let actionPassengers: PassengersProtocol
-    var passengers1 = PassthroughSubject<[Passenger], Never>()
+    private let actionPassengers: ActionPassengersProtocol
     @Published var passengers: [Passenger] = [.adult]
-    @Published var inputPassengersForAction: ([Passenger], ActionPassenger?) = ([], nil)
+    @Published var actionNumberPassengers: ActionNumberPassengers?
     @Published var changeNumberPassengersError: ChangeNumberPassengersError  = .valid
 
+    private func subscriptionChangeNumberPassengers() {
+        var changeNumberPassengersRes: AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
+            $actionNumberPassengers
+                .filter {$0 != nil}
+                .map {[weak self] action in
+                    guard let passengers = self?.passengers else {
+                        return ([.adult], action)
+                    }
+                    return (passengers, action)
+                }
+                .flatMap(actionPassengers.changeNumberPassengers)
+                .eraseToAnyPublisher()
+        }
+
+        changeNumberPassengersRes
+            .filter {$0.1 != nil}
+            .map {$0.1!}
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$passengers)
+
+        changeNumberPassengersRes
+            .filter {$0.0 != .valid}
+            .map {$0.0}
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$changeNumberPassengersError)
+    }
+
     // Train
-    typealias TrainScheduleResultArray = Result<[TrainTrip], Error>
+    typealias TrainSchedules = Result<[TrainTrip], Error>
+    private let trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     private let trainAPI: TrainAPIProtocol
     private let train: TrainProtocol
-    private let trainStationsAndRoutes: TrainStationsAndRoutesProtocol
 
-    @Published var trainSchedule: TrainScheduleResultArray?
-    @Published var inputTrainScheduleForSort: ([TrainTrip], Train.Sort?) = ([], nil)
+    @Published var trainSchedules: TrainSchedules?
+    @Published var sortTrainSchedules: Train.Sort?
 
     func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip? {
         train.minPrice(schedule)
     }
 
-    private func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
-        Just(value)
-            .flatMap {self.trainStationsAndRoutes.validTrainRoutes($0.0!, $0.1!)}
-            .flatMap {self.trainAPI.getTrainSchedule($0)}
+    private func subscriptionTrainSchedules() {
+        func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
+            Just(value)
+                .map {($0.0!, $0.1!)}
+                .flatMap(trainStationsAndRoutes.validTrainRoutes)
+                .flatMap(trainAPI.getTrainSchedule)
+                .eraseToAnyPublisher()
+        }
+
+        $isSearch
+            .filter {$0}
+            .filter {[weak self] _ in
+                guard let mainMenuTabSelected = self?.mainMenuTabSelected else {
+                    return false
+                }
+                return mainMenuTabSelected == .all
+            }
+            .filter {$0}
+            .map {[weak self] _ in
+                guard let departure = self?.departure, let arrival = self?.arrival else {
+                    return (nil, nil)
+                }
+                return (departure, arrival)
+            }
+            .filter {$0.0 != nil && $0.1 != nil}
+            .flatMap(getTrips)
+            .asResult()
             .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$trainSchedules)
     }
 
-    private var passengersResult: AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
-        $inputPassengersForAction
-            .flatMap(actionPassengers.changeNumberPassengers)
+    private func subscriptionSortTrainSchedule() {
+        $sortTrainSchedules
+            .filter {$0 != nil}
+            .map {[weak self] sort in
+                switch self?.trainSchedules {
+                case .success(let schedules):
+                    return (schedules, sort)
+                case .none:
+                    return ([], nil)
+                case .some(.failure):
+                    return ([], nil)
+                }
+            }
+            .filter {!$0.0.isEmpty}
+            .flatMap(train.sort)
+            .asResult()
             .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$trainSchedules)
     }
 
     init(
-        actionPassengers: PassengersProtocol = Passengers(),
+        actionPassengers: ActionPassengersProtocol = ActionPassengers(),
         dataTrain: TrainAPIProtocol = TrainApi(),
         dataTrainSchedule: TrainProtocol = Train(),
         trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv")
@@ -67,41 +135,11 @@ final class MainVM: ObservableObject {
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
 
-        Publishers.CombineLatest4($departure, $arrival, $mainMenuTabSelected, $isSearch)
-            .filter {$0.3}
-            .filter {$0.2 == .all}
-            .filter {$0.0 != nil && $0.1 != nil}
-            .filter {!$0.0!.name.isEmpty && !$0.1!.name.isEmpty}
-            .map {($0.0, $0.1)}
-            .flatMap {self.getTrips($0).asResult()}
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$trainSchedule)
+        subscriptionTrainSchedules()
+        subscriptionSortTrainSchedule()
+        subscriptionChangeNumberPassengers()
 
-        $inputTrainScheduleForSort
-            .filter {!$0.0.isEmpty}
-            .flatMap(self.train.sort)
-            .asResult()
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$trainSchedule)
-
-        passengersResult
-            .filter {$0.1 != nil}
-            .map {$0.1!}
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$passengers)
-
-        passengersResult
-            .filter {$0.0 != .valid}
-            .map {$0.0}
-            .eraseToAnyPublisher()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$changeNumberPassengersError)
     }
-
-    private var subscriptions = Set<AnyCancellable>()
 
     @Published var backgroundMain = "day_snow"
     @Published var imagesBackground: [String] = []

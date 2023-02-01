@@ -30,10 +30,10 @@ struct AddChildView: View {
 
                 Button {
                     if child == .baby {
-                        model.inputPassengersForAction = (model.passengers, .addBaby)
+                        model.actionNumberPassengers = .addBaby
                         dismiss()
                     } else {
-                        model.inputPassengersForAction = (model.passengers, .addChild)
+                        model.actionNumberPassengers = .addChild
                         dismiss()
                     }
 

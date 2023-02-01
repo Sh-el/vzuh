@@ -21,7 +21,7 @@ struct AllResultsView: View {
             VStack(alignment: .leading) {
                 Spacer()
                 ScrollView(.vertical) {
-                    switch model.trainSchedule {
+                    switch model.trainSchedules {
                     case .success(let schedule):
                         if !schedule.isEmpty {
                             HeaderScrollView(showingOptions: $showingOptions,
@@ -53,16 +53,20 @@ struct AllResultsView: View {
                                 title: Text("Сортировка:"),
                                 buttons: [
                                     .default(Text("сначала дешевые")) {
-                                        model.inputTrainScheduleForSort = (schedule, .lowestPrice)
+                                        model.sortTrainSchedules = .lowestPrice
+                                    //    model.inputTrainScheduleForSort = (schedule, .lowestPrice)
                                     },
                                     .default(Text("сначала быстрые")) {
-                                        model.inputTrainScheduleForSort = (schedule, .fastest)
+                                        model.sortTrainSchedules = .fastest
+                                    //    model.inputTrainScheduleForSort = (schedule, .fastest)
                                     },
                                     .default(Text("сначала ранние")) {
-                                        model.inputTrainScheduleForSort = (schedule, .earliest)
+                                        model.sortTrainSchedules = .earliest
+                                     //   model.inputTrainScheduleForSort = (schedule, .earliest)
                                     },
                                     .default(Text("сначала поздние")) {
-                                        model.inputTrainScheduleForSort = (schedule, .latest)
+                                        model.sortTrainSchedules = .latest
+                                     //   model.inputTrainScheduleForSort = (schedule, .latest)
                                     },
                                     .cancel(Text("Отмена")) {
                                     }
@@ -94,7 +98,7 @@ struct AllResultsView: View {
             }
         }
         .task {
-            model.trainSchedule = nil
+            model.trainSchedules = nil
             model.isSearch = true
         }
         .onDisappear {

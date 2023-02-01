@@ -39,6 +39,9 @@ struct AddPassengersView: View {
                 AddPassengersAlertView()
             }
         }
+//        .task{
+//            model.changeNumberPassengers()
+//        }
     }
 }
 

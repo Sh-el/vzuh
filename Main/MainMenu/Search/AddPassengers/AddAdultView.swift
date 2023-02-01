@@ -23,10 +23,9 @@ struct AddAdultView: View {
                     .padding(.horizontal, 20)
             }
         } onIncrement: {
-            model.inputPassengersForAction = (model.passengers, .addAdult)
-            model.passengers1.send(model.passengers)
+            model.actionNumberPassengers = .addAdult
         } onDecrement: {
-            model.inputPassengersForAction = (model.passengers, .removeAdult)
+            model.actionNumberPassengers = .removeAdult
         }
     }
 }

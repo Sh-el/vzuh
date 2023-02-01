@@ -21,7 +21,7 @@ struct HeaderScrollView: View {
                     HStack {
                         Text("\(schedule.count) " + trainOkonchanie(schedule.count) + ",")
                             .foregroundColor(.black)
-                        Text(model.inputTrainScheduleForSort.1?.description ?? "Сортировка")
+                        Text(model.sortTrainSchedules?.description ?? "Сортировка")
                             .foregroundColor(.blue)
                     }
                     .font(.headline)

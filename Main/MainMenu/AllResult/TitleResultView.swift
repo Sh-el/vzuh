@@ -12,7 +12,7 @@ struct TitleResultView: View {
 
     var body: some View {
         HStack(alignment: .top) {
-            switch model.trainSchedule {
+            switch model.trainSchedules {
             case .success(let schedule):
                 if let trip = model.trainMinPrice(schedule: schedule) {
                     HStack {

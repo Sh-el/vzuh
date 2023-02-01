@@ -20,9 +20,9 @@ struct ListChildrenView: View {
                         Spacer()
                         Button {
                             if child == .child {
-                                model.inputPassengersForAction = (model.passengers, .removeChild)
+                                model.actionNumberPassengers = .removeChild
                             } else if child == .baby {
-                                model.inputPassengersForAction = (model.passengers, .removeBaby)
+                                model.actionNumberPassengers = .removeBaby
                             }
                         } label: {
                             Text("X")

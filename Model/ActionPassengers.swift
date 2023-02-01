@@ -8,12 +8,12 @@
 import SwiftUI
 import Combine
 
-protocol PassengersProtocol {
-    func changeNumberPassengers(_ passengers: ([Passenger], ActionPassenger?))
+protocol ActionPassengersProtocol {
+    func changeNumberPassengers(_ passengers: ([Passenger], ActionNumberPassengers?))
     -> AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never>
 }
 
-struct Passengers: PassengersProtocol {
+struct ActionPassengers: ActionPassengersProtocol {
     private func addAdult(_ passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
         guard passengers.count + 1 <= Const.maxNumberPassengers else {
             return (.lotsPassengers, nil)
@@ -68,7 +68,7 @@ struct Passengers: PassengersProtocol {
         return (.valid, arr)
     }
 
-    func changeNumberPassengers(_ passengers: ([Passenger], ActionPassenger?))
+    func changeNumberPassengers(_ passengers: ([Passenger], ActionNumberPassengers?))
     -> AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
        Just(passengers)
             .filter {$0.1 != nil}
@@ -120,7 +120,7 @@ enum Passenger: Hashable, CaseIterable, Identifiable {
     }
 }
 
-enum ActionPassenger {
+enum ActionNumberPassengers {
     case addAdult
     case removeAdult
     case addChild
