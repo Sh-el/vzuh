@@ -28,7 +28,7 @@ struct ActionPassengers: ActionPassengersProtocol {
             return (.fewPassengers, nil)
         }
         guard passengers.filter({$0 == .adult}).count - 1 >= passengers.filter({$0 == .baby}).count else {
-            return (.fewerAdultsThansBabies, nil)
+            return (.fewerAdultsThanBabies, nil)
         }
         var arr = passengers
         if let index = arr.firstIndex(of: .adult) {
@@ -132,7 +132,7 @@ enum ActionNumberPassengers {
 enum ChangeNumberPassengersError: String {
     case lotsPassengers = "Можно выбрать не больше, чем четыре пассажира!"
     case fewPassengers = "Можно выбрать не менее одного взрослого пассажира!"
-    case fewerAdultsThansBabies = "Взрослых не может быть меньше, чем детей младше двух лет!"
+    case fewerAdultsThanBabies = "Взрослых не может быть меньше, чем детей младше двух лет!"
     case lotsBabies = "Детей до двух лет должно быть не больше, чем взрослых!"
     case valid
 }

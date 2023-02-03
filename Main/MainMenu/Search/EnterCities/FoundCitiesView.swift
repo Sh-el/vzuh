@@ -60,6 +60,9 @@ struct FoundCitiesView: View {
                 }
             }
         }
+        .onAppear {
+            searching.isMyCity = true
+        }
     }
 }
 

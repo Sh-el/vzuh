@@ -19,6 +19,7 @@ final class SearchingCities: ObservableObject {
 
     // Input
     @Published var city = ""
+    @Published var isMyCity = false
 
     // Output
     @Published var myCity: Result<AutocompleteCityElemnt, Error>?
@@ -73,15 +74,10 @@ final class SearchingCities: ObservableObject {
         allStations = trainStationsAndRoutes.getTrainStationsNames()
         allTrainRoutes = trainStationsAndRoutes.getTrainRoutes()
 
-        $city
-            .filter {$0.isEmpty}
-            .flatMap {[weak self] _ in
-                guard let self = self else {
-                    return Empty(outputType: AutocompleteCityElemnt.self, failureType: Error.self)
-                        .eraseToAnyPublisher()
-                }
-                return self.getCityForIP()
-            } // ?
+        $isMyCity
+            .filter {$0}
+            .flatMap {_ in Just(())}
+            .flatMap(getCityForIP)
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
@@ -93,7 +89,8 @@ final class SearchingCities: ObservableObject {
                 guard !$0.isEmpty else {return "Россия"}
                 return $0
             }
-            .flatMap(dataAutocomplete.getAutocompleteCities)
+            .map(dataAutocomplete.getAutocompleteCities)
+            .switchToLatest()
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)

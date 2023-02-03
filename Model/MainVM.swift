@@ -26,7 +26,7 @@ final class MainVM: ObservableObject {
     @Published var actionNumberPassengers: ActionNumberPassengers?
     @Published var changeNumberPassengersError: ChangeNumberPassengersError  = .valid
 
-    private func subscriptionChangeNumberPassengers() {
+    private func changeNumberPassengers() {
         var changeNumberPassengersRes: AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
             $actionNumberPassengers
                 .filter {$0 != nil}
@@ -62,13 +62,9 @@ final class MainVM: ObservableObject {
     private let train: TrainProtocol
 
     @Published var trainSchedules: TrainSchedules?
-    @Published var sortTrainSchedules: Train.Sort?
+    @Published var choiceSortTrainSchedules: Train.Sort?
 
-    func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip? {
-        train.minPrice(schedule)
-    }
-
-    private func subscriptionTrainSchedules() {
+    private func loadTrainSchedules() {
         func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
             Just(value)
                 .map {($0.0!, $0.1!)}
@@ -93,15 +89,17 @@ final class MainVM: ObservableObject {
                 return (departure, arrival)
             }
             .filter {$0.0 != nil && $0.1 != nil}
-            .flatMap(getTrips)
+//            .flatMap(getTrips)
+            .map(getTrips)
+            .switchToLatest()
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedules)
     }
 
-    private func subscriptionSortTrainSchedule() {
-        $sortTrainSchedules
+    private func sortTrainSchedule() {
+        $choiceSortTrainSchedules
             .filter {$0 != nil}
             .map {[weak self] sort in
                 switch self?.trainSchedules {
@@ -121,6 +119,10 @@ final class MainVM: ObservableObject {
             .assign(to: &$trainSchedules)
     }
 
+    func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip? {
+        train.minPrice(schedule)
+    }
+
     init(
         actionPassengers: ActionPassengersProtocol = ActionPassengers(),
         dataTrain: TrainAPIProtocol = TrainApi(),
@@ -135,9 +137,9 @@ final class MainVM: ObservableObject {
         imagesBackground = Const.imagesBackground
         buttonsMain = Const.buttonsMain
 
-        subscriptionTrainSchedules()
-        subscriptionSortTrainSchedule()
-        subscriptionChangeNumberPassengers()
+        changeNumberPassengers()
+        loadTrainSchedules()
+        sortTrainSchedule()
 
     }
 
