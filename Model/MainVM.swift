@@ -155,10 +155,7 @@ final class MainVM: ObservableObject {
                                        "night_clearsky",
                                        "tokyo-station"]
 
-        static let buttonsMain = [MainMenuTab.all,
-                                  MainMenuTab.flights,
-                                  MainMenuTab.train,
-                                  MainMenuTab.bus]
+        static let buttonsMain: [MainMenuTab] = [.all, .flights, .train, .bus]
     }
 
     func convertSecondsToHrMinute(seconds: String) -> String {
