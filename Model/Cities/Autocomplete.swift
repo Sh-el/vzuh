@@ -25,7 +25,7 @@ struct Autocomplete: DataAutocompleteProtocol {
                 }
                 return url
             }
-            .flatMap(apiService.get)
+            .flatMap(apiService.fetch)
             .eraseToAnyPublisher()
     }
 

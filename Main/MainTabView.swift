@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct MainView: View {
-    @EnvironmentObject var model: MainVM
+struct MainTabView: View {
+    @EnvironmentObject var mainVm: MainVM
     @State private var isTopButtons: TopButtons?
 
     var body: some View {
@@ -40,7 +40,7 @@ struct MainView: View {
     }
 }
 
-extension MainView {
+extension MainTabView {
     var topButtonsView: some View {
         HStack {
             Text("vzuh")
@@ -64,7 +64,7 @@ extension MainView {
     }
 }
 
-extension MainView {
+extension MainTabView {
     enum TopButtons: Identifiable {
         case changeBackground
         case notifications
@@ -73,7 +73,7 @@ extension MainView {
     }
 }
 
-extension MainView {
+extension MainTabView {
     var searchButton: some View {
         Text("Найти")
             .font(.title)
@@ -89,16 +89,16 @@ extension MainView {
     }
 }
 
-extension MainView {
+extension MainTabView {
     var backgroundMain: some View {
-        Image(model.backgroundMain)
+        Image(mainVm.backgroundMain)
             .resizable()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea()
     }
 }
 
-extension MainView {
+extension MainTabView {
     struct Const {
         static let gradient = LinearGradient(colors: [.blue.opacity(0.4),
                                                       .blue.opacity(0.8)],
@@ -112,7 +112,7 @@ extension MainView {
 struct MainView_Previews: PreviewProvider {
     static let model = MainVM()
     static var previews: some View {
-        MainView()
+        MainTabView()
             .environmentObject(model)
     }
 }

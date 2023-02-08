@@ -75,7 +75,7 @@ final class MainVM: ObservableObject {
             .filter {[weak self] _ in self?.mainMenuTabSelected == .all}
             .map {[weak self] _ in (self?.departure, self?.arrival)}
             .filter {$0.0 != nil && $0.1 != nil}
-        //            .flatMap(getTrips)
+//            .flatMap(getTrips)
             .map(getTrips)
             .switchToLatest()
             .asResult()

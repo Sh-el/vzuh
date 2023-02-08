@@ -19,7 +19,7 @@ struct FAQView: View {
 
                 HStack {
                     NavigationLink(
-                        destination: HelpView()
+                        destination: HelpTabView()
                     ) {
                         AirplainButton()
                     }

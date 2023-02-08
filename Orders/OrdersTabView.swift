@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OrdersView: View {
+struct OrdersTabView: View {
     var body: some View {
         ZStack {
             Image("day_snow")
@@ -54,6 +54,6 @@ struct OrdersView: View {
 
 struct OrdersView_Previews: PreviewProvider {
     static var previews: some View {
-        OrdersView()
+        OrdersTabView()
     }
 }

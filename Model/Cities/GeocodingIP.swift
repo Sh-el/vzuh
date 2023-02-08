@@ -23,7 +23,7 @@ struct GeocodingIP: GeocodingIpProtocol {
                 }
                 return url
             }
-            .flatMap(apiService.get)
+            .flatMap(apiService.fetch)
             .eraseToAnyPublisher()
     }
 
@@ -35,7 +35,7 @@ struct GeocodingIP: GeocodingIpProtocol {
                 }
                 return url
             }
-            .flatMap(apiService.get)
+            .flatMap(apiService.fetch)
             .eraseToAnyPublisher()
     }
 

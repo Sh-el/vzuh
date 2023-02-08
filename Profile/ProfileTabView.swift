@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileView: View {
+struct ProfileTabView: View {
     var body: some View {
         ZStack {
             Image("day_snow")
@@ -25,6 +25,6 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileTabView()
     }
 }

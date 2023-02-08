@@ -9,14 +9,14 @@ import SwiftUI
 
 @main
 struct VzuhApp: App {
-    @StateObject var model: MainVM = .init()
-    @StateObject var searching: SearchingCities = .init()
+    @StateObject var mainVM: MainVM = .init()
+    @StateObject var searchingCities: SearchingCities = .init()
 
     var body: some Scene {
         WindowGroup {
             WelcomeView()
-                .environmentObject(model)
-                .environmentObject(searching)
+                .environmentObject(mainVM)
+                .environmentObject(searchingCities)
         }
     }
 }

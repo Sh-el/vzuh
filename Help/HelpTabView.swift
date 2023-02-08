@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HelpView: View {
+struct HelpTabView: View {
     var body: some View {
         ZStack {
             Image("day_snow")
@@ -25,6 +25,6 @@ struct HelpView: View {
 
 struct HelpView_Previews: PreviewProvider {
     static var previews: some View {
-        HelpView()
+        HelpTabView()
     }
 }

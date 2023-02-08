@@ -27,7 +27,7 @@ struct TrainApi: TrainAPIProtocol {
                 }
                 return url
             }
-            .flatMap(apiService.get)
+            .flatMap(apiService.fetch)
             .tryCatch {
                 if case RequestError.decodingError = $0 {
                     return Just(Train())

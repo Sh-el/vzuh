@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 
 protocol APIServiceProtocol {
-    func get<T: Decodable>(url: URL) -> AnyPublisher<T, Error>
+    func fetch<T: Decodable>(from url: URL) -> AnyPublisher<T, Error>
 }
 
 enum RequestError: Error {
@@ -13,8 +13,8 @@ enum RequestError: Error {
 }
 
 struct APIService: APIServiceProtocol {
-    private func fetchURL(url: String) -> AnyPublisher<URL, Error> {
-        Just(url)
+    private func fetchURL(urlString: String) -> AnyPublisher<URL, Error> {
+        Just(urlString)
             .tryMap {
                 guard let url = URL(string: $0)
                 else {
@@ -25,14 +25,14 @@ struct APIService: APIServiceProtocol {
             .eraseToAnyPublisher()
     }
 
-    private func fetchData(_ url: URL) -> AnyPublisher<Data, Error> {
+    func fetchData(from url: URL) -> AnyPublisher<Data, Error> {
         URLSession
             .shared
             .dataTaskPublisher(for: url)
-            .mapError {_ -> Error in
-                return RequestError.invalidRequest
-            }
             .map(\.data)
+            .catch {_ in
+                return Fail(error: RequestError.invalidRequest)
+            }
             .timeout(.seconds(5.0),
                      scheduler: DispatchQueue.main,
                      customError: {RequestError.timeOut})
@@ -53,7 +53,7 @@ struct APIService: APIServiceProtocol {
             .eraseToAnyPublisher()
     }
 
-    func get<T: Decodable>(url: URL) -> AnyPublisher<T, Error> {
+    func fetch<T: Decodable>(from url: URL) -> AnyPublisher<T, Error> {
         Just(url)
             .flatMap(fetchData)
             .flatMap(decode)

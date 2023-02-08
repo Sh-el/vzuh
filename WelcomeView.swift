@@ -10,15 +10,15 @@ import SwiftUI
 struct WelcomeView: View {
     var body: some View {
         TabView {
-            MainView()
-            OrdersView()
-            HelpView()
-            ProfileView()
+            MainTabView()
+            OrdersTabView()
+            HelpTabView()
+            ProfileTabView()
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct WelcomeView_Previews: PreviewProvider {
     static let model = MainVM()
 
     static var previews: some View {
