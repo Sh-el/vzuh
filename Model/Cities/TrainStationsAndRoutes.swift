@@ -21,9 +21,9 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
         Publishers.Zip(Just(departure), Just(arrival))
             .map {(Set($0.0.routes), Set($0.1.routes))}
             .map {Array($0.0.intersection($0.1))
-                .filter {$0.departureStationName
-                .lowercased()
-                .contains(departure.name.lowercased())}}
+                    .filter {$0.departureStationName
+                            .lowercased()
+                        .contains(departure.name.lowercased())}}
             .tryMap {value in
                 if value.isEmpty {
                     throw RequestError.invalidRequest
@@ -34,56 +34,55 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
     }
 
     func getTrainStationsNames() -> [String: String] {
-        if let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) {
-            do {
-                let fileContent = try String(contentsOfFile: filepath)
-                let lines = fileContent.components(separatedBy: "\n")
-                var resultsDict: [String: String] = [:]
+        guard let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) else {
+            print("(inputFile) could not be found")
+            return [:]
+        }
+        do {
+            let fileContent = try String(contentsOfFile: filepath)
+            let lines = fileContent.components(separatedBy: "\n")
+            var resultsDict: [String: String] = [:]
 
-                lines.dropFirst().forEach {line in
-                    let data = line.components(separatedBy: ";")
-                    if data.count == 4 {
-                        if resultsDict[data[0]] == nil {
-                            resultsDict[data[0]] = data[1]
-                        }
+            lines.dropFirst().forEach { line in
+                let data = line.components(separatedBy: ";")
+                if data.count == 4 {
+                    let key = data[0]
+                    let value = data[1]
+
+                    if resultsDict[key] == nil {
+                        resultsDict[key] = value
                     }
                 }
-                return resultsDict
-            } catch {
-                print("error: \(error)")
             }
-        } else {
-            print("\(inputFile) could not be found")
+            return resultsDict
+        } catch {
+            print("error: \(error)")
+            return [:]
         }
-        return [:]
     }
 
     func getTrainRoutes() -> [TrainRoute] {
-        if let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) {
-            do {
-                let fileContent = try String(contentsOfFile: filepath)
-                let lines = fileContent.components(separatedBy: "\n")
-                var resultsArr: [TrainRoute] = []
-
-                lines.dropFirst().forEach {line in
-                    let data = line.components(separatedBy: ";")
-                    if data.count == 4 {
-                        var routElement = TrainRoute()
-                        routElement.departureStationId = data[0]
-                        routElement.departureStationName = data[1]
-                        routElement.arrivalStationId = data[2]
-                        routElement.arrivalStationName = data[3]
-                        resultsArr.append(routElement)
-                    }
-                }
-                return resultsArr
-            } catch {
-                print("error: \(error)")
-            }
-        } else {
-            print("\(inputFile) could not be found")
+        guard let filepath = Bundle.main.path(forResource: inputFile, ofType: nil) else {
+            print("(inputFile) could not be found")
+            return []
         }
-        return []
+        do {
+            let fileContent = try String(contentsOfFile: filepath)
+            let lines = fileContent.components(separatedBy: "\n")
+            return lines.dropFirst().compactMap { line -> TrainRoute? in
+                let data = line.components(separatedBy: ";")
+                if data.count == 4 {
+                    return TrainRoute(departureStationId: data[0],
+                                      departureStationName: data[1],
+                                      arrivalStationId: data[2],
+                                      arrivalStationName: data[3])
+                }
+                return nil
+            }
+        } catch {
+            print("error: \(error)")
+            return []
+        }
     }
 
 }

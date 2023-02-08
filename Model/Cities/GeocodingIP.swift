@@ -16,9 +16,9 @@ struct GeocodingIP: GeocodingIpProtocol {
     private let apiService: APIServiceProtocol
 
     private func getIP() -> AnyPublisher<IpForCity, Error> {
-        Just(())
+        Just(EndpointIP.ipForPlace)
             .tryMap {
-                guard let url = EndpointIP.ipForPlace.absoluteURL else {
+                guard let url = $0.absoluteURL else {
                     throw RequestError.addressUnreachable
                 }
                 return url

@@ -15,12 +15,10 @@ protocol ActionPassengersProtocol {
 
 struct ActionPassengers: ActionPassengersProtocol {
     private func addAdult(_ passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
-        guard passengers.count + 1 <= Const.maxNumberPassengers else {
+        if passengers.count + 1 > Const.maxNumberPassengers {
             return (.lotsPassengers, nil)
         }
-        var arr = passengers
-        arr.append(.adult)
-        return (.valid, arr)
+        return (.valid, passengers + [.adult])
     }
 
     private func removeAdult(_ passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
@@ -70,12 +68,12 @@ struct ActionPassengers: ActionPassengersProtocol {
 
     func changeNumberPassengers(_ passengers: ([Passenger], ActionNumberPassengers?))
     -> AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
-       Just(passengers)
+        Just(passengers)
             .filter {$0.1 != nil}
             .map {
                 switch $0.1! {
                 case .addAdult:
-                     return addAdult($0.0)
+                    return addAdult($0.0)
 
                 case .removeAdult:
                     return removeAdult($0.0)

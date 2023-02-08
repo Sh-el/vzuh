@@ -27,22 +27,19 @@ final class MainVM: ObservableObject {
     @Published var changeNumberPassengersError: ChangeNumberPassengersError  = .valid
 
     private func changeNumberPassengers() {
-        var changeNumberPassengersRes: AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
-            $actionNumberPassengers
-                .filter {$0 != nil}
-                .map {[weak self] action in
-                    guard let passengers = self?.passengers else {
-                        return ([.adult], action)
-                    }
-                    return (passengers, action)
+        let changeNumberPassengersRes = $actionNumberPassengers
+            .compactMap {$0}
+            .map {[weak self] action in
+                guard let passengers = self?.passengers else {
+                    return ([.adult], action)
                 }
-                .flatMap(actionPassengers.changeNumberPassengers)
-                .eraseToAnyPublisher()
-        }
+                return (passengers, action)
+            }
+            .flatMap(actionPassengers.changeNumberPassengers)
+            .eraseToAnyPublisher()
 
         changeNumberPassengersRes
-            .filter {$0.1 != nil}
-            .map {$0.1!}
+            .compactMap {$0.1}
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$passengers)
@@ -75,21 +72,10 @@ final class MainVM: ObservableObject {
 
         $isSearch
             .filter {$0}
-            .filter {[weak self] _ in
-                guard let mainMenuTabSelected = self?.mainMenuTabSelected else {
-                    return false
-                }
-                return mainMenuTabSelected == .all
-            }
-            .filter {$0}
-            .map {[weak self] _ in
-                guard let departure = self?.departure, let arrival = self?.arrival else {
-                    return (nil, nil)
-                }
-                return (departure, arrival)
-            }
+            .filter {[weak self] _ in self?.mainMenuTabSelected == .all}
+            .map {[weak self] _ in (self?.departure, self?.arrival)}
             .filter {$0.0 != nil && $0.1 != nil}
-//            .flatMap(getTrips)
+        //            .flatMap(getTrips)
             .map(getTrips)
             .switchToLatest()
             .asResult()
@@ -100,14 +86,12 @@ final class MainVM: ObservableObject {
 
     private func sortTrainSchedule() {
         $choiceSortTrainSchedules
-            .filter {$0 != nil}
+            .compactMap {$0}
             .map {[weak self] sort  in
                 switch self?.trainSchedules {
                 case .success(let schedules):
                     return (schedules, sort)
-                case .none:
-                    return ([], nil)
-                case .some(.failure):
+                case nil, .failure:
                     return ([], nil)
                 }
             }
@@ -120,7 +104,7 @@ final class MainVM: ObservableObject {
     }
 
     func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip? {
-        train.minPrice(schedule)
+        train.minPrice(in: schedule)
     }
 
     init(

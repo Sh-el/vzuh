@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 protocol TrainProtocol {
-    func minPrice(_ schedule: [TrainTrip]) -> TrainTrip?
+    func minPrice(in schedule: [TrainTrip]) -> TrainTrip?
     func sort(_ schedule: ([TrainTrip], Train.Sort?)) -> AnyPublisher<[TrainTrip], Error>
 }
 
@@ -17,18 +17,8 @@ struct Train: Codable, TrainProtocol {
     var trips: [TrainTrip] = []
     var url: String = ""
 
-    func minPrice(_ schedule: [TrainTrip]) -> TrainTrip? {
-        var result: TrainTrip?
-        var subscriptions = Set<AnyCancellable>()
-        schedule
-            .publisher
-            .filter {!$0.trainNumber.isEmpty}
-            .min()
-            .sink(receiveValue: {value in
-                result = value
-            })
-            .store(in: &subscriptions)
-        return result
+    func minPrice(in schedule: [TrainTrip]) -> TrainTrip? {
+    return schedule.filter { !$0.trainNumber.isEmpty }.min()
     }
 
     func sort(_ schedule: ([TrainTrip], Sort?)) -> AnyPublisher<[TrainTrip], Error> {

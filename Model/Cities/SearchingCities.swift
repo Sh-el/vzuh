@@ -9,7 +9,6 @@ import SwiftUI
 import Combine
 
 final class SearchingCities: ObservableObject {
-
     private let trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     private let geocodingIP: GeocodingIpProtocol
     private let dataAutocomplete: DataAutocompleteProtocol
@@ -33,28 +32,24 @@ final class SearchingCities: ObservableObject {
         location.countryName = element.countryName
         location.codeIATA = element.code
 
-        location.trainStationId = allStations
-                                    .compactMap {$0.value
-                                                   .lowercased()
-                                                   .contains(element.name.lowercased()) ? $0.key : nil}
+        location.trainStationId = allStations.compactMap {
+            $0.value.lowercased().contains(element.name.lowercased()) ? $0.key : nil
+        }
 
-        location.routes = allTrainRoutes
-                            .filter {$0.departureStationName
-                            .contains(element.name) || $0.arrivalStationName.contains(element.name)}
+        location.routes = allTrainRoutes.filter {
+            $0.departureStationName.contains(element.name) || $0.arrivalStationName.contains(element.name)
+        }
 
         return location
     }
 
     func stationName(_ stationId: String) -> String {
-        let resultDict = allStations.first(where: {key, _ in
-            key == stationId
-        })
+        let resultDict = allStations.first {$0.key == stationId}
         return resultDict?.value ?? "No Name"
     }
 
     private func getCityForIP() -> AnyPublisher<AutocompleteCityElemnt, Error> {
-        Just(())
-            .flatMap(geocodingIP.getCity)
+        geocodingIP.getCity()
             .map {$0.name}
             .flatMap(dataAutocomplete.getAutocompleteCities)
             .filter {!$0.isEmpty}
@@ -85,10 +80,7 @@ final class SearchingCities: ObservableObject {
 
         $city
             .debounce(for: 0.6, scheduler: DispatchQueue.main)
-            .map {
-                guard !$0.isEmpty else {return "Россия"}
-                return $0
-            }
+            .map {!$0.isEmpty ? $0 : "Россия"}
             .map(dataAutocomplete.getAutocompleteCities)
             .switchToLatest()
             .asResult()
