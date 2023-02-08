@@ -17,10 +17,6 @@ struct VzuhApp: App {
             WelcomeView()
                 .environmentObject(model)
                 .environmentObject(searching)
-                .task {
-
-                }
         }
-
     }
 }

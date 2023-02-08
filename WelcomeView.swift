@@ -15,7 +15,6 @@ struct WelcomeView: View {
             HelpView()
             ProfileView()
         }
-
     }
 }
 

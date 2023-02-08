@@ -101,7 +101,7 @@ final class MainVM: ObservableObject {
     private func sortTrainSchedule() {
         $choiceSortTrainSchedules
             .filter {$0 != nil}
-            .map {[weak self] sort in
+            .map {[weak self] sort  in
                 switch self?.trainSchedules {
                 case .success(let schedules):
                     return (schedules, sort)
@@ -212,6 +212,7 @@ enum MainMenuTab {
         }
     }
 }
+
 enum MainMenuTab1: CaseIterable {
     case all
     case hotels
