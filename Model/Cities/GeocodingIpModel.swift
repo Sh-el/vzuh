@@ -9,10 +9,10 @@ import SwiftUI
 import Combine
 
 protocol GeocodingIpProtocol {
-    func getCity() -> AnyPublisher<GeocodingCity, Error>
+    func getCity() -> AnyPublisher<GeocodingIpModel.GeocodingCity, Error>
 }
 
-struct GeocodingIP: GeocodingIpProtocol {
+struct GeocodingIpModel: GeocodingIpProtocol {
     private let apiService: APIServiceProtocol
 
     private func getIP() -> AnyPublisher<IpForCity, Error> {
@@ -44,7 +44,23 @@ struct GeocodingIP: GeocodingIpProtocol {
     }
 }
 
-extension GeocodingIP {
+extension GeocodingIpModel {
+    struct GeocodingCity: Codable {
+        let iata, name, countryName, coordinates: String
+
+        enum CodingKeys: String, CodingKey {
+            case iata, name
+            case countryName = "country_name"
+            case coordinates
+        }
+    }
+
+    struct IpForCity: Codable {
+        let ip: String
+    }
+}
+
+extension GeocodingIpModel {
     enum EndpointIP {
         case ipForPlace
 
@@ -80,7 +96,7 @@ extension GeocodingIP {
     }
 }
 
-extension GeocodingIP {
+extension GeocodingIpModel {
     enum EndpointCity {
         case city(String)
 
@@ -118,4 +134,3 @@ extension GeocodingIP {
         }
     }
 }
-

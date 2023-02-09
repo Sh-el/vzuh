@@ -9,9 +9,9 @@ import SwiftUI
 import Combine
 
 final class SearchingCities: ObservableObject {
-    private let trainStationsAndRoutes: TrainStationsAndRoutesProtocol
     private let geocodingIP: GeocodingIpProtocol
     private let dataAutocomplete: DataAutocompleteProtocol
+    private let location: LocationProtocol
 
     private var allStations: [String: String] = [:]
     private var allTrainRoutes: [TrainRoute] = []
@@ -21,34 +21,20 @@ final class SearchingCities: ObservableObject {
     @Published var isMyCity = false
 
     // Output
-    @Published var myCity: Result<AutocompleteCityElemnt, Error>?
+    @Published var myCity: Result<AutocompleteCityElement, Error>?
     @Published var autocompleteCities: Result<AutocompleteCities, Error>?
     @Published var mainCities: Result<AutocompleteCities, Error>?
 
-    func getLocation(_ element: AutocompleteCityElemnt) -> Location {
-        var location = Location()
-
-        location.name = element.name
-        location.countryName = element.countryName
-        location.codeIATA = element.code
-
-        location.trainStationId = allStations.compactMap {
-            $0.value.lowercased().contains(element.name.lowercased()) ? $0.key : nil
+    func getLocation(_ element: AutocompleteCityElement) -> Location {
+        location.getLocation(element)
         }
-
-        location.routes = allTrainRoutes.filter {
-            $0.departureStationName.contains(element.name) || $0.arrivalStationName.contains(element.name)
-        }
-
-        return location
-    }
 
     func stationName(_ stationId: String) -> String {
         let resultDict = allStations.first {$0.key == stationId}
         return resultDict?.value ?? "No Name"
     }
 
-    private func getCityForIP() -> AnyPublisher<AutocompleteCityElemnt, Error> {
+    private func getCityForIP() -> AnyPublisher<AutocompleteCityElement, Error> {
         geocodingIP.getCity()
             .map {$0.name}
             .flatMap(dataAutocomplete.getAutocompleteCities)
@@ -57,17 +43,13 @@ final class SearchingCities: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    init(
-        trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv"),
-        geocodingIP: GeocodingIpProtocol = GeocodingIP(),
-        dataAutocomplete: DataAutocompleteProtocol = Autocomplete()
-    ) {
-        self.trainStationsAndRoutes = trainStationsAndRoutes
+    init(geocodingIP: GeocodingIpProtocol = GeocodingIpModel(),
+         dataAutocomplete: DataAutocompleteProtocol = AutocompleteModel(),
+         location: LocationProtocol = LocationModel()) {
+
         self.geocodingIP = geocodingIP
         self.dataAutocomplete = dataAutocomplete
-
-        allStations = trainStationsAndRoutes.getTrainStationsNames()
-        allTrainRoutes = trainStationsAndRoutes.getTrainRoutes()
+        self.location = location
 
         $isMyCity
             .filter {$0}
@@ -89,5 +71,3 @@ final class SearchingCities: ObservableObject {
             .assign(to: &$autocompleteCities)
     }
 }
-
-

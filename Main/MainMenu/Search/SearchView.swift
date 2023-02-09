@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchView: View {
     @EnvironmentObject var mainVM: MainVM
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             EnterCitiesView()
@@ -24,7 +24,7 @@ struct SearchView: View {
             .disabled(mainVM.departure?.name == mainVM.arrival?.name)
         }
     }
-    
+
     @ViewBuilder
     private var searchDestinationView: some View {
         switch mainVM.mainMenuTabSelected {
@@ -40,7 +40,7 @@ struct SearchView: View {
             BusResultView()
         }
     }
-    
+
     private var searchButton: some View {
         Text("Найти")
             .font(.title)
@@ -57,7 +57,7 @@ struct SearchView: View {
 
 struct AllFindView_Previews: PreviewProvider {
     static let mainVM = MainVM()
-    
+
     static var previews: some View {
         SearchView()
             .environmentObject(mainVM)

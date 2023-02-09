@@ -30,7 +30,7 @@ struct TrainApi: TrainAPIProtocol {
             .flatMap(apiService.fetch)
             .tryCatch {
                 if case RequestError.decodingError = $0 {
-                    return Just(Train())
+                    return Just(TrainModel())
                         .eraseToAnyPublisher()
                 }
                 throw $0

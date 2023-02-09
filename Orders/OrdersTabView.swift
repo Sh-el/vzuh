@@ -24,7 +24,7 @@ struct OrdersTabView: View {
                     .padding(.bottom, 2)
                 Text("Войдите, чтобы сохранить заказ в своем профиле на Вжух. Предыдущие заказы из профиля.")
                     .lineLimit(3)
-                
+
                     enterButton
             }
         }
@@ -35,9 +35,9 @@ struct OrdersTabView: View {
     }
 
     private var enterButton: some View {
-            Button(action: {
+            Button {
                 // handle enter button tap here
-            }) {
+            } label: {
                 Text("Войти")
                     .font(.title)
                     .fontWeight(.bold)

@@ -13,7 +13,7 @@ protocol ActionPassengersProtocol {
     -> AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never>
 }
 
-struct ActionPassengers: ActionPassengersProtocol {
+struct ActionPassengersModel: ActionPassengersProtocol {
     private func addAdult(_ passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
         if passengers.count + 1 > Const.maxNumberPassengers {
             return (.lotsPassengers, nil)

@@ -59,7 +59,7 @@ final class MainVM: ObservableObject {
     private let train: TrainProtocol
 
     @Published var trainSchedules: TrainSchedules?
-    @Published var choiceSortTrainSchedules: Train.Sort?
+    @Published var choiceSortTrainSchedules: TrainModel.Sort?
 
     private func loadTrainSchedules() {
         func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
@@ -108,18 +108,19 @@ final class MainVM: ObservableObject {
     }
 
     init(
-        actionPassengers: ActionPassengersProtocol = ActionPassengers(),
+        actionPassengers: ActionPassengersProtocol = ActionPassengersModel(),
         dataTrain: TrainAPIProtocol = TrainApi(),
-        dataTrainSchedule: TrainProtocol = Train(),
-        trainStationsAndRoutes: TrainStationsAndRoutesProtocol = TrainStationsAndRoutes(inputFile: "tutu_routes.csv")
+        dataTrainSchedule: TrainProtocol = TrainModel(),
+        trainStationsAndRoutes:
+        TrainStationsAndRoutesProtocol = TrainStationsAndRoutesModel(inputFile: "tutu_routes.csv")
     ) {
         self.actionPassengers = actionPassengers
         self.trainAPI = dataTrain
         self.train = dataTrainSchedule
         self.trainStationsAndRoutes = trainStationsAndRoutes
 
-        imagesBackground = Const.imagesBackground
-        buttonsMain = Const.buttonsMain
+        imagesBackground = Constants.imagesBackground
+        buttonsMain = Constants.buttonsMain
 
         changeNumberPassengers()
         loadTrainSchedules()
@@ -131,7 +132,7 @@ final class MainVM: ObservableObject {
     @Published var imagesBackground: [String] = []
     @Published var buttonsMain: [MainMenuTab] = []
 
-    private struct Const {
+    private struct Constants {
         static let imagesBackground = ["day_snow",
                                        "snow_mountain",
                                        "day_clearsky",

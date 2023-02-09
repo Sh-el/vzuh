@@ -8,13 +8,15 @@
 import SwiftUI
 import Combine
 
+typealias TrainRoute = TrainStationsAndRoutesModel.TrainRoute
+
 protocol TrainStationsAndRoutesProtocol {
     func getTrainStationsNames() -> [String: String]
     func getTrainRoutes() -> [TrainRoute]
     func validTrainRoutes(_ departure: Location, _ arrival: Location) -> AnyPublisher<[TrainRoute], Error>
 }
 
-struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
+struct TrainStationsAndRoutesModel: TrainStationsAndRoutesProtocol {
     let inputFile: String
 
     func validTrainRoutes(_ departure: Location, _ arrival: Location) -> AnyPublisher<[TrainRoute], Error> {
@@ -87,3 +89,22 @@ struct TrainStationsAndRoutes: TrainStationsAndRoutesProtocol {
 
 }
 
+extension TrainStationsAndRoutesModel {
+    struct TrainRoute: Hashable, Identifiable {
+        let id = UUID()
+        let departureStationId: String
+        let departureStationName: String
+        let arrivalStationId: String
+        let arrivalStationName: String
+
+        init(departureStationId: String = "",
+             departureStationName: String = "",
+             arrivalStationId: String = "",
+             arrivalStationName: String = "") {
+            self.departureStationId = departureStationId
+            self.departureStationName = departureStationName
+            self.arrivalStationId = arrivalStationId
+            self.arrivalStationName = arrivalStationName
+        }
+    }
+}
