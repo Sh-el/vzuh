@@ -119,16 +119,3 @@ extension GeocodingIP {
     }
 }
 
-struct GeocodingCity: Codable {
-    let iata, name, countryName, coordinates: String
-
-    enum CodingKeys: String, CodingKey {
-        case iata, name
-        case countryName = "country_name"
-        case coordinates
-    }
-}
-
-struct IpForCity: Codable {
-    let ip: String
-}
