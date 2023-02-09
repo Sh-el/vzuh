@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ListChildrenView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
 
     var body: some View {
-        let children = model.passengers.filter({$0 == .child || $0 == .baby})
+        let children = mainVM.passengers.filter({$0 == .child || $0 == .baby})
         if !children.isEmpty {
             VStack {
                 ForEach(children, id: \.self) {child in
@@ -19,13 +19,9 @@ struct ListChildrenView: View {
                         Text(child.description)
                         Spacer()
                         Button {
-                            if child == .child {
-                                model.actionNumberPassengers = .removeChild
-                            } else if child == .baby {
-                                model.actionNumberPassengers = .removeBaby
-                            }
+                            mainVM.actionNumberPassengers = child == .child ? .removeChild : .removeBaby
                         } label: {
-                            Text("X")
+                            Image(systemName: "xmark")
                                 .padding(.trailing, 20)
                         }
                     }
@@ -35,10 +31,10 @@ struct ListChildrenView: View {
     }
 }
 
-struct ListChildrenView1_Previews: PreviewProvider {
-    static let model = MainVM()
+struct ListChildrenView_Previews: PreviewProvider {
+    static let mainVM = MainVM()
     static var previews: some View {
         ListChildrenView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

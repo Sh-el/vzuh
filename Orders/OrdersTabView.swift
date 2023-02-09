@@ -24,14 +24,9 @@ struct OrdersTabView: View {
                     .padding(.bottom, 2)
                 Text("Войдите, чтобы сохранить заказ в своем профиле на Вжух. Предыдущие заказы из профиля.")
                     .lineLimit(3)
-                Button {
-
-                } label: {
+                
                     enterButton
-                }
-
             }
-
         }
         .tabItem {
             Image(systemName: "dollarsign.square")
@@ -39,17 +34,21 @@ struct OrdersTabView: View {
         }
     }
 
-    var enterButton: some View {
-        Text("Войти")
-            .font(.title)
-            .fontWeight(.bold)
-            .foregroundColor(.white)
-            .padding(.horizontal, 15)
-            .padding(.vertical, 10)
-            .background(.blue)
-            .cornerRadius(5)
-            .padding(.horizontal, 10)
-    }
+    private var enterButton: some View {
+            Button(action: {
+                // handle enter button tap here
+            }) {
+                Text("Войти")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 10)
+                    .background(.blue)
+                    .cornerRadius(5)
+                    .padding(.horizontal, 10)
+            }
+        }
 }
 
 struct OrdersView_Previews: PreviewProvider {

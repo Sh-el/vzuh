@@ -8,37 +8,36 @@
 import SwiftUI
 
 struct AddChildView: View {
-    @EnvironmentObject var model: MainVM
-    @State private var child: Passenger = Passenger.baby
+    @EnvironmentObject var mainVM: MainVM
+    @State private var selectedChild: Passenger = .baby
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
-                Text(child.description)
+                Text(selectedChild.description)
 
-                Picker(selection: $child) {
+                Picker(selection: $selectedChild) {
                     Text(Passenger.baby.description).tag(Passenger.baby)
                     Text(Passenger.child.description).tag(Passenger.child)
                 } label: {
-                    Text("Select")
+                    Text("")
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-//                .pickerStyle(WheelPickerStyle())
 
                 Button {
-                    if child == .baby {
-                        model.actionNumberPassengers = .addBaby
+                    if selectedChild == .baby {
+                        mainVM.actionNumberPassengers = .addBaby
                         dismiss()
                     } else {
-                        model.actionNumberPassengers = .addChild
+                        mainVM.actionNumberPassengers = .addChild
                         dismiss()
                     }
 
-                    if  model.changeNumberPassengersError == .valid ||
-                        model.changeNumberPassengersError == .lotsBabies {
+                    if  mainVM.changeNumberPassengersError == .valid ||
+                            mainVM.changeNumberPassengersError == .lotsBabies {
                         dismiss()
                     }
                 } label: {
@@ -51,10 +50,10 @@ struct AddChildView: View {
     }
 }
 
-struct AddChildView1_Previews: PreviewProvider {
-    static let model = MainVM()
+struct AddChildView_Previews: PreviewProvider {
+    static let mainVM = MainVM()
     static var previews: some View {
         AddChildView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

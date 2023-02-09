@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct FoundCitiesView: View {
-    @EnvironmentObject var model: MainVM
-    @EnvironmentObject var searching: SearchingCities
+    @EnvironmentObject var mainVM: MainVM
+    @EnvironmentObject var searchingCities: SearchingCities
     @Environment(\.dismiss) private var dismiss
 
     let place: EnterCitiesView.Place?
@@ -17,11 +17,11 @@ struct FoundCitiesView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(alignment: .leading) {
-                if searching.city.isEmpty {
+                if searchingCities.city.isEmpty {
                     MyCityView(place: place)
                 }
 
-                switch searching.autocompleteCities {
+                switch searchingCities.autocompleteCities {
                 case .success(let result):
                     VStack {
                         ForEach(result, id: \.id) {city in
@@ -45,9 +45,9 @@ struct FoundCitiesView: View {
                             .padding(.vertical, 5)
                             .onTapGesture {
                                 if place == .departure {
-                                    model.departure = searching.getLocation(city)
+                                    mainVM.departure = searchingCities.getLocation(city)
                                 } else if place == .arrival {
-                                    model.arrival = searching.getLocation(city)
+                                    mainVM.arrival = searchingCities.getLocation(city)
                                 }
                                 dismiss()
                             }
@@ -61,17 +61,17 @@ struct FoundCitiesView: View {
             }
         }
         .onAppear {
-            searching.isMyCity = true
+            searchingCities.isMyCity = true
         }
     }
 }
 
 struct MainCitiesView_Previews: PreviewProvider {
-    static let model = MainVM()
-    static let searching = SearchingCities()
+    static let mainVM = MainVM()
+    static let searchingCitites = SearchingCities()
     static var previews: some View {
         FoundCitiesView(place: .departure)
-            .environmentObject(model)
-            .environmentObject(searching)
+            .environmentObject(mainVM)
+            .environmentObject(searchingCitites)
     }
 }

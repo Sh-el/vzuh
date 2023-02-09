@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChangeBackgroundView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
     @Environment(\.dismiss) private var dismiss
 
     private var columns: [GridItem] {
@@ -18,16 +18,16 @@ struct ChangeBackgroundView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(model.imagesBackground, id: \.self) {image in
+                    ForEach(mainVM.imagesBackground, id: \.self) {image in
                         Image(image)
                             .resizable()
                             .frame(height: 300)
                             .scaledToFit()
                             .cornerRadius(10)
                             .onTapGesture {
-                                model.backgroundMain = image
+                                mainVM.backgroundMain = image
                                 dismiss()
                             }
                     }
@@ -41,21 +41,22 @@ struct ChangeBackgroundView: View {
                 Button {
                     dismiss()
                 } label: {
-                    Text("X")
+                    Image(systemName: "xmark")
                 }
             }
             .fontWeight(.bold)
             .foregroundColor(.white)
             .padding()
         }
-        .background(Image(model.backgroundMain).blur(radius: 10))
+        .background(Image(mainVM.backgroundMain).blur(radius: 10))
+        .padding(.horizontal, 5)
     }
 }
 
 struct ChangeBackgroundView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         ChangeBackgroundView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

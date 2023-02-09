@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct HeaderScrollView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
     @Binding var showingOptions: Bool
-    let schedule: [TrainTrip]
+    let scheduleCount: Int
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -19,9 +19,9 @@ struct HeaderScrollView: View {
                     showingOptions = true
                 } label: {
                     HStack {
-                        Text("\(schedule.count) " + trainOkonchanie(schedule.count) + ",")
+                        Text("\(scheduleCount) " + trainPlural(scheduleCount) + ",")
                             .foregroundColor(.black)
-                        Text(model.choiceSortTrainSchedules?.description ?? "Сортировка")
+                        Text(mainVM.choiceSortTrainSchedules?.description ?? "Сортировка")
                             .foregroundColor(.blue)
                     }
                     .font(.headline)
@@ -37,10 +37,8 @@ struct HeaderScrollView: View {
         }
     }
 
-    func trainOkonchanie(_ count: Int) -> String {
-        guard let okonchanie = (String(count).last) else {return ""}
-        guard let okInt = Int(String(okonchanie)) else {return ""}
-        switch okInt {
+    func trainPlural(_ count: Int) -> String {
+        switch count % 10 {
         case 1:
             return "поезд"
         case 2...4:
@@ -53,9 +51,9 @@ struct HeaderScrollView: View {
 }
 
 struct HeaderScrollView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
-        HeaderScrollView(showingOptions: .constant(true), schedule: [TrainTrip]())
-            .environmentObject(model)
+        HeaderScrollView(showingOptions: .constant(true), scheduleCount: 1)
+            .environmentObject(mainVM)
     }
 }

@@ -8,24 +8,24 @@
 import SwiftUI
 
 struct AllResultsView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
     @State private var isDetail = false
     @State private var showingOptions = false
 
     var body: some View {
         ZStack {
-            Image(model.backgroundMain)
+            Image(mainVM.backgroundMain)
                 .resizable()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
             VStack(alignment: .leading) {
                 Spacer()
                 ScrollView(.vertical) {
-                    switch model.trainSchedules {
+                    switch mainVM.trainSchedules {
                     case .success(let schedule):
                         if !schedule.isEmpty {
                             HeaderScrollView(showingOptions: $showingOptions,
-                                             schedule: schedule)
+                                             scheduleCount: schedule.count)
                             .padding(.top, 10)
                             .padding(.horizontal, 10)
 
@@ -33,7 +33,7 @@ struct AllResultsView: View {
                                 VStack(alignment: .leading) {
                                     TrainNameView(trip: trip)
                                         .padding(5)
-                                    DepArrView(trip: trip)
+                                    TrainTimeView(trip: trip)
                                         .padding(.bottom, 5)
                                         .padding(.horizontal, 5)
                                     RailwayCarriageCategoryView(trip: trip)
@@ -53,16 +53,16 @@ struct AllResultsView: View {
                                 title: Text("Сортировка:"),
                                 buttons: [
                                     .default(Text("сначала дешевые")) {
-                                        model.choiceSortTrainSchedules = .lowestPrice
+                                        mainVM.choiceSortTrainSchedules = .lowestPrice
                                     },
                                     .default(Text("сначала быстрые")) {
-                                        model.choiceSortTrainSchedules = .fastest
+                                        mainVM.choiceSortTrainSchedules = .fastest
                                     },
                                     .default(Text("сначала ранние")) {
-                                        model.choiceSortTrainSchedules = .earliest
+                                        mainVM.choiceSortTrainSchedules = .earliest
                                     },
                                     .default(Text("сначала поздние")) {
-                                        model.choiceSortTrainSchedules = .latest
+                                        mainVM.choiceSortTrainSchedules = .latest
                                     },
                                     .cancel(Text("Отмена")) {
                                     }
@@ -89,7 +89,7 @@ struct AllResultsView: View {
                 .padding(.top, 10)
             }
             .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: NavigatiomBarView())
+            .navigationBarItems(leading: NavigationBarView())
         }
         .sheet(isPresented: $isDetail) {
             ZStack {
@@ -97,19 +97,19 @@ struct AllResultsView: View {
             }
         }
         .task {
-            model.trainSchedules = nil
-            model.isSearch = true
+            mainVM.trainSchedules = nil
+            mainVM.isSearch = true
         }
         .onDisappear {
-            model.isSearch = false
+            mainVM.isSearch = false
         }
     }
 }
 
 struct SearchAllResultView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         AllResultsView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

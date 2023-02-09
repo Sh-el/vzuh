@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct NavigatiomBarView: View {
-    @EnvironmentObject var model: MainVM
+struct NavigationBarView: View {
+    @EnvironmentObject var mainVM: MainVM
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -22,12 +22,12 @@ struct NavigatiomBarView: View {
 //                Text((model.departure?.name ?? "") + " - " + (model.arrival?.name ?? ""))
 //                    .fontWeight(.semibold)
                 HStack {
-                    Text(model.isDateBack ?
-                         model.dateDeparture.dateToString + " - " + model.dateBack.dateToString :
-                            model.dateDeparture.dateToString + ".")
-                    Text(model.passengers.count == 1 ?
-                         "\(model.passengers.count) пассажир" :
-                         "\(model.passengers.count) пассажира")
+                    Text(mainVM.isDateBack ?
+                         mainVM.dateDeparture.dateToString + " - " + mainVM.dateBack.dateToString :
+                            mainVM.dateDeparture.dateToString + ".")
+                    Text(mainVM.passengers.count == 1 ?
+                         "\(mainVM.passengers.count) пассажир" :
+                         "\(mainVM.passengers.count) пассажира")
                 }
                 .font(.callout)
                 TitleResultView()
@@ -39,9 +39,9 @@ struct NavigatiomBarView: View {
 }
 
 struct NavigatiomBarView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
-        NavigatiomBarView()
-            .environmentObject(model)
+        NavigationBarView()
+            .environmentObject(mainVM)
     }
 }

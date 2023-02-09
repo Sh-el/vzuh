@@ -9,7 +9,6 @@ import SwiftUI
 
 struct FAQView: View {
     var body: some View {
-
             VStack {
                 Text("Ответы на частые вопросы")
                     .font(.title)

@@ -8,21 +8,21 @@
 import SwiftUI
 
 struct DatePick: View {
-    @EnvironmentObject var model: MainVM
-    let dateTrip: DateSelectionView.DateTrip?
+    @EnvironmentObject var mainVM: MainVM
+    let dateTrip: DateSelectionView.TripType?
 
     var body: some View {
         VStack {
             if dateTrip == .dateDeparture {
-                Text((model.departure?.name ?? "") + " - " + (model.arrival?.name ?? ""))
+                Text((mainVM.departure?.name ?? "") + " - " + (mainVM.arrival?.name ?? ""))
                     .font(.largeTitle)
             } else {
-                Text((model.arrival?.name ?? "") + " - " + (model.departure?.name ?? ""))
+                Text((mainVM.arrival?.name ?? "") + " - " + (mainVM.departure?.name ?? ""))
                     .font(.largeTitle)
             }
             DatePicker("",
                        selection: dateTrip == .dateDeparture ?
-                       $model.dateDeparture: $model.dateBack,
+                       $mainVM.dateDeparture: $mainVM.dateBack,
                        in: Date.now...,
                        displayedComponents: [.date])
             .datePickerStyle(.graphical)
@@ -31,19 +31,19 @@ struct DatePick: View {
         .foregroundColor(.black)
         .padding()
         .onDisappear {
-            if dateTrip == .dateDeparture && model.dateBack < model.dateDeparture {
-                model.dateBack = model.dateDeparture
-            } else if dateTrip == .dateBack && model.dateDeparture > model.dateBack {
-                model.dateDeparture = model.dateBack
+            if dateTrip == .dateDeparture && mainVM.dateBack < mainVM.dateDeparture {
+                mainVM.dateBack = mainVM.dateDeparture
+            } else if dateTrip == .dateReturn && mainVM.dateDeparture > mainVM.dateBack {
+                mainVM.dateDeparture = mainVM.dateBack
             }
         }
     }
 }
 
 struct DatePick_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         DatePick(dateTrip: .dateDeparture)
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

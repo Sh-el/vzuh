@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct TitleResultView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
 
     var body: some View {
         HStack(alignment: .top) {
-            switch model.trainSchedules {
+            switch mainVM.trainSchedules {
             case .success(let schedule):
-                if let trip = model.trainMinPrice(schedule: schedule) {
+                if let trip = mainVM.trainMinPrice(schedule: schedule) {
                     HStack {
                         Text("Цены от")
                         Spacer()
@@ -35,9 +35,9 @@ struct TitleResultView: View {
 }
 
 struct ButtonsTopView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         TitleResultView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

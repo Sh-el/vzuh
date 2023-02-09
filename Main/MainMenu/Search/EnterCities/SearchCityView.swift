@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SearchCityView: View {
-    @EnvironmentObject var model: MainVM
-    @EnvironmentObject var searching: SearchingCities
+    @EnvironmentObject var mainVM: MainVM
+    @EnvironmentObject var searchingCities: SearchingCities
     @Environment(\.dismiss) private var dismiss
 
     let place: EnterCitiesView.Place?
@@ -28,7 +28,7 @@ struct SearchCityView: View {
 //        text: $searching.city)
             TextField(place == .departure ?
                       "Введите место отправления" : "Введите место прибытия",
-                      text: $searching.city)
+                      text: $searchingCities.city)
                 .font(.title)
                 .fontWeight(.semibold)
                 .background(Color.gray.opacity(0.2))
@@ -41,21 +41,18 @@ struct SearchCityView: View {
         .padding()
         .foregroundColor(.black)
         .onAppear {
-            searching.city = ""
-        }
-        .onDisappear {
-            print("dis")
+            searchingCities.city = ""
         }
     }
 }
 
 struct WhereFromView_Previews: PreviewProvider {
-    static let model = MainVM()
-    static let searching = SearchingCities()
+    static let mainVM = MainVM()
+    static let searchingCities = SearchingCities()
 
     static var previews: some View {
         SearchCityView(place: .arrival)
-            .environmentObject(model)
-            .environmentObject(searching)
+            .environmentObject(mainVM)
+            .environmentObject(searchingCities)
     }
 }

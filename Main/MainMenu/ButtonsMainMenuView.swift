@@ -8,28 +8,27 @@
 import SwiftUI
 
 struct ButtonsMainMenuView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
 
     var body: some View {
         VStack {
             HStack {
-                ForEach(model.buttonsMain, id: \.self) {value in
+                ForEach(mainVM.buttonsMain, id: \.self) {button in
                     VStack {
-                        Image(systemName: value.imageName)
-                            .foregroundColor(value == model.mainMenuTabSelected ?
-                                             Const.colorDefault.opacity(Const.opacity) :
-                                             Const.colorSelcted)
+                        Image(systemName: button.imageName)
+                            .foregroundColor(button == mainVM.mainMenuTabSelected ?
+                                             Constants.defaultColor.opacity(Constants.opacity) :
+                                             Constants.selectedColor)
                             .padding(10)
                             .background {
                                 Circle()
-                                    .foregroundColor(value == model.mainMenuTabSelected ?
-                                                     Const.colorSelcted :
-                                                     Const.colorDefault
-                                                          .opacity(Const.opacity))
+                                    .foregroundColor(button == mainVM.mainMenuTabSelected ?
+                                                     Constants.selectedColor :
+                                                     Constants.defaultColor.opacity(Constants.opacity))
                             }
                     }
                     .onTapGesture {
-                        model.mainMenuTabSelected = value
+                        mainVM.mainMenuTabSelected = button
                     }
                 }
                 Spacer()
@@ -41,17 +40,17 @@ struct ButtonsMainMenuView: View {
 }
 
 extension ButtonsMainMenuView {
-    private struct Const {
-        static let colorSelcted = Color.white
-        static let colorDefault = Color.black
+    private struct Constants {
+        static let selectedColor = Color.white
+        static let defaultColor = Color.black
         static let opacity: CGFloat = 0.7
     }
 }
 
 struct ButtonsMainView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         ButtonsMainMenuView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

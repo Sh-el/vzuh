@@ -36,30 +36,13 @@ struct DragSheetView: View {
         .offset(y: startingOffsetY)
         .offset(y: currentDragOffsetY)
         .offset(y: endingOffsetY)
-        .gesture(gesture)
+        .gesture(dragGesture)
         .edgesIgnoringSafeArea(.bottom)
     }
 }
 
 extension DragSheetView {
-    private var gesture1: some Gesture {
-        DragGesture()
-            .onChanged {value in
-                withAnimation(.spring()) {
-                    currentDragOffsetY = value.translation.height
-                }
-            }
-            .onEnded {_ in
-                withAnimation(.spring()) {
-                    isDisabled = true
-                }
-
-            }
-    }
-}
-
-extension DragSheetView {
-    private var gesture: some Gesture {
+    private var dragGesture: some Gesture {
         DragGesture()
             .onChanged {value in
                 withAnimation(.spring()) {

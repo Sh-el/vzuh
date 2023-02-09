@@ -15,7 +15,7 @@ struct RailwayCarriageCategoryView: View {
             HStack {
                 ForEach(trip.categories, id: \.self) {category in
                     VStack(alignment: .leading) {
-                        Text("от " +  String(category.price).addSpaceBeforLastThreeSymbol + " \u{20BD}")
+                        Text("от " +  String(category.price).insertSpaceBeforeLastThreeDigits + " \u{20BD}")
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.blue)
@@ -32,7 +32,7 @@ struct RailwayCarriageCategoryView: View {
 }
 
 extension StringProtocol {
-    var addSpaceBeforLastThreeSymbol: String {prefix(self.count - 3) + " " + dropFirst(self.count - 3)}
+    var insertSpaceBeforeLastThreeDigits: String {prefix(self.count - 3) + " " + dropFirst(self.count - 3)}
 }
 
 // struct RailwayCarriageCategoryView_Previews: PreviewProvider {

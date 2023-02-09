@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddAdultView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
 
     var body: some View {
         Stepper {
@@ -19,21 +19,21 @@ struct AddAdultView: View {
                         .foregroundColor(.gray)
                 }
                 Spacer()
-                Text("\(model.passengers.filter {$0 == .adult}.count)")
+                Text("\(mainVM.passengers.filter {$0 == .adult}.count)")
                     .padding(.horizontal, 20)
             }
         } onIncrement: {
-            model.actionNumberPassengers = .addAdult
+            mainVM.actionNumberPassengers = .addAdult
         } onDecrement: {
-            model.actionNumberPassengers = .removeAdult
+            mainVM.actionNumberPassengers = .removeAdult
         }
     }
 }
 
-struct AddAdultView1_Previews: PreviewProvider {
-    static let model = MainVM()
+struct AddAdultView_Previews: PreviewProvider {
+    static let mainVM = MainVM()
     static var previews: some View {
         AddAdultView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

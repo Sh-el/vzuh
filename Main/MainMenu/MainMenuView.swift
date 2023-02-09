@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct MainMenuView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
 
     var body: some View {
-        TabView(selection: $model.mainMenuTabSelected) {
+        TabView(selection: $mainVM.mainMenuTabSelected) {
             VStack(alignment: .leading) {
                 Spacer()
                 ButtonsMainMenuView()
@@ -25,9 +25,9 @@ struct MainMenuView: View {
 }
 
 struct MainMenuView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         MainMenuView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EnterCitiesView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
 
     @State private var place: Place?
 
@@ -20,7 +20,7 @@ struct EnterCitiesView: View {
                         place = .departure
                     } label: {
                         HStack {
-                            Text(model.departure?.name ?? "Введите место отправления")
+                            Text(mainVM.departure?.name ?? "Введите место отправления")
                                 .font(.title2)
                                 .fontWeight(.semibold)
                                 .lineLimit(1)
@@ -34,7 +34,7 @@ struct EnterCitiesView: View {
                         place = .arrival
                     } label: {
                         HStack {
-                            Text(model.arrival?.name ?? "Введите место прибытия")
+                            Text(mainVM.arrival?.name ?? "Введите место прибытия")
                                 .font(.title2)
                                 .fontWeight(.semibold)
                                 .lineLimit(1)
@@ -46,7 +46,7 @@ struct EnterCitiesView: View {
                 }
                 Button {
                     withAnimation(.linear(duration: 0.3)) {
-                        model.changeCity()
+                        mainVM.changeCity()
                     }
                 } label: {
                     Image(systemName: "arrow.up.arrow.down")
@@ -68,9 +68,9 @@ extension EnterCitiesView {
 }
 
 struct EnterCitiesView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         EnterCitiesView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

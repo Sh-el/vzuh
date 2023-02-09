@@ -9,27 +9,19 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject var mainVm: MainVM
-    @State private var isTopButtons: TopButtons?
+    @State private var selectedTopButton: TopButtons?
 
     var body: some View {
         NavigationView {
             ZStack(alignment: .top) {
                 backgroundMain
-                MainMenuView()
-                    .padding(.horizontal, 10)
-                    .padding(.bottom, 10)
-                    .offset(y: Const.offsetYMainMenu)
-                    .ignoresSafeArea()
+                mainMenuView
                 topButtonsView
-                DragSheetView(startingOffsetY: Const.startingOffsetYDragGesture)
+                DragSheetView(startingOffsetY: Constants.startingOffsetYDragGesture)
                     .ignoresSafeArea()
             }
-            .sheet(item: $isTopButtons) {topButton in
-                if topButton == .changeBackground {
-                    ChangeBackgroundView()
-                } else if topButton == .notifications {
-                    NotificationsView()
-                }
+            .sheet(item: $selectedTopButton) {topButton in
+                topButtonSheetView(topButton: topButton)
             }
         }
         .tabItem {
@@ -41,18 +33,30 @@ struct MainTabView: View {
 }
 
 extension MainTabView {
+    @ViewBuilder
+    private func topButtonSheetView(topButton: TopButtons) -> some View {
+        switch topButton {
+        case .changeBackground:
+            ChangeBackgroundView()
+        case .notifications:
+            NotificationsView()
+        }
+    }
+}
+
+extension MainTabView {
     var topButtonsView: some View {
         HStack {
             Text("vzuh")
             Spacer()
             Button {
-                isTopButtons = .changeBackground
+                selectedTopButton = .changeBackground
             } label: {
                 Image(systemName: "camera")
             }
             .padding(.horizontal)
             Button {
-                isTopButtons = .notifications
+                selectedTopButton = .notifications
             } label: {
                 Image(systemName: "bell")
             }
@@ -65,27 +69,12 @@ extension MainTabView {
 }
 
 extension MainTabView {
-    enum TopButtons: Identifiable {
-        case changeBackground
-        case notifications
-
-        var id: Self {self}
-    }
-}
-
-extension MainTabView {
-    var searchButton: some View {
-        Text("Найти")
-            .font(.title)
-            .fontWeight(.bold)
-            .foregroundColor(.white)
+    var mainMenuView: some View {
+        MainMenuView()
             .padding(.horizontal, 10)
-            .padding(.vertical, 10)
-            .frame(maxWidth: .infinity)
-            .background(Const.gradient)
-            .cornerRadius(5)
-            .padding(.horizontal, 10)
-            .padding(.bottom, 90)
+            .padding(.bottom, 10)
+            .offset(y: Constants.offsetYMainMenu)
+            .ignoresSafeArea()
     }
 }
 
@@ -99,7 +88,16 @@ extension MainTabView {
 }
 
 extension MainTabView {
-    struct Const {
+    enum TopButtons: Identifiable {
+        case changeBackground
+        case notifications
+
+        var id: Self {self}
+    }
+}
+
+extension MainTabView {
+    struct Constants {
         static let gradient = LinearGradient(colors: [.blue.opacity(0.4),
                                                       .blue.opacity(0.8)],
                                              startPoint: .topLeading,

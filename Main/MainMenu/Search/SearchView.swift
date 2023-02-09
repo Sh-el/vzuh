@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SearchView: View {
-    @EnvironmentObject var model: MainVM
-
+    @EnvironmentObject var mainVM: MainVM
+    
     var body: some View {
         VStack(alignment: .leading) {
             EnterCitiesView()
@@ -18,34 +18,30 @@ struct SearchView: View {
             Divider()
             PassengersView()
             Divider()
-
-            switch model.mainMenuTabSelected {
-            case .all:
-                NavigationLink(destination: AllResultsView()) {
-                    searchButton
-                }
-                .disabled(model.departure?.name == model.arrival?.name)
-            case .hotels:
-                NavigationLink(destination: HotelsResultView()) {
-                    searchButton
-                }
-            case .flights:
-                NavigationLink(destination: FlightsResultView()) {
-                    searchButton
-                }
-            case .train:
-                NavigationLink(destination: TrainsResultView()) {
-                    searchButton
-                }
-            case .bus:
-                NavigationLink(destination: BusResultView()) {
-                    searchButton
-                }
+            NavigationLink(destination: searchDestinationView) {
+                searchButton
             }
+            .disabled(mainVM.departure?.name == mainVM.arrival?.name)
         }
     }
-
-    var searchButton: some View {
+    
+    @ViewBuilder
+    private var searchDestinationView: some View {
+        switch mainVM.mainMenuTabSelected {
+        case .all:
+            AllResultsView()
+        case .hotels:
+            HotelsResultView()
+        case .flights:
+            FlightsResultView()
+        case .train:
+            TrainsResultView()
+        case .bus:
+            BusResultView()
+        }
+    }
+    
+    private var searchButton: some View {
         Text("Найти")
             .font(.title)
             .fontWeight(.bold)
@@ -60,10 +56,10 @@ struct SearchView: View {
 }
 
 struct AllFindView_Previews: PreviewProvider {
-    static let model = MainVM()
-
+    static let mainVM = MainVM()
+    
     static var previews: some View {
         SearchView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

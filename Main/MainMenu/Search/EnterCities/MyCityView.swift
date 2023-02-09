@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct MyCityView: View {
-    @EnvironmentObject var model: MainVM
-    @EnvironmentObject var searching: SearchingCities
+    @EnvironmentObject var mainVM: MainVM
+    @EnvironmentObject var searchingCities: SearchingCities
     @Environment(\.dismiss) private var dismiss
 
     let place: EnterCitiesView.Place?
 
     var body: some View {
-        switch searching.myCity {
+        switch searchingCities.myCity {
         case .success(let result):
             VStack(alignment: .leading) {
                 HStack {
@@ -32,9 +32,9 @@ struct MyCityView: View {
             .padding(.vertical, 5)
             .onTapGesture {
                 if place == .departure {
-                    model.departure = searching.getLocation(result)
+                    mainVM.departure = searchingCities.getLocation(result)
                 } else if place == .arrival {
-                    model.arrival = searching.getLocation(result)
+                    mainVM.arrival = searchingCities.getLocation(result)
                 }
                 dismiss()
             }
@@ -47,11 +47,11 @@ struct MyCityView: View {
 }
 
 struct MyCityView_Previews: PreviewProvider {
-    static let model = MainVM()
-    static let searching = SearchingCities()
+    static let mainVM = MainVM()
+    static let searchingCities = SearchingCities()
     static var previews: some View {
         MyCityView(place: .departure)
-            .environmentObject(model)
-            .environmentObject(searching)
+            .environmentObject(mainVM)
+            .environmentObject(searchingCities)
     }
 }

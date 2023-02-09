@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PassengersView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
     @State private var isPassengersChoice = false
 
     var body: some View {
@@ -16,9 +16,9 @@ struct PassengersView: View {
             isPassengersChoice.toggle()
         } label: {
             HStack {
-                Text(model.passengers.count == 1 ?
-                     "\(model.passengers.count) пассажир" :
-                     "\(model.passengers.count) пассажира")
+                Text(mainVM.passengers.count == 1 ?
+                     "\(mainVM.passengers.count) пассажир" :
+                     "\(mainVM.passengers.count) пассажира")
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
                 Spacer()
@@ -32,9 +32,9 @@ struct PassengersView: View {
 }
 
 struct PassengersView1_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         PassengersView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

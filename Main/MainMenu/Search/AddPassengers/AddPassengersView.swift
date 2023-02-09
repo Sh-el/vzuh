@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddPassengersView: View {
-    @EnvironmentObject var model: MainVM
+    @EnvironmentObject var mainVM: MainVM
     @Environment(\.dismiss) private var dismiss
 
     @State private var isAddChild = false
@@ -25,9 +25,9 @@ struct AddPassengersView: View {
                 Spacer()
                 ListChildrenView()
                 Spacer()
-                addChildButtonView
+                addChildButton
                 Spacer()
-                doneButtonView
+                doneButton
             }
             .foregroundColor(.black)
             .padding()
@@ -35,30 +35,27 @@ struct AddPassengersView: View {
                 AddChildView()
                     .presentationDetents([.fraction(0.3)])
             }
-            if model.changeNumberPassengersError != .valid {
-                AddPassengersAlertView()
+            if mainVM.changeNumberPassengersError != .valid {
+                ErrorAddPassengersAlertView()
             }
         }
-//        .task{
-//            model.changeNumberPassengers()
-//        }
     }
 }
 
 extension AddPassengersView {
-    var addChildButtonView: some View {
+    var addChildButton: some View {
         Button {
          isAddChild = true
         } label: {
             Text("+ Добавить ребенка")
         }
         .foregroundColor(.blue)
-        .disabled(model.passengers.count == 4)
+        .disabled(mainVM.passengers.count == 4)
     }
 }
 
 extension AddPassengersView {
-    var doneButtonView: some View {
+    var doneButton: some View {
         Button {
             dismiss()
         } label: {
@@ -76,10 +73,10 @@ extension AddPassengersView {
     }
 }
 
-struct AddPassengersView1_Previews: PreviewProvider {
-    static let model = MainVM()
+struct AddPassengersView_Previews: PreviewProvider {
+    static let mainVM = MainVM()
     static var previews: some View {
         AddPassengersView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }

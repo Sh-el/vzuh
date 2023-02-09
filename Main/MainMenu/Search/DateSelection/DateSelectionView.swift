@@ -8,37 +8,37 @@
 import SwiftUI
 
 struct DateSelectionView: View {
-    @EnvironmentObject var model: MainVM
-    @State private var dateTrip: DateTrip?
+    @EnvironmentObject var mainVM: MainVM
+    @State private var selectedTrip: TripType?
 
     var body: some View {
         HStack {
-            Text(model.dateDeparture.dateToString)
+            Text(mainVM.dateDeparture.dateToString)
                 .fontWeight(.semibold)
                 .onTapGesture {
-                    dateTrip = .dateDeparture
+                    selectedTrip = .dateDeparture
                 }
             Spacer()
-            Text(model.isDateBack ? model.dateBack.dateToString : "Обратно")
+            Text(mainVM.isDateBack ? mainVM.dateBack.dateToString : "Обратно")
                 .fontWeight(.semibold)
-                .foregroundColor(model.isDateBack ? .white : .gray.opacity(0.7))
+                .foregroundColor(mainVM.isDateBack ? .white : .gray.opacity(0.7))
                 .onTapGesture {
-                    dateTrip = .dateBack
+                    selectedTrip = .dateReturn
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        model.isDateBack = true
+                        mainVM.isDateBack = true
                     }
                 }
             Spacer()
-            if model.isDateBack {
+            if mainVM.isDateBack {
                 Button {
-                    model.isDateBack = false
+                    mainVM.isDateBack = false
                 } label: {
-                    Text("X")
+                    Image(systemName: "xmark")
                         .padding(.trailing, 20)
                 }
             }
         }
-        .sheet(item: $dateTrip) {DatePick(dateTrip: $0)}
+        .sheet(item: $selectedTrip) {DatePick(dateTrip: $0)}
     }
 }
 
@@ -52,18 +52,18 @@ extension Date {
 }
 
 extension DateSelectionView {
-    enum DateTrip: Identifiable {
+    enum TripType: Identifiable {
         case dateDeparture
-        case dateBack
+        case dateReturn
 
         var id: Self {self}
     }
 }
 
 struct DateSelectionView_Previews: PreviewProvider {
-    static let model = MainVM()
+    static let mainVM = MainVM()
     static var previews: some View {
         DateSelectionView()
-            .environmentObject(model)
+            .environmentObject(mainVM)
     }
 }
