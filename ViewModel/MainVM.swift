@@ -10,7 +10,6 @@ import Combine
 
 final class MainVM: ObservableObject {
     @Published var mainMenuTabSelected: MainMenuTab = .all
-    @Published var mainMenuTabSelected1: MainMenuTab1 = .all
     @Published var isSearch = false
 
     @Published var departure: Location?
@@ -61,8 +60,7 @@ final class MainVM: ObservableObject {
     @Published var trainSchedules: TrainSchedules?
     @Published var choiceSortTrainSchedules: TrainModel.Sort?
 
-    private func loadTrainSchedules() {
-        func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
+    private func getTrips(_ value: (Location?, Location?)) -> AnyPublisher<[TrainTrip], Error> {
             Just(value)
                 .map {($0.0!, $0.1!)}
                 .flatMap(trainStationsAndRoutes.validTrainRoutes)
@@ -70,10 +68,12 @@ final class MainVM: ObservableObject {
                 .eraseToAnyPublisher()
         }
 
+   private func loadTrainSchedules() {
         $isSearch
             .filter {$0}
             .filter {[weak self] _ in self?.mainMenuTabSelected == .all}
             .map {[weak self] _ in (self?.departure, self?.arrival)}
+            .compactMap {$0}
             .filter {$0.0 != nil && $0.1 != nil}
 //            .flatMap(getTrips)
             .map(getTrips)
@@ -111,8 +111,8 @@ final class MainVM: ObservableObject {
         actionPassengers: ActionPassengersProtocol = ActionPassengersModel(),
         dataTrain: TrainAPIProtocol = TrainApi(),
         dataTrainSchedule: TrainProtocol = TrainModel(),
-        trainStationsAndRoutes:
-        TrainStationsAndRoutesProtocol = TrainStationsAndRoutesModel(inputFile: "tutu_routes.csv")
+        trainStationsAndRoutes: TrainStationsAndRoutesProtocol =
+                                    TrainStationsAndRoutesModel(inputFile: "tutu_routes.csv")
     ) {
         self.actionPassengers = actionPassengers
         self.trainAPI = dataTrain
@@ -125,7 +125,6 @@ final class MainVM: ObservableObject {
         changeNumberPassengers()
         loadTrainSchedules()
         sortTrainSchedule()
-
     }
 
     @Published var backgroundMain = "day_snow"
@@ -176,29 +175,6 @@ extension Publisher {
 }
 
 enum MainMenuTab {
-    case all
-    case hotels
-    case flights
-    case train
-    case bus
-
-    var imageName: String {
-        switch self {
-        case .all:
-            return "globe"
-        case .hotels:
-            return "bed.double"
-        case .flights:
-            return "airplane"
-        case .train:
-            return "tram"
-        case .bus:
-            return "bus"
-        }
-    }
-}
-
-enum MainMenuTab1: CaseIterable {
     case all
     case hotels
     case flights

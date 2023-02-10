@@ -134,26 +134,3 @@ enum ChangeNumberPassengersError: String {
     case lotsBabies = "Детей до двух лет должно быть не больше, чем взрослых!"
     case valid
 }
-
-// struct Child: Hashable, Identifiable {
-//    var id = UUID()
-//    
-//    enum AgeChild: String, CaseIterable, Identifiable {
-//        case zero = "меньше года"
-//        case one = "1 год"
-//        case two = "2 года"
-//        case three = "3 года"
-//        case four = "4 года"
-//        case five = "5 лет"
-//        case six = "6 лет"
-//        case seven = "7 лет"
-//        case eight = "8 лет"
-//        case nine =  "9 лет"
-//        case ten = "10 лет"
-//        case eleven = "11 лет"
-//        
-//        var id: Self {self}
-//    }
-//    
-//    var age: AgeChild
-// }

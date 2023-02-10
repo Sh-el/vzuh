@@ -20,7 +20,7 @@ struct TrainModel: Codable, TrainProtocol {
     var url: String = ""
 
     func minPrice(in schedule: [TrainTrip]) -> TrainTrip? {
-    return schedule.filter { !$0.trainNumber.isEmpty }.min()
+        return schedule.filter { !$0.trainNumber.isEmpty }.min()
     }
 
     func sort(_ schedule: ([TrainTrip], Sort?)) -> AnyPublisher<[TrainTrip], Error> {
@@ -45,6 +45,7 @@ struct TrainModel: Codable, TrainProtocol {
     }
 
 }
+
 extension TrainModel {
     // MARK: - Trip
     struct TrainTrip: Codable, Comparable, Hashable {
@@ -82,27 +83,28 @@ extension TrainModel {
 
         let price: Int
         let type: TypeEnum
-    }
-    // MARK: - TypeEnum
-    enum TypeEnum: String, Codable {
-        case coupe
-        case lux
-        case plazcard
-        case sedentary
-        case soft
 
-        var description: String {
-            switch self {
-            case .coupe:
-                return "Купе"
-            case .lux:
-                return "Люкс"
-            case .plazcard:
-                return "Плацкарт"
-            case .sedentary:
-                return "Сидячий"
-            case .soft:
-                return "СВ"
+        // MARK: - TypeEnum
+        enum TypeEnum: String, Codable {
+            case coupe
+            case lux
+            case plazcard
+            case sedentary
+            case soft
+
+            var description: String {
+                switch self {
+                case .coupe:
+                    return "Купе"
+                case .lux:
+                    return "Люкс"
+                case .plazcard:
+                    return "Плацкарт"
+                case .sedentary:
+                    return "Сидячий"
+                case .soft:
+                    return "СВ"
+                }
             }
         }
     }

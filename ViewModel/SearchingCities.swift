@@ -13,9 +13,6 @@ final class SearchingCities: ObservableObject {
     private let dataAutocomplete: DataAutocompleteProtocol
     private let location: LocationProtocol
 
-    private var allStations: [String: String] = [:]
-    private var allTrainRoutes: [TrainRoute] = []
-
     // Input
     @Published var city = ""
     @Published var isMyCity = false
@@ -30,8 +27,7 @@ final class SearchingCities: ObservableObject {
         }
 
     func stationName(_ stationId: String) -> String {
-        let resultDict = allStations.first {$0.key == stationId}
-        return resultDict?.value ?? "No Name"
+        location.stationName(stationId)
     }
 
     private func getCityForIP() -> AnyPublisher<AutocompleteCityElement, Error> {
@@ -43,17 +39,18 @@ final class SearchingCities: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    init(geocodingIP: GeocodingIpProtocol = GeocodingIpModel(),
-         dataAutocomplete: DataAutocompleteProtocol = AutocompleteModel(),
-         location: LocationProtocol = LocationModel()) {
-
+    init(
+        geocodingIP: GeocodingIpProtocol = GeocodingIpModel(),
+        dataAutocomplete: DataAutocompleteProtocol = AutocompleteModel(),
+        location: LocationProtocol = LocationModel()
+    ) {
         self.geocodingIP = geocodingIP
         self.dataAutocomplete = dataAutocomplete
         self.location = location
 
         $isMyCity
             .filter {$0}
-            .flatMap {_ in Just(())}
+            .map {_ in ()}
             .flatMap(getCityForIP)
             .asResult()
             .eraseToAnyPublisher()

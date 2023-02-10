@@ -10,6 +10,7 @@ typealias Location = LocationModel.Location
 
 protocol LocationProtocol {
     func getLocation(_ element: AutocompleteCityElement) -> Location
+    func stationName(_ stationId: String) -> String
 }
 
 struct LocationModel: LocationProtocol {
@@ -36,6 +37,10 @@ struct LocationModel: LocationProtocol {
         return location
     }
 
+    func stationName(_ stationId: String) -> String {
+        allStations[stationId] ?? "No Name"
+    }
+
     init(trainStationsAndRoutes:
          TrainStationsAndRoutesProtocol = TrainStationsAndRoutesModel(inputFile: "tutu_routes.csv")) {
         self.trainStationsAndRoutes = trainStationsAndRoutes
@@ -54,12 +59,13 @@ extension LocationModel {
         var trainStationId: [String]
         var routes: [TrainRoute]
 
-        init(name: String = "",
-             countryName: String = "",
-             codeIATA: String = "",
-             trainStationId: [String] = [],
-             routes: [TrainRoute] = []) {
-
+        init(
+            name: String = "",
+            countryName: String = "",
+            codeIATA: String = "",
+            trainStationId: [String] = [],
+            routes: [TrainRoute] = []
+        ) {
             self.name = name
             self.countryName = countryName
             self.codeIATA = codeIATA

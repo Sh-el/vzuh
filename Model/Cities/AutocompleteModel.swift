@@ -93,9 +93,9 @@ extension AutocompleteModel {
             case weight
             case mainAirportName = "main_airport_name"
         }
+    }
 
-        struct Coordinates: Codable {
-            let lon, lat: Double
-        }
+    struct Coordinates: Codable {
+        let lon, lat: Double
     }
 }

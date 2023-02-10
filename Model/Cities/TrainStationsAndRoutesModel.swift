@@ -97,10 +97,12 @@ extension TrainStationsAndRoutesModel {
         let arrivalStationId: String
         let arrivalStationName: String
 
-        init(departureStationId: String = "",
-             departureStationName: String = "",
-             arrivalStationId: String = "",
-             arrivalStationName: String = "") {
+        init(
+            departureStationId: String = "",
+            departureStationName: String = "",
+            arrivalStationId: String = "",
+            arrivalStationName: String = ""
+        ) {
             self.departureStationId = departureStationId
             self.departureStationName = departureStationName
             self.arrivalStationId = arrivalStationId
