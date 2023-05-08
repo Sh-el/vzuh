@@ -7,9 +7,13 @@
 
 import SwiftUI
 
-struct MainTabView: View {
-    @EnvironmentObject var mainVm: MainVM
+struct MainTabView<M: MainVmProtocol>: View {
+    @StateObject var mainVM: M
     @State private var selectedTopButton: TopButtons?
+
+    init(mainVM: M) {
+        _mainVM = StateObject(wrappedValue: mainVM)
+        }
 
     var body: some View {
         NavigationView {
@@ -29,6 +33,8 @@ struct MainTabView: View {
             Text("Поиск")
         }
         .tag(1)
+        .environmentObject(mainVM)
+        
     }
 }
 
@@ -80,7 +86,7 @@ extension MainTabView {
 
 extension MainTabView {
     var backgroundMain: some View {
-        Image(mainVm.backgroundMain)
+        Image(mainVM.backgroundMain)
             .resizable()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea()
@@ -97,20 +103,21 @@ extension MainTabView {
 }
 
 extension MainTabView {
-    struct Constants {
-        static let gradient = LinearGradient(colors: [.blue.opacity(0.4),
-                                                      .blue.opacity(0.8)],
-                                             startPoint: .topLeading,
-                                             endPoint: .bottomTrailing)
-        static let startingOffsetYDragGesture = UIScreen.main.bounds.height * 0.75
-        static let offsetYMainMenu = -UIScreen.main.bounds.height * (1 - 0.75)
-    }
+    
+}
+struct Constants {
+    static let gradient = LinearGradient(colors: [.blue.opacity(0.4),
+                                                  .blue.opacity(0.8)],
+                                         startPoint: .topLeading,
+                                         endPoint: .bottomTrailing)
+    static let startingOffsetYDragGesture = UIScreen.main.bounds.height * 0.75
+    static let offsetYMainMenu = -UIScreen.main.bounds.height * (1 - 0.75)
 }
 
 struct MainView_Previews: PreviewProvider {
     static let model = MainVM()
     static var previews: some View {
-        MainTabView()
+        MainTabView(mainVM: MainVM())
             .environmentObject(model)
     }
 }

@@ -24,9 +24,10 @@ struct DateSelectionView: View {
                 .foregroundColor(mainVM.isDateBack ? .white : .gray.opacity(0.7))
                 .onTapGesture {
                     selectedTrip = .dateReturn
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
                         mainVM.isDateBack = true
                     }
+                    
                 }
             Spacer()
             if mainVM.isDateBack {
@@ -39,6 +40,10 @@ struct DateSelectionView: View {
             }
         }
         .sheet(item: $selectedTrip) {DatePick(dateTrip: $0)}
+    }
+    func isDateBack(_ city: String) async -> Bool {
+        await Task.sleep(UInt64(0.5) * 1_000_000_000) // Three seconds
+        return true
     }
 }
 
@@ -60,10 +65,10 @@ extension DateSelectionView {
     }
 }
 
-struct DateSelectionView_Previews: PreviewProvider {
-    static let mainVM = MainVM()
-    static var previews: some View {
-        DateSelectionView()
-            .environmentObject(mainVM)
-    }
-}
+//struct DateSelectionView_Previews: PreviewProvider {
+//    static let mainVM = MainVM()
+//    static var previews: some View {
+//        DateSelectionView()
+//            .environmentObject(mainVM)
+//    }
+//}

@@ -10,7 +10,7 @@ import SwiftUI
 struct WelcomeView: View {
     var body: some View {
         TabView {
-            MainTabView()
+            MainTabView(mainVM: MainVM())
             OrdersTabView()
             HelpTabView()
             ProfileTabView()

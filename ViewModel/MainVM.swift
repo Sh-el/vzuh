@@ -8,7 +8,12 @@
 import SwiftUI
 import Combine
 
-final class MainVM: ObservableObject {
+protocol MainVmProtocol: ObservableObject {
+    func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip?
+    var backgroundMain: String {get}
+}
+
+final class MainVM: MainVmProtocol {
     @Published var mainMenuTabSelected: MainMenuTab = .all
     @Published var isSearch = false
 
@@ -20,7 +25,7 @@ final class MainVM: ObservableObject {
     @Published var isDateBack = false
 
     // Passengers
-    private let actionPassengers: ActionPassengersProtocol
+    private let passengersManager: PassengersManagerProtocol
     @Published var passengers: [Passenger] = [.adult]
     @Published var actionNumberPassengers: ActionNumberPassengers?
     @Published var changeNumberPassengersError: ChangeNumberPassengersError  = .valid
@@ -34,7 +39,7 @@ final class MainVM: ObservableObject {
                 }
                 return (passengers, action)
             }
-            .flatMap(actionPassengers.changeNumberPassengers)
+            .flatMap(passengersManager.changeNumberPassengers)
             .eraseToAnyPublisher()
 
         changeNumberPassengersRes
@@ -54,8 +59,8 @@ final class MainVM: ObservableObject {
     // Train
     typealias TrainSchedules = Result<[TrainTrip], Error>
     private let trainStationsAndRoutes: TrainStationsAndRoutesProtocol
-    private let trainAPI: TrainAPIProtocol
-    private let train: TrainProtocol
+    private let dataTrain: TrainAPIProtocol
+    private let dataTrainSchedule: TrainProtocol
 
     @Published var trainSchedules: TrainSchedules?
     @Published var choiceSortTrainSchedules: TrainModel.Sort?
@@ -64,7 +69,7 @@ final class MainVM: ObservableObject {
             Just(value)
                 .map {($0.0!, $0.1!)}
                 .flatMap(trainStationsAndRoutes.validTrainRoutes)
-                .flatMap(trainAPI.getTrainSchedule)
+                .flatMap(dataTrain.getTrainSchedule)
                 .eraseToAnyPublisher()
         }
 
@@ -83,7 +88,7 @@ final class MainVM: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedules)
     }
-
+        
     private func sortTrainSchedule() {
         $choiceSortTrainSchedules
             .compactMap {$0}
@@ -96,7 +101,7 @@ final class MainVM: ObservableObject {
                 }
             }
             .filter {!$0.0.isEmpty}
-            .flatMap(train.sort)
+            .flatMap(dataTrainSchedule.sort)
             .asResult()
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
@@ -104,19 +109,19 @@ final class MainVM: ObservableObject {
     }
 
     func trainMinPrice(schedule: [TrainTrip]) -> TrainTrip? {
-        train.minPrice(in: schedule)
+        dataTrainSchedule.minPrice(in: schedule)
     }
 
     init(
-        actionPassengers: ActionPassengersProtocol = ActionPassengersModel(),
+        passengersManager: PassengersManagerProtocol = PassengersManager(),
         dataTrain: TrainAPIProtocol = TrainApi(),
         dataTrainSchedule: TrainProtocol = TrainModel(),
         trainStationsAndRoutes: TrainStationsAndRoutesProtocol =
                                     TrainStationsAndRoutesModel(inputFile: "tutu_routes.csv")
     ) {
-        self.actionPassengers = actionPassengers
-        self.trainAPI = dataTrain
-        self.train = dataTrainSchedule
+        self.passengersManager = passengersManager
+        self.dataTrain = dataTrain
+        self.dataTrainSchedule = dataTrainSchedule
         self.trainStationsAndRoutes = trainStationsAndRoutes
 
         imagesBackground = Constants.imagesBackground

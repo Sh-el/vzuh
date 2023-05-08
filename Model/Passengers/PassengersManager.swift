@@ -8,17 +8,22 @@
 import SwiftUI
 import Combine
 
-protocol ActionPassengersProtocol {
+protocol PassengersManagerProtocol {
     func changeNumberPassengers(_ passengers: ([Passenger], ActionNumberPassengers?))
     -> AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never>
 }
 
-struct ActionPassengersModel: ActionPassengersProtocol {
+struct PassengersManager: PassengersManagerProtocol {
+    private let maxNumberPassengers = 4
+    
     private func addAdult(_ passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
-        if passengers.count + 1 > Const.maxNumberPassengers {
+        if passengers.count + 1 > maxNumberPassengers {
             return (.lotsPassengers, nil)
         }
-        return (.valid, passengers + [.adult])
+        
+        var newPassengers = passengers
+        newPassengers.append(.adult)
+        return (.valid, newPassengers)
     }
 
     private func removeAdult(_ passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
@@ -65,6 +70,24 @@ struct ActionPassengersModel: ActionPassengersProtocol {
         }
         return (.valid, arr)
     }
+    
+//    private func add(passenger: Passenger, to passengers: [Passenger]) -> (ChangeNumberPassengersError, [Passenger]?) {
+//            if passengers.count + 1 > maxNumberPassengers {
+//                return (.lotsPassengers, nil)
+//            }
+//            var newPassengers = passengers
+//            newPassengers.append(passenger)
+//            return (.valid, passengers)
+//        }
+//
+//        private func remove(passenger: Passenger, from passengers: [Passenger]) -> Result<[Passenger], ChangeNumberPassengersError> {
+//            guard let index = passengers.firstIndex(of: passenger) else {
+//                return .failure(.fewPassengers)
+//            }
+//            var newPassengers = passengers
+//            newPassengers.remove(at: index)
+//            return .success(newPassengers)
+//        }
 
     func changeNumberPassengers(_ passengers: ([Passenger], ActionNumberPassengers?))
     -> AnyPublisher<(ChangeNumberPassengersError, [Passenger]?), Never> {
@@ -93,10 +116,7 @@ struct ActionPassengersModel: ActionPassengersProtocol {
             }
             .eraseToAnyPublisher()
     }
-
-    private struct Const {
-        static let maxNumberPassengers = 4
-    }
+    
 }
 
 enum Passenger: Hashable, CaseIterable, Identifiable {
