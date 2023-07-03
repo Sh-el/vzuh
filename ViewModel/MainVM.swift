@@ -88,7 +88,7 @@ final class MainVM: MainVmProtocol {
             .receive(on: DispatchQueue.main)
             .assign(to: &$trainSchedules)
     }
-        
+    
     private func sortTrainSchedule() {
         $choiceSortTrainSchedules
             .compactMap {$0}

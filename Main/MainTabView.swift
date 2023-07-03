@@ -34,7 +34,6 @@ struct MainTabView<M: MainVmProtocol>: View {
         }
         .tag(1)
         .environmentObject(mainVM)
-        
     }
 }
 
@@ -102,9 +101,8 @@ extension MainTabView {
     }
 }
 
-extension MainTabView {
-    
-}
+
+
 struct Constants {
     static let gradient = LinearGradient(colors: [.blue.opacity(0.4),
                                                   .blue.opacity(0.8)],

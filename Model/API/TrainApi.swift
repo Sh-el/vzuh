@@ -18,7 +18,7 @@ struct TrainApi: TrainAPIProtocol {
     func getTrainSchedule(_ location: [TrainRoute]) -> AnyPublisher<[TrainTrip], Error> {
         location
             .publisher
-//          .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
+//            .zip(Timer.publish(every: 0.5, on: .current, in: .common).autoconnect())
             .tryMap {
                 guard let url = EndpointTrain
                     .search(term: $0.departureStationId, term2: $0.arrivalStationId)
@@ -27,7 +27,9 @@ struct TrainApi: TrainAPIProtocol {
                 }
                 return url
             }
-            .flatMap(apiService.fetch)
+            .flatMap {url -> AnyPublisher<TrainModel, Error> in
+                return apiService.fetch(from: url)
+            }
             .tryCatch {
                 if case RequestError.decodingError = $0 {
                     return Just(TrainModel())
